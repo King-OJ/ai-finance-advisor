@@ -1,25 +1,13 @@
-"use client";
-import { useSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { useRouter } from "next/navigation";
 import React from "react";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 
-function page() {
-  const { data: session, status } = useSession({
-    required: true,
-    onUnauthenticated() {
-      redirect("/signIn");
-    },
-  });
-
-  const router = useRouter();
-
-  if (status === "loading") {
-    return <div>Loading...</div>;
-  }
+async function page() {
+  const session = await getServerSession(authOptions);
 
   if (!session) {
-    return null;
+    redirect("/login");
   }
 
   console.log(session);

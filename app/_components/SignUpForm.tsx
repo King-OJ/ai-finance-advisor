@@ -10,6 +10,8 @@ import { CustomFormInputField } from "./FormComponents";
 import { SignUpFormType } from "@/utils/types";
 import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const signUpSchema = z.object({
   name: z.string().min(3, { message: "Name must be at least 3 characters." }),
@@ -30,7 +32,7 @@ function SignUpForm() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>();
-
+  const router = useRouter();
   const { toast } = useToast();
 
   const onSubmit = async (values: SignUpFormType) => {
@@ -38,10 +40,24 @@ function SignUpForm() {
     await axios
       .post("/api/auth/signup", values)
       .then((result) => {
-        toast({ title: result.data.message });
+        if (result.data.id) {
+          toast({
+            title: "Account created Successfully!",
+            description: "Login to get started",
+            className: "bg-white text-green-500 border-green-500",
+          });
+          setTimeout(() => {
+            router.push("/login");
+          }, 1000);
+        }
       })
       .catch((error) => {
-        toast({ variant: "destructive", title: error.response.data.message });
+        toast({
+          variant: "destructive",
+          className: "bg-white text-red-500",
+          description: "Try again!",
+          title: error.response.data.message,
+        });
       })
       .finally(() => {
         setIsSubmitting(false);
@@ -82,6 +98,13 @@ function SignUpForm() {
             </div>
           </form>
         </Form>
+
+        <p className="mt-4 text-center text-sm">
+          Already have an account?{" "}
+          <Link href="/login" className="text-blue-600 hover:underline">
+            Sign In
+          </Link>
+        </p>
       </CardContent>
     </Card>
   );

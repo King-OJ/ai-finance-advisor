@@ -11,6 +11,7 @@ import { SignInFormType } from "@/utils/types";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 const signInSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email." }),
@@ -19,7 +20,7 @@ const signInSchema = z.object({
     .min(6, { message: "Password must be at least 6 characters." }),
 });
 
-function SignInForm() {
+function LoginForm() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>();
   const { toast } = useToast();
   const router = useRouter();
@@ -52,9 +53,15 @@ function SignInForm() {
       return;
     }
 
-    toast({ title: "Login successfully!" });
-    router.push("/dashboard");
-    router.refresh();
+    toast({
+      title: "Login successful!",
+      className: "bg-white text-green-500 border-green-500",
+    });
+    form.reset();
+    setTimeout(() => {
+      router.push("/dashboard");
+      router.refresh();
+    }, 1000);
   };
 
   return (
@@ -76,7 +83,7 @@ function SignInForm() {
               control={form.control}
               placeholder="Enter your password"
             />
-            <div>
+            <div className="space-y-4">
               <Button
                 disabled={isSubmitting}
                 type="submit"
@@ -84,12 +91,28 @@ function SignInForm() {
               >
                 Sign In
               </Button>
+
+              <Button
+                type="button"
+                variant="secondary"
+                className="w-full"
+                onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+              >
+                Sign in with Google
+              </Button>
             </div>
           </form>
         </Form>
+
+        <p className="mt-4 text-center text-sm">
+          Don't have an account?{" "}
+          <Link href="/signup" className="text-blue-600 hover:underline">
+            Sign Up
+          </Link>
+        </p>
       </CardContent>
     </Card>
   );
 }
 
-export default SignInForm;
+export default LoginForm;
