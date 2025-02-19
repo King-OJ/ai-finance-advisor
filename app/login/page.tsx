@@ -1,9 +1,19 @@
 import React from "react";
 import LoginForm from "../_components/LoginForm";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
 
-function page() {
+async function page() {
+  const session = await getServerSession(authOptions);
+
+  // Redirect authenticated users to the dashboard
+  if (session) {
+    redirect("/dashboard");
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="flex flex-1 items-center justify-center h-full">
       <LoginForm />
     </div>
   );

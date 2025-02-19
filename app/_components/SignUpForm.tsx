@@ -48,7 +48,7 @@ function SignUpForm() {
           });
           setTimeout(() => {
             router.push("/login");
-          }, 1000);
+          }, 500);
         }
       })
       .catch((error) => {
@@ -101,9 +101,9 @@ function SignUpForm() {
 
         <p className="mt-4 text-center text-sm">
           Already have an account?{" "}
-          <Link href="/login" className="text-blue-600 hover:underline">
-            Sign In
-          </Link>
+          <Button asChild variant={"outline"} size={"sm"}>
+            <Link href="/login">Login</Link>
+          </Button>
         </p>
       </CardContent>
     </Card>

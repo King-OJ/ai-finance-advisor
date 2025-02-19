@@ -44,7 +44,6 @@ function LoginForm() {
     if (response?.error) {
       toast({
         variant: "destructive",
-        className: "bg-white text-red-500",
         title: `Login failed: ${
           response.status == 401 ? "Invalid credentials" : response.error
         }`,
@@ -55,13 +54,13 @@ function LoginForm() {
 
     toast({
       title: "Login successful!",
-      className: "bg-white text-green-500 border-green-500",
+      className: "text-green-500 border-green-500",
     });
     form.reset();
     setTimeout(() => {
       router.push("/dashboard");
       router.refresh();
-    }, 1000);
+    }, 500);
   };
 
   return (
@@ -89,16 +88,17 @@ function LoginForm() {
                 type="submit"
                 className="w-full mt-4 text-base"
               >
-                Sign In
+                Login
               </Button>
 
               <Button
                 type="button"
                 variant="secondary"
                 className="w-full"
+                disabled={isSubmitting}
                 onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
               >
-                Sign in with Google
+                Login with Google
               </Button>
             </div>
           </form>
@@ -106,9 +106,9 @@ function LoginForm() {
 
         <p className="mt-4 text-center text-sm">
           Don't have an account?{" "}
-          <Link href="/signup" className="text-blue-600 hover:underline">
-            Sign Up
-          </Link>
+          <Button asChild variant={"outline"} size={"sm"}>
+            <Link href="/signup">Sign Up</Link>
+          </Button>
         </p>
       </CardContent>
     </Card>
