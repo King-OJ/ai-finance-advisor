@@ -40,13 +40,12 @@ function LoginForm() {
       email: values.email,
       password: values.password,
     });
+    console.log(response);
 
     if (response?.error) {
       toast({
         variant: "destructive",
-        title: `Login failed: ${
-          response.status == 401 ? "Invalid credentials" : response.error
-        }`,
+        title: response.error,
       });
       setIsSubmitting(false);
       return;

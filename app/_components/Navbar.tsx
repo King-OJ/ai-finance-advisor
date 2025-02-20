@@ -1,31 +1,33 @@
-import Image from "next/image";
-import React from "react";
-import logo from "@/public/uifry_logo.png";
-import Link from "next/link";
-import NavButtons from "./NavButtons";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+"use client";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import AppLogoAndTitle from "./AppLogoAndTitle";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-async function Navbar() {
-  const session = await getServerSession(authOptions);
+function Navbar() {
+  const pathname = usePathname();
+
+  const isSignUpPage = pathname == "/signup";
+  const isloginPage = pathname == "/login";
+
+  if (
+    pathname.includes("/dashboard") ||
+    pathname.includes("/chatai") ||
+    pathname.includes("/profile")
+  ) {
+    return null;
+  }
 
   return (
     <nav className="flex justify-between items-center p-6 w-full">
-      <div className="flex space-x-4 items-center">
-        <Link href={"/"}>
-          <Image
-            src={logo}
-            alt="AI finance advisor logo"
-            sizes="100vw"
-            className="w-auto h-auto"
-          />
-        </Link>
+      <AppLogoAndTitle />
 
-        <div className="text-2xl font-bold ">AI Finance Advisor</div>
-      </div>
-
-      {session ? <Button>Logout</Button> : <NavButtons />}
+      {isSignUpPage || isloginPage ? null : (
+        <Button>
+          <Link href={"/signup"}>Get Started</Link>
+        </Button>
+      )}
     </nav>
   );
 }

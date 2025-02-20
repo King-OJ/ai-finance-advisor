@@ -1,17 +1,19 @@
+"use client";
 import React from "react";
 import LoginForm from "../_components/LoginForm";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
+import { useSession } from "next-auth/react";
 
-async function page() {
-  const session = await getServerSession(authOptions);
+function page() {
+  const { data: session, status } = useSession();
 
   // Redirect authenticated users to the dashboard
   if (session) {
     redirect("/dashboard");
   }
-
+  if (status === "loading") {
+    return null;
+  }
   return (
     <div className="flex flex-1 items-center justify-center h-full">
       <LoginForm />
