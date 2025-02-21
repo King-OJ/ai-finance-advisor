@@ -6,14 +6,12 @@ import {
   User,
   MessageSquareMore,
   Package,
-  ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
 import { useSession } from "next-auth/react";
 import AppLogoAndTitle from "./AppLogoAndTitle";
-import profilePicPlaceholder from "@/public/profile_picture_placeholder.png";
+import UserInfoAndLogoutBtn from "./UserInfoAndLogoutBtn";
 
 function AppSidebar() {
   const { data: session, status } = useSession();
@@ -73,30 +71,7 @@ function AppSidebar() {
         </ul>
       </div>
 
-      {session?.user && (
-        <button className="flex items-center w-full justify-between">
-          <div className="flex items-center space-x-3">
-            {session?.user && (
-              <div className="h-10 w-10 bg-secondary rounded-full">
-                <Image
-                  alt={"user image"}
-                  src={session.user.image || profilePicPlaceholder}
-                  width={0}
-                  height={0}
-                  sizes="100vw"
-                  className="object-cover"
-                />
-              </div>
-            )}
-
-            <div className="space-y-2">
-              <h5 className="font-bold">{session?.user.name}</h5>
-            </div>
-          </div>
-
-          <ChevronDown />
-        </button>
-      )}
+      <UserInfoAndLogoutBtn session={session} status={status} />
     </aside>
   );
 }
