@@ -27,7 +27,7 @@ export default function Home() {
         </p>
         <div className="flex justify-center gap-4">
           <Button className="" asChild>
-            <Link href={"/signup"}>Get Started</Link>
+            <Link href={"/signup"}>Get Finanacial Advice</Link>
           </Button>
           <Button variant="outline" asChild>
             <Link href={"/login"}>Login</Link>

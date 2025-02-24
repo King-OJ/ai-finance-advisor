@@ -28,8 +28,8 @@ function AppSidebar() {
       icon: Briefcase,
     },
     {
-      title: "Chat AI",
-      url: "/chatai",
+      title: "AI Advisor",
+      url: "/ai_advisor",
       icon: MessageSquareMore,
     },
     {

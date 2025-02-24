@@ -19,7 +19,7 @@ import {
 
 type CustomFormInputFieldProps = {
   name: string;
-  placeholder: string;
+  placeholder?: string;
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   control: Control<any>;
 };

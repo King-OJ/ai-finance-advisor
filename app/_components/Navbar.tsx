@@ -13,7 +13,7 @@ function Navbar() {
 
   if (
     pathname.includes("/dashboard") ||
-    pathname.includes("/chatai") ||
+    pathname.includes("/portfolio") ||
     pathname.includes("/profile")
   ) {
     return null;
