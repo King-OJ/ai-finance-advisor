@@ -1,13 +1,19 @@
 "use client";
 import React, { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardDescription,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import { z } from "zod";
 import { CustomFormInputField } from "./FormComponents";
-import { SignInFormType } from "@/utils/types";
+import { SignInFormType } from "@/utils/types/types";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
@@ -40,7 +46,6 @@ function LoginForm() {
       email: values.email,
       password: values.password,
     });
-    console.log(response);
 
     if (response?.error) {
       toast({
@@ -53,7 +58,7 @@ function LoginForm() {
 
     toast({
       title: "Login successful!",
-      className: "text-green-500 border-green-500",
+      className: "text-green-500",
     });
     form.reset();
     setTimeout(() => {
@@ -63,14 +68,15 @@ function LoginForm() {
   };
 
   return (
-    <Card className="w-80 sm:w-96 max-w-md mx-auto">
+    <Card className="w-80 sm:w-full max-w-lg mx-auto">
       <CardHeader>
         <CardTitle className="text-lg md:text-xl">Sign In</CardTitle>
+        <CardDescription>Welcome Back</CardDescription>
       </CardHeader>
 
       <CardContent>
         <Form {...form}>
-          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+          <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
             <CustomFormInputField
               name={"email"}
               control={form.control}
@@ -85,15 +91,14 @@ function LoginForm() {
               <Button
                 disabled={isSubmitting}
                 type="submit"
-                className="w-full mt-4 text-base"
+                className="w-full mt-4 text-base rounded-none h-10 md:h-12 font-semibold"
               >
-                Login
+                {isSubmitting ? "Logging in..." : "Login"}
               </Button>
 
               <Button
                 type="button"
-                variant="secondary"
-                className="w-full"
+                className="w-full h-10 md:h-12 rounded-none bg-white text-black font-semibold"
                 disabled={isSubmitting}
                 onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
               >
@@ -105,7 +110,7 @@ function LoginForm() {
 
         <p className="mt-4 text-center text-sm">
           Don't have an account?{" "}
-          <Button asChild variant={"outline"} size={"sm"}>
+          <Button asChild variant={"ghost"} size={"sm"}>
             <Link href="/signup">Sign Up</Link>
           </Button>
         </p>

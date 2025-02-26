@@ -3,28 +3,32 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import Navbar from "./_components/Navbar";
 import Footer from "./_components/Footer";
-import { AuthProvider } from "./_components/auth-provider";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/utils/auth";
+import { SessionProvider } from "./_components/SessionProvider";
 
 export const metadata: Metadata = {
   title: "Smart Fi",
-  description: "AI-Powered Personal Finance Dashboard & Advisor",
+  description: "Make smarter financial decisions with AI",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getServerSession(authOptions);
+
   return (
     <html lang="en">
       <body className={`font-generalSans antialiased`}>
-        <AuthProvider>
-          <main className="min-h-screen flex flex-col justify-between max-w-6xl mx-auto">
+        <SessionProvider session={session}>
+          <div className="min-h-screen flex flex-col justify-between max-w-6xl mx-auto">
             <Navbar />
-            <div className="flex-1 flex flex-col">{children}</div>
+            <main className="flex-1 flex flex-col">{children}</main>
             <Footer />
-          </main>
-        </AuthProvider>
+          </div>
+        </SessionProvider>
         <Toaster />
       </body>
     </html>

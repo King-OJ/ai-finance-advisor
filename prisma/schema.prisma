@@ -31,6 +31,14 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
@@ -39,37 +47,69 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Finance {
-  id          String   @id @default(cuid())
+model Transaction {
+  id          String    @id @default(cuid())
   type        String
   category    String
   amount      Float
   date        DateTime
   description String?
   userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
 }
 
-model Advisory {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  question  String
-  response  String   @db.Text
-  createdAt DateTime @default(now())
+model Asset {
+  id           String    @id @default(cuid())
+  portfolioId  String
+  portfolio    Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  name         String?
+  assetType    String    @default("stock")
+  costBasis    Float
+  currentPrice Float?
+  shares       Float
+  symbol       String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime? @updatedAt
+}
+
+model Portfolio {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  assets      Asset[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+}
+
+model Goal {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name          String
+  targetAmount  Float
+  currentAmount Float     @default(0)
+  deadline      DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime? @updatedAt
 }
 
 model User {
-  id            String     @id @default(cuid())
-  email         String     @unique
+  id            String        @id @default(cuid())
+  email         String        @unique
   name          String?
   password      String?
   image         String?
   emailVerified DateTime?
+  role          String        @default("user")
+  portfolios    Portfolio[]
+  goals         Goal[]
   accounts      Account[]
   sessions      Session[]
-  finances      Finance[]
-  advisories    Advisory[]
+  transactions  Transaction[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime?     @updatedAt
 }

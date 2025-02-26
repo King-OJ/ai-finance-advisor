@@ -15,7 +15,7 @@ function AppLogoAndTitle() {
         />
       </Link>
 
-      <div className="text-xl font-bold ">AI Finance Advisor</div>
+      <div className="text-xl font-bold ">Smart Fi</div>
     </div>
   );
 }

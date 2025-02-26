@@ -17,7 +17,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="text-center py-20">
+      <div className="text-center py-20">
         <h1 className="text-5xl font-bold mb-4">
           Your Personal AI-Powered Finance Advisor
         </h1>
@@ -33,7 +33,7 @@ export default function Home() {
             <Link href={"/login"}>Login</Link>
           </Button>
         </div>
-      </section>
+      </div>
 
       {/* Features Section */}
       <section className="py-20">

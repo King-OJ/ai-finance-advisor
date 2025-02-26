@@ -1,13 +1,19 @@
 "use client";
 import React, { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardDescription,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import { z } from "zod";
 import { CustomFormInputField } from "./FormComponents";
-import { SignUpFormType } from "@/utils/types";
+import { SignUpFormType } from "@/utils/types/types";
 import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
@@ -44,7 +50,7 @@ function SignUpForm() {
           toast({
             title: "Account created Successfully!",
             description: "Login to get started",
-            className: "bg-white text-green-500 border-green-500",
+            className: "text-green-500",
           });
           setTimeout(() => {
             router.push("/login");
@@ -52,9 +58,9 @@ function SignUpForm() {
         }
       })
       .catch((error) => {
+        console.log(error);
         toast({
           variant: "destructive",
-          className: "bg-white text-red-500",
           description: "Try again!",
           title: error.response.data.message,
         });
@@ -64,9 +70,10 @@ function SignUpForm() {
       });
   };
   return (
-    <Card className="w-80 sm:w-96 max-w-md mx-auto">
+    <Card className="w-full sm:w-full max-w-lg mx-auto">
       <CardHeader>
         <CardTitle className="text-lg md:text-xl">Sign Up</CardTitle>
+        <CardDescription>Start your financial journey today</CardDescription>
       </CardHeader>
 
       <CardContent>
@@ -91,9 +98,9 @@ function SignUpForm() {
               <Button
                 disabled={isSubmitting}
                 type="submit"
-                className="w-full mt-4 text-base"
+                className="w-full mt-4 text-base rounded-none h-10 md:h-12 font-semibold"
               >
-                {isSubmitting ? "Submitting" : "Submit"}
+                {isSubmitting ? "Signing Up..." : "Sign Up"}
               </Button>
             </div>
           </form>
@@ -101,7 +108,7 @@ function SignUpForm() {
 
         <p className="mt-4 text-center text-sm">
           Already have an account?{" "}
-          <Button asChild variant={"outline"} size={"sm"}>
+          <Button asChild variant={"ghost"} size={"sm"}>
             <Link href="/login">Login</Link>
           </Button>
         </p>

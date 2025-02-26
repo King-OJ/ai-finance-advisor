@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import AppLogoAndTitle from "./AppLogoAndTitle";
 import Link from "next/link";
@@ -20,15 +20,17 @@ function Navbar() {
   }
 
   return (
-    <nav className="flex justify-between items-center p-6 w-full">
+    <header className="flex justify-between items-center p-6 w-full">
       <AppLogoAndTitle />
 
       {isSignUpPage || isloginPage ? null : (
-        <Button>
-          <Link href={"/signup"}>Get Started</Link>
-        </Button>
+        <nav>
+          <Button>
+            <Link href={"/signup"}>Get Started</Link>
+          </Button>
+        </nav>
       )}
-    </nav>
+    </header>
   );
 }
 

@@ -56,11 +56,11 @@ function AppSidebar() {
               <li key={item.title}>
                 <Link
                   href={item.url}
-                  className={`flex items-center py-2 w-full ${
+                  className={`flex items-center py-3 w-full ${
                     pathname.includes(item.url)
                       ? "bg-primary font-semibold"
-                      : "font-medium"
-                  } px-4 rounded-lg text-base `}
+                      : "font-medium hover:bg-background/90"
+                  } px-4 rounded-lg text-base transition duration-150 `}
                 >
                   <item.icon size={20} />
                   <span className="ml-2">{item.title}</span>
