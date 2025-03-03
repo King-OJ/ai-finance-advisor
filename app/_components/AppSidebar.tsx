@@ -12,6 +12,16 @@ import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import AppLogoAndTitle from "./AppLogoAndTitle";
 import UserInfoAndLogoutBtn from "./UserInfoAndLogoutBtn";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroupContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
 
 function AppSidebar() {
   const { data: session, status } = useSession();
@@ -33,8 +43,8 @@ function AppSidebar() {
       icon: MessageSquareMore,
     },
     {
-      title: "Assets",
-      url: "/assets",
+      title: "Goals",
+      url: "/goals",
       icon: Package,
     },
     {
@@ -45,34 +55,36 @@ function AppSidebar() {
   ];
 
   return (
-    <aside className="w-full bg-muted h-full py-10 px-6 flex flex-col justify-between">
-      <div>
-        <div className="mb-20">
-          <AppLogoAndTitle />
-        </div>
-        <ul className="space-y-6">
-          {items.map((item) => {
-            return (
-              <li key={item.title}>
-                <Link
-                  href={item.url}
-                  className={`flex items-center py-3 w-full ${
-                    pathname.includes(item.url)
-                      ? "bg-primary font-semibold"
-                      : "font-medium hover:bg-background/90"
-                  } px-4 rounded-lg text-base transition duration-150 `}
+    <Sidebar>
+      <SidebarHeader>
+        <AppLogoAndTitle />
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarGroupContent>
+          <SidebarMenu>
+            {items.map((item) => (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton
+                  asChild
+                  size={"lg"}
+                  isActive={pathname.includes(item.url)}
+                  className="hover:bg-primary/60"
                 >
-                  <item.icon size={20} />
-                  <span className="ml-2">{item.title}</span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+                  <Link href={item.url}>
+                    <item.icon />
+                    <span>{item.title}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarContent>
 
-      <UserInfoAndLogoutBtn session={session} status={status} />
-    </aside>
+      <SidebarFooter>
+        <UserInfoAndLogoutBtn session={session} status={status} />
+      </SidebarFooter>
+    </Sidebar>
   );
 }
 

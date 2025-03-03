@@ -62,7 +62,7 @@
     --primary: 244 77% 63%;
     --primary-foreground: 0 0% 98%;
     --secondary: 196 61% 50%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary-foreground: 0 0% 65%;
     --muted: 240 38% 18%;
     --muted-foreground: 0 0% 65%;
     --accent: 240 4.8% 95.9%;
@@ -82,8 +82,8 @@
     --sidebar-foreground: 0 0% 100%;
     --sidebar-primary: 244 77% 63%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-accent: 244 77% 63%;
+    --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
@@ -131,8 +131,6 @@
     @apply bg-background text-foreground font-regular;
   }
 }
-
-
 
 @layer base {
   * {

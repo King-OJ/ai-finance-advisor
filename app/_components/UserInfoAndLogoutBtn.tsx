@@ -22,7 +22,7 @@ function UserInfoAndLogoutBtn({ status, session }: UserInfoAndLogoutBtnProps) {
     <div className="relative">
       <button
         onClick={() => setOpenModal(!openModal)}
-        className="flex items-center w-full justify-between transition duration-150 hover:bg-background/90 py-2 px-4 rounded-lg"
+        className="flex items-center w-full justify-between transition duration-150 hover:bg-background/90 p-2 rounded-lg"
       >
         <div className="flex items-center space-x-3">
           {session?.user && (

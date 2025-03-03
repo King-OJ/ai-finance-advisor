@@ -17,7 +17,7 @@ function PortfolioList() {
   const [isAddAssetOpen, setIsAddAssetOpen] = useState(false);
 
   return (
-    <div className="space-y-4">
+    <div className="space-x-4">
       <Dialog open={isAddPortfolioOpen} onOpenChange={setIsAddPortfolioOpen}>
         <DialogTrigger asChild>
           <Button className="font-bold">Create Portfolio</Button>

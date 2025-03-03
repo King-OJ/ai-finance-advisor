@@ -49,7 +49,7 @@ export const authOptions: NextAuthOptions = {
           const isPasswordMatch = await compare(password, user.password!);
 
           if (!isPasswordMatch) {
-            throw new CustomError(401, "Incorrect login credentials!");
+            throw new CustomError(401, "Incorrect email or password!");
           }
 
           return {

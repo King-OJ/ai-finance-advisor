@@ -56,8 +56,10 @@ export default function FinancialSummary({}) {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">Financial Summary</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <p className="text-secondary-foreground my-4">
+        Here&apos;s the financial summary of your account!
+      </p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {cards.map((card, index) => {
           const Icon = card.icon;
 

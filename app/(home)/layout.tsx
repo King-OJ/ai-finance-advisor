@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import AppSidebar from "../_components/AppSidebar";
 import { authOptions } from "@/utils/auth";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import HomeHeader from "../_components/HomeHeader";
 
 async function layout({ children }: { children: ReactNode }) {
   const session = await getServerSession(authOptions);
@@ -12,12 +14,15 @@ async function layout({ children }: { children: ReactNode }) {
   }
   return (
     <div className="flex-1 flex flex-col">
-      <div className="grid grid-cols-3 flex-1 ">
-        <div className="col-span-1 min-h-full">
-          <AppSidebar />
+      <SidebarProvider>
+        <AppSidebar />
+
+        <div className="flex-1 px-6 py-10 space-y-6">
+          <HomeHeader />
+
+          {children}
         </div>
-        <div className="col-span-2 min-h-full px-6 py-8">{children}</div>
-      </div>
+      </SidebarProvider>
     </div>
   );
 }
