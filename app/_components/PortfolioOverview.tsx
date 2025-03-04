@@ -74,8 +74,7 @@ export default function PortfolioOverview({}) {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Portfolio Overview</h2>
+      <div className="flex justify-end mb-4">
         <div className="flex space-x-1 bg-gray-100 rounded-md p-1">
           {timeRangeOptions.map((option) => (
             <button

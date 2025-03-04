@@ -1,10 +1,19 @@
-// components/dashboard/RecentTransactions.jsx
+"use client";
+import React, { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Transaction from "./Transaction";
-import Link from "next/link";
+import PortfolioForm from "./PortfolioForm";
 
-export default function RecentTransactions({}) {
-  // Fallback data for development/preview
+function AllTransactions() {
+  const [isAddPortfolioOpen, setIsAddPortfolioOpen] = useState(false);
   const transactionsData = [
     {
       id: 1,
@@ -47,14 +56,24 @@ export default function RecentTransactions({}) {
       merchant: "Netflix",
     },
   ];
-
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Recent Transactions</h2>
-        <Button variant="outline" size="sm">
-          <Link href={"/transactions"}>View All</Link>
-        </Button>
+        <h2 className="text-xl font-semibold">All Transactions</h2>
+        <Dialog open={isAddPortfolioOpen} onOpenChange={setIsAddPortfolioOpen}>
+          <DialogTrigger asChild>
+            <Button className="font-bold">Add Transaction</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create New Goal</DialogTitle>
+              <DialogDescription>
+                Enter a new portfolio name here. Click create when you are done.
+              </DialogDescription>
+            </DialogHeader>
+            <PortfolioForm onSuccess={() => setIsAddPortfolioOpen(false)} />
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="space-y-4">
@@ -65,3 +84,5 @@ export default function RecentTransactions({}) {
     </div>
   );
 }
+
+export default AllTransactions;

@@ -1,15 +1,13 @@
-import PortfolioList from "@/app/_components/PortfolioList";
-import PortfolioOverview from "@/app/_components/PortfolioOverview";
+import PageHeader from "@/app/_components/PageHeader";
+import { LineChart } from "lucide-react";
 import React from "react";
+import PortfolioPageContent from "@/app/_components/PortfolioPageContent";
 
 function PortfolioPage() {
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-semibold mb-4 text-center">
-        Your Portfolios
-      </h2>
-      <PortfolioList />
-      <PortfolioOverview />
+    <div className="space-y-8">
+      <PageHeader title="Portfolio Overview" Icon={LineChart} />
+      <PortfolioPageContent />
     </div>
   );
 }

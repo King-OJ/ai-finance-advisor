@@ -1,8 +1,20 @@
-// components/dashboard/GoalsProgress.jsx
+"use client";
 import { Target, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import PortfolioForm from "./PortfolioForm";
+import { useState } from "react";
 
 export default function GoalsProgress({}) {
+  const [isAddPortfolioOpen, setIsAddPortfolioOpen] = useState(false);
+
   // Fallback data for development/preview
   const goalsData = [
     {
@@ -48,9 +60,20 @@ export default function GoalsProgress({}) {
     <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Financial Goals</h2>
-        <Button variant="outline" size="sm">
-          Add Goal
-        </Button>
+        <Dialog open={isAddPortfolioOpen} onOpenChange={setIsAddPortfolioOpen}>
+          <DialogTrigger asChild>
+            <Button className="font-bold">Create Goal</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create New Goal</DialogTitle>
+              <DialogDescription>
+                Enter a new portfolio name here. Click create when you are done.
+              </DialogDescription>
+            </DialogHeader>
+            <PortfolioForm onSuccess={() => setIsAddPortfolioOpen(false)} />
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="space-y-4">

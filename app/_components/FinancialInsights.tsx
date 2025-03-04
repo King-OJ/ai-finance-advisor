@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 
 // components/dashboard/FinancialInsights.jsx
@@ -49,41 +50,34 @@ export default function FinancialInsights({}) {
   const getInsightColor = (type: string) => {
     switch (type) {
       case "positive":
-        return "border-green-100 bg-green-50";
+        return "border-green-100 bg-green-100";
       case "alert":
-        return "border-red-100 bg-red-50";
+        return "border-red-100 bg-red-100";
       case "opportunity":
       default:
-        return "border-yellow-100 bg-yellow-50";
+        return "border-yellow-100 bg-yellow-100";
     }
   };
 
   return (
-    <div>
-      <div className="flex items-center mb-4">
-        <Lightbulb size={20} className="mr-2 text-blue-600" />
-        <h2 className="text-xl font-semibold">AI Financial Insights</h2>
-      </div>
-
-      <div className="space-y-4">
-        {insightsData.map((insight) => (
-          <div
-            key={insight.id}
-            className={`p-4 border rounded-lg ${getInsightColor(insight.type)}`}
-          >
-            <div className="flex items-start">
-              <div className="mt-1 mr-3">{getInsightIcon(insight.type)}</div>
-              <div>
-                <h3 className="font-medium mb-1">{insight.title}</h3>
-                <p className="text-sm text-gray-700 mb-2">
-                  {insight.description}
-                </p>
-                <p className="text-sm font-medium">{insight.actionable}</p>
-              </div>
+    <div className="space-y-4 text-black">
+      {insightsData.map((insight) => (
+        <div
+          key={insight.id}
+          className={`p-4 border rounded-lg ${getInsightColor(insight.type)}`}
+        >
+          <div className="flex items-start">
+            <div className="mt-1 mr-3">{getInsightIcon(insight.type)}</div>
+            <div>
+              <h3 className="font-medium mb-1">{insight.title}</h3>
+              <p className="text-sm text-gray-700 mb-2">
+                {insight.description}
+              </p>
+              <p className="text-sm font-medium">{insight.actionable}</p>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 }

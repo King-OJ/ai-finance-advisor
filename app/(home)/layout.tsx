@@ -17,7 +17,7 @@ async function layout({ children }: { children: ReactNode }) {
       <SidebarProvider>
         <AppSidebar />
 
-        <div className="flex-1 px-6 py-10 space-y-6">
+        <div className="flex-1 px-6 py-10 space-y-10">
           <HomeHeader />
 
           {children}

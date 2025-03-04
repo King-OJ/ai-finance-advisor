@@ -3,9 +3,12 @@ import React from "react";
 import {
   Briefcase,
   LayoutGrid,
-  User,
-  MessageSquareMore,
   Package,
+  Lightbulb,
+  List,
+  Trophy,
+  BarChart3,
+  LineChart,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -35,22 +38,22 @@ function AppSidebar() {
     {
       title: "Portfolio",
       url: "/portfolio",
-      icon: Briefcase,
+      icon: LineChart,
     },
     {
       title: "AI Advisor",
       url: "/ai_advisor",
-      icon: MessageSquareMore,
+      icon: Lightbulb,
     },
     {
       title: "Goals",
       url: "/goals",
-      icon: Package,
+      icon: Trophy,
     },
     {
-      title: "Profile",
-      url: "/profile",
-      icon: User,
+      title: "Transactions",
+      url: "/transactions",
+      icon: List,
     },
   ];
 

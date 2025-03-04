@@ -14,7 +14,7 @@ function Navbar() {
   if (
     pathname.includes("/dashboard") ||
     pathname.includes("/portfolio") ||
-    pathname.includes("/profile") ||
+    pathname.includes("/transactions") ||
     pathname.includes("/goals") ||
     pathname.includes("/ai_advisor")
   ) {

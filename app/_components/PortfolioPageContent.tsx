@@ -11,13 +11,14 @@ import {
 import React, { useState } from "react";
 import PortfolioForm from "./PortfolioForm";
 import AssetForm from "./AssetForm";
+import PortfolioOverview from "./PortfolioOverview";
 
-function PortfolioList() {
+function PortfolioPageContent() {
   const [isAddPortfolioOpen, setIsAddPortfolioOpen] = useState(false);
   const [isAddAssetOpen, setIsAddAssetOpen] = useState(false);
 
   return (
-    <div className="space-x-4">
+    <div className="space-y-6">
       <Dialog open={isAddPortfolioOpen} onOpenChange={setIsAddPortfolioOpen}>
         <DialogTrigger asChild>
           <Button className="font-bold">Create Portfolio</Button>
@@ -33,7 +34,7 @@ function PortfolioList() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={isAddAssetOpen} onOpenChange={setIsAddAssetOpen}>
+      {/* <Dialog open={isAddAssetOpen} onOpenChange={setIsAddAssetOpen}>
         <DialogTrigger asChild>
           <Button className="font-bold">Add Asset</Button>
         </DialogTrigger>
@@ -49,9 +50,11 @@ function PortfolioList() {
             portfolioId="123"
           />
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
+
+      <PortfolioOverview />
     </div>
   );
 }
 
-export default PortfolioList;
+export default PortfolioPageContent;
