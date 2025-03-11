@@ -7,43 +7,11 @@ import { useForm } from "react-hook-form";
 import { CustomFormInputField, CustomSelectField } from "./FormComponents";
 import { Button } from "@/components/ui/button";
 import { AddTransactionType } from "@/utils/types/types";
-
-enum TransactionType {
-  Incoming = "Incoming",
-  Outgoing = "Outgoing",
-}
-
-enum TransactionCategory {
-  Groceries = "Groceries",
-  Salary = "Salary",
-  Utilities = "Utilities",
-  Miscelleneous = "Miscelleneous",
-  Entertainment = "Entertainment",
-  Rent = "Rent",
-  Transport = "Transport",
-  Savings = "Savings",
-  Profit = "Profit",
-}
-
-const addTransactionFormSchema = z.object({
-  merchant: z.string().min(1, "Merchant name is required"),
-  type: z.nativeEnum(TransactionType, {
-    errorMap: () => ({ message: "Please select a valid type" }),
-  }),
-  category: z.nativeEnum(TransactionCategory, {
-    errorMap: () => ({ message: "Please select a valid category" }),
-  }),
-  amount: z
-    .number({
-      required_error: "Enter amount for the transaction",
-      invalid_type_error: "Amount must be a number",
-    })
-    .min(1, "Please enter amount for the transaction"),
-  description: z
-    .string()
-    .min(3, "Enter a valid description for the transaction")
-    .optional(),
-});
+import {
+  addTransactionFormSchema,
+  TransactionCategory,
+  TransactionType,
+} from "@/utils/formSchemas/schema";
 
 interface AddTransactionFormProps {
   onSuccess: () => void;
@@ -56,13 +24,12 @@ function AddTransactionForm({ onSuccess }: AddTransactionFormProps) {
     resolver: zodResolver(addTransactionFormSchema),
     defaultValues: {
       merchant: "",
-      amount: 0,
     },
   });
 
   const onSubmit = async (values: AddTransactionType) => {
     console.log(values);
-    // onSuccess?.();
+    onSuccess?.();
   };
   return (
     <Form {...form}>

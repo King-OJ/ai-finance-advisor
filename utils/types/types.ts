@@ -17,3 +17,10 @@ export type AddTransactionType = {
   description?: string;
   userId?: string;
 };
+
+export type CreateGoalType = {
+  name: string;
+  targetAmount: number;
+  currentAmount: number;
+  deadline: Date;
+};

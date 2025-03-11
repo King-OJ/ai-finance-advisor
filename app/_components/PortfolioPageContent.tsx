@@ -14,12 +14,11 @@ import AssetForm from "./AssetForm";
 import PortfolioOverview from "./PortfolioOverview";
 
 function PortfolioPageContent() {
-  const [isAddPortfolioOpen, setIsAddPortfolioOpen] = useState(false);
-  const [isAddAssetOpen, setIsAddAssetOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div className="space-y-6">
-      <Dialog open={isAddPortfolioOpen} onOpenChange={setIsAddPortfolioOpen}>
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogTrigger asChild>
           <Button className="font-bold">Create Portfolio</Button>
         </DialogTrigger>
@@ -30,7 +29,7 @@ function PortfolioPageContent() {
               Enter a new portfolio name here. Click create when you are done.
             </DialogDescription>
           </DialogHeader>
-          <PortfolioForm onSuccess={() => setIsAddPortfolioOpen(false)} />
+          <PortfolioForm onSuccess={() => setIsModalOpen(false)} />
         </DialogContent>
       </Dialog>
 

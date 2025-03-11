@@ -1,15 +1,6 @@
 "use client";
 import React from "react";
-import {
-  Briefcase,
-  LayoutGrid,
-  Package,
-  Lightbulb,
-  List,
-  Trophy,
-  BarChart3,
-  LineChart,
-} from "lucide-react";
+import { LayoutGrid, Lightbulb, List, Trophy, LineChart } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -28,6 +19,7 @@ import {
 
 function AppSidebar() {
   const { data: session, status } = useSession();
+
   const pathname = usePathname();
   const items = [
     {

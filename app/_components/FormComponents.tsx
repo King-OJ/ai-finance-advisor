@@ -16,9 +16,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import DatePicker from "./DatePicker";
 
 type CustomFormInputFieldProps = {
   name: string;
+  label?: string;
   placeholder?: string;
   type?: string;
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -29,6 +31,7 @@ export function CustomFormInputField({
   control,
   name,
   type,
+  label,
   placeholder,
 }: CustomFormInputFieldProps) {
   return (
@@ -37,15 +40,24 @@ export function CustomFormInputField({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className="capitalize">{name}</FormLabel>
+          <FormLabel className="capitalize">{label || name}</FormLabel>
           <FormControl>
             <Input
               placeholder={placeholder}
               type={type}
               {...field}
+              value={
+                type == "number"
+                  ? field.value === undefined || field.value === null
+                    ? ""
+                    : field.value
+                  : field.value || ""
+              }
               onChange={(e) =>
                 type == "number"
-                  ? field.onChange(Number(e.target.value))
+                  ? field.onChange(
+                      e.target.value && parseInt(e.target.value, 10)
+                    )
                   : field.onChange(e.target.value)
               }
             />
@@ -93,6 +105,37 @@ export function CustomSelectField({
             </SelectContent>
           </Select>
           <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+}
+
+type CustomDatePickerFieldProps = {
+  name: string;
+  label?: string;
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+  control?: Control<any>;
+};
+
+export function CustomDatePickerField({
+  control,
+  name,
+  label,
+}: CustomDatePickerFieldProps) {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className="flex space-y-0 space-x-2">
+          <FormLabel className="capitalize pt-3">{label || name}</FormLabel>
+          <div className="space-y-1">
+            <FormControl>
+              <DatePicker value={field.value} onChange={field.onChange} />
+            </FormControl>
+            <FormMessage />
+          </div>
         </FormItem>
       )}
     />

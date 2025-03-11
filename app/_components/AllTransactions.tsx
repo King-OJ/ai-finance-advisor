@@ -13,7 +13,7 @@ import Transaction from "./Transaction";
 import AddTransactionForm from "./AddTransactionForm";
 
 function AllTransactions() {
-  const [isAddPortfolioOpen, setIsAddPortfolioOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const transactionsData = [
     {
       id: 1,
@@ -60,7 +60,7 @@ function AllTransactions() {
     <div className="bg-muted rounded-lg px-3 py-6">
       <div className="flex justify-between items-center mb-8 px-3">
         <h2 className="text-xl font-semibold">All Transactions</h2>
-        <Dialog open={isAddPortfolioOpen} onOpenChange={setIsAddPortfolioOpen}>
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <DialogTrigger asChild>
             <Button className="font-bold">Add Transaction</Button>
           </DialogTrigger>
@@ -71,9 +71,7 @@ function AllTransactions() {
                 Enter a new portfolio name here. Click create when you are done.
               </DialogDescription>
             </DialogHeader>
-            <AddTransactionForm
-              onSuccess={() => setIsAddPortfolioOpen(false)}
-            />
+            <AddTransactionForm onSuccess={() => setIsModalOpen(false)} />
           </DialogContent>
         </Dialog>
       </div>
