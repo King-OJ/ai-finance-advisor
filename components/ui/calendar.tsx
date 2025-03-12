@@ -83,6 +83,7 @@ function Calendar({
                 "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 absolute right-1"
               )}
               onClick={onNextClick}
+              disabled={!nextMonth}
             >
               <ChevronRight className="h-4 w-4" />
             </button>

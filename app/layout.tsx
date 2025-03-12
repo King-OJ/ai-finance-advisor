@@ -5,7 +5,7 @@ import Navbar from "./_components/Navbar";
 import Footer from "./_components/Footer";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/auth";
-import { SessionProvider } from "./_components/SessionProvider";
+import { Provider } from "./providers";
 
 export const metadata: Metadata = {
   title: "Smart Fi",
@@ -18,17 +18,18 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await getServerSession(authOptions);
+  console.log(session);
 
   return (
     <html lang="en">
       <body className={`font-generalSans antialiased`}>
-        <SessionProvider session={session}>
+        <Provider session={session}>
           <div className="min-h-screen flex flex-col justify-between max-w-6xl mx-auto">
             <Navbar />
             <main className="flex-1 flex flex-col">{children}</main>
             <Footer />
           </div>
-        </SessionProvider>
+        </Provider>
         <Toaster />
       </body>
     </html>
