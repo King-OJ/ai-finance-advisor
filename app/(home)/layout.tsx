@@ -12,6 +12,7 @@ async function layout({ children }: { children: ReactNode }) {
   if (!session) {
     redirect("/login");
   }
+
   return (
     <div className="flex-1 flex flex-col">
       <SidebarProvider>

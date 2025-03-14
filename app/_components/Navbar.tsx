@@ -28,7 +28,7 @@ function Navbar() {
       {isSignUpPage || isloginPage ? null : (
         <nav>
           <Button>
-            <Link href={"/signup"}>Get Started</Link>
+            <Link href={"/dashboard"}>Get Started</Link>
           </Button>
         </nav>
       )}

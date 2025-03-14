@@ -1,27 +1,43 @@
 "use client";
 
-import { Session } from "next-auth";
-import { SessionProvider } from "next-auth/react";
+import { SessionProvider, signOut, useSession } from "next-auth/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useEffect } from "react";
-
-type ProviderProps = {
-  children: React.ReactNode;
-  session: Session | null;
-};
+import { ReactNode, useEffect } from "react";
 
 const queryClient = new QueryClient();
 
-export function Provider({ children, session }: ProviderProps) {
+function SessionChecker({ children }: { children: ReactNode }) {
+  const { data: session, status } = useSession();
   useEffect(() => {
-    // return () => {
-    //   second
-    // }
-  }, []);
+    if (status == "authenticated" && session?.expires) {
+      const expiresAt = new Date(session.expires).getTime();
+      const now = Date.now();
 
+      if (now >= expiresAt) {
+        signOut({ callbackUrl: "/login" });
+      }
+
+      //check every minute
+
+      const interval = setInterval(() => {
+        if (Date.now() >= expiresAt) {
+          signOut({ callbackUrl: "/login" });
+        }
+      }, 60 * 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [session, status]);
+
+  return <>{children}</>;
+}
+
+export function Provider({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <SessionProvider session={session}>{children}</SessionProvider>
+      <SessionProvider>
+        <SessionChecker>{children}</SessionChecker>
+      </SessionProvider>
     </QueryClientProvider>
   );
 }

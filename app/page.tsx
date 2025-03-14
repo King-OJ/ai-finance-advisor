@@ -27,10 +27,10 @@ export default function Home() {
         </p>
         <div className="flex justify-center gap-4">
           <Button className="" asChild>
-            <Link href={"/signup"}>Get Finanacial Advice</Link>
+            <Link href={"/dashboard"}>Get Financial Advice</Link>
           </Button>
           <Button variant="outline" asChild>
-            <Link href={"/login"}>Login</Link>
+            <Link href={"/signup"}>Sign Up</Link>
           </Button>
         </div>
       </div>

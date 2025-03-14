@@ -54,7 +54,7 @@ function SignUpForm() {
           });
           setTimeout(() => {
             router.push("/login");
-          }, 500);
+          }, 200);
         }
       })
       .catch((error) => {

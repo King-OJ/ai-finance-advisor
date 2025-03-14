@@ -64,7 +64,7 @@ function LoginForm() {
     setTimeout(() => {
       router.push("/dashboard");
       router.refresh();
-    }, 500);
+    }, 200);
   };
 
   return (
