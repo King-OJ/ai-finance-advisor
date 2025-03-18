@@ -1,17 +1,7 @@
-import FinancialInsights from "@/app/_components/FinancialInsights";
-import FinancialSummary from "@/app/_components/FinancialSummary";
-import PortfolioOverview from "@/app/_components/PortfolioOverview";
-import RecentTransactions from "@/app/_components/RecentTransactions";
-import React from "react";
+import DashBoardContent from "@/app/_components/DashBoardContent";
 
 async function page() {
-  return (
-    <div className="grid grid-cols-1 gap-6">
-      <FinancialSummary />
-      <PortfolioOverview />
-      <RecentTransactions />
-    </div>
-  );
+  return <DashBoardContent />;
 }
 
 export default page;

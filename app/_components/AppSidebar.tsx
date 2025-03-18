@@ -16,6 +16,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import DemoModeToggle from "./DemoModeToggle";
 
 function AppSidebar() {
   const { data: session, status } = useSession();
@@ -66,12 +67,13 @@ function AppSidebar() {
                   className="hover:bg-primary/60"
                 >
                   <Link href={item.url}>
-                    <item.icon />
+                    <item.icon className="text-primary" />
                     <span>{item.title}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
+            <DemoModeToggle onToggle={() => {}} />
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarContent>

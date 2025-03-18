@@ -5,6 +5,7 @@ import AppSidebar from "../_components/AppSidebar";
 import { authOptions } from "@/utils/auth";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import HomeHeader from "../_components/HomeHeader";
+import HomeWrapper from "../_components/HomeWrapper";
 
 async function layout({ children }: { children: ReactNode }) {
   const session = await getServerSession(authOptions);
@@ -14,17 +15,19 @@ async function layout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="flex-1 flex flex-col">
-      <SidebarProvider>
-        <AppSidebar />
+    <HomeWrapper>
+      <div className="flex-1 flex flex-col">
+        <SidebarProvider>
+          <AppSidebar />
 
-        <div className="flex-1 px-6 py-10 space-y-10">
-          <HomeHeader />
+          <div className="flex-1 px-6 py-10 space-y-10">
+            <HomeHeader />
 
-          {children}
-        </div>
-      </SidebarProvider>
-    </div>
+            {children}
+          </div>
+        </SidebarProvider>
+      </div>
+    </HomeWrapper>
   );
 }
 

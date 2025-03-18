@@ -30,7 +30,7 @@ export default function HomeHeader() {
     <header className="flex items-center justify-between">
       <div className="flex items-center space-x-2">
         <SidebarTrigger className="h-10 w-10" />
-        <h2 className="font-bold text-2xl ">Welcome Back, OJ &#128075;</h2>
+        <h2 className="font-bold text-2xl ">Welcome OJ &#128075;</h2>
       </div>
 
       <div className="flex items-center space-x-2">

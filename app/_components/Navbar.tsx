@@ -16,6 +16,7 @@ function Navbar() {
     pathname.includes("/portfolio") ||
     pathname.includes("/transactions") ||
     pathname.includes("/goals") ||
+    pathname.includes("/onboarding") ||
     pathname.includes("/ai_advisor")
   ) {
     return null;
