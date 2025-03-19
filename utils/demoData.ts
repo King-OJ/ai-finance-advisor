@@ -19,11 +19,19 @@ export const demoData = {
   },
   transactions: [
     {
+      id: "tr-0",
+      type: "expense",
+      category: "Utilities",
+      amount: 16.2,
+      date: new Date("2025-02-25"),
+      merchant: "DSTV",
+    },
+    {
       id: "tr-1",
       type: "expense",
       category: "Groceries",
       amount: 89.45,
-      date: "2025-02-25",
+      date: new Date("2025-02-25"),
       merchant: "Whole Foods",
     },
     {
@@ -31,7 +39,7 @@ export const demoData = {
       type: "expense",
       category: "Dining",
       amount: 42.8,
-      date: "2025-02-24",
+      date: new Date("2025-02-24"),
       merchant: "Chipotle",
     },
     {
@@ -39,7 +47,7 @@ export const demoData = {
       type: "income",
       category: "Salary",
       amount: 2450.0,
-      date: "2025-02-20",
+      date: new Date("2025-02-20"),
       merchant: "Employer Inc.",
     },
     {
@@ -47,7 +55,7 @@ export const demoData = {
       type: "expense",
       category: "Transportation",
       amount: 35.0,
-      date: "2025-02-19",
+      date: new Date("2025-02-19"),
       merchant: "Uber",
     },
     {
@@ -55,7 +63,7 @@ export const demoData = {
       type: "expense",
       category: "Entertainment",
       amount: 15.99,
-      date: "2025-02-18",
+      date: new Date("2025-02-18"),
       merchant: "Netflix",
     },
     {
@@ -63,7 +71,7 @@ export const demoData = {
       type: "expense",
       category: "Utilities",
       amount: 85.75,
-      date: "2025-02-15",
+      date: new Date("2025-02-15"),
       merchant: "Electric Company",
     },
     {
@@ -71,7 +79,7 @@ export const demoData = {
       type: "expense",
       category: "Housing",
       amount: 1500.0,
-      date: "2025-02-01",
+      date: new Date("2025-02-01"),
       merchant: "Rent",
     },
     {
@@ -79,7 +87,7 @@ export const demoData = {
       type: "income",
       category: "Dividends",
       amount: 120.5,
-      date: "2025-02-10",
+      date: new Date("2025-02-10"),
       merchant: "Investment Inc.",
     },
     {
@@ -87,7 +95,7 @@ export const demoData = {
       type: "expense",
       category: "Shopping",
       amount: 67.99,
-      date: "2025-02-12",
+      date: new Date("2025-02-12"),
       merchant: "Amazon",
     },
     {
@@ -95,7 +103,7 @@ export const demoData = {
       type: "expense",
       category: "Health",
       amount: 25.0,
-      date: "2025-02-05",
+      date: new Date("2025-02-05"),
       merchant: "Pharmacy",
     },
   ],
@@ -126,6 +134,15 @@ export const demoData = {
       deadline: "2025-08-01",
       category: "Purchase",
       monthlyContribution: 200,
+    },
+    {
+      id: "goal-4",
+      name: "School Fees",
+      target: 5000,
+      current: 3200,
+      deadline: "2025-04-15",
+      category: "Purchase",
+      monthlyContribution: 500,
     },
   ],
   portfolio: {
@@ -260,4 +277,86 @@ export const demoData = {
     { month: "Jan", amount: 3700 },
     { month: "Feb", amount: 3890 },
   ],
+};
+
+export type SummaryDataType = {
+  totalBalance: number;
+  income: number;
+  expenses: number;
+  savingsRate: number;
+};
+
+export type TransactionType = {
+  id: string;
+  type: string;
+  category: string;
+  amount: number;
+  date: Date;
+  merchant: string;
+};
+
+export type GoalType = {
+  id: string;
+  name: string;
+  target: number;
+  current: number;
+  deadline: Date;
+  category: string;
+  monthlyContribution: number;
+};
+
+export type CategoryType = {
+  id: string;
+  name: string;
+  color: string;
+  budget: number;
+};
+
+export type MonthlySpendingType = { month: string; amount: number };
+
+export type DemoDataType = {
+  summary: SummaryDataType;
+  transactions: TransactionType[];
+  goals: GoalType[];
+  portfolio: PortfolioType;
+  insights: InsightType[];
+  categories: CategoryType[];
+  monthlySpending: MonthlySpendingType[];
+};
+
+export type AllocationType = {
+  name: string;
+  value: number;
+};
+
+export type AssetType = {
+  id: string;
+  name: string;
+  type: string;
+  value: number;
+  growth: number;
+};
+
+export type PerformanceEntry = {
+  date: string;
+  value: number;
+};
+
+export type PerformanceType = {
+  [timeRange: string]: PerformanceEntry[];
+};
+
+export type PortfolioType = {
+  totalValue: number;
+  assets: AssetType[];
+  allocation: AllocationType[];
+  performance: PerformanceType;
+};
+
+export type InsightType = {
+  id: string;
+  type: string;
+  title: string;
+  description: string;
+  actionable: string;
 };

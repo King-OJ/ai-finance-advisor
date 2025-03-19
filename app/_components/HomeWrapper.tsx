@@ -14,11 +14,12 @@ import React, {
   useState,
 } from "react";
 import Onboarding from "./onBoarding";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 interface AppContextType {
   isDemoMode: boolean;
-  toggleDemoMode: () => void;
+  toggleDemoMode: (value?: boolean) => void;
   openDemoModal: () => void;
 }
 const AppStatesContext = createContext<AppContextType | undefined>(undefined);
@@ -36,10 +37,11 @@ function HomeWrapper({ children }: PropsWithChildren) {
     setCurrentStep(2);
   };
 
-  const toggleDemoMode = () => {
+  const toggleDemoMode = (value?: boolean) => {
     const newDemoMode = !isDemoMode;
-    setIsDemoMode(newDemoMode);
-    localStorage.setItem("demoMode", newDemoMode.toString());
+    setIsDemoMode(value || newDemoMode);
+    Cookies.set("demoMode", newDemoMode.toString());
+    router.refresh();
   };
 
   const handleNext = () => {
@@ -59,22 +61,23 @@ function HomeWrapper({ children }: PropsWithChildren) {
   };
 
   const handleSkip = () => {
-    localStorage.setItem("onboardingCompleted", "true");
+    Cookies.set("onboardingCompleted", "true", { expires: Infinity });
     closeModal();
   };
 
   const handleEnableDemo = () => {
-    localStorage.setItem("demoMode", "true");
-    localStorage.setItem("onboardingCompleted", "true");
+    Cookies.set("demoMode", "true", { expires: Infinity });
+    Cookies.set("onboardingCompleted", "true", { expires: Infinity });
+    setIsDemoMode(true);
     closeModal();
+    router.refresh();
   };
 
   useEffect(() => {
-    const onboardingCompleted =
-      localStorage.getItem("onboardingCompleted") !== "true";
-    const isDemoMode = localStorage.getItem("demoMode") === "true";
+    const onboardingCompleted = Cookies.get("onboardingCompleted") == "true";
+    const isDemoMode = Cookies.get("demoMode") === "true";
     setIsDemoMode(isDemoMode);
-    setIsOpen(onboardingCompleted);
+    setIsOpen(!onboardingCompleted);
   }, []);
 
   return (

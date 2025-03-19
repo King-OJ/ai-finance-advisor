@@ -1,24 +1,9 @@
 import React from "react";
 import { ArrowUpRight, ArrowDownRight, CreditCard } from "lucide-react";
-interface TransactionProps {
-  id: number;
-  type: string;
-  category: string;
-  amount: number;
-  date: string;
-  merchant: string;
-}
+import { TransactionType } from "@/utils/demoData";
+import { formatDate } from "@/utils/clientActions";
 
-function Transaction({ transaction }: { transaction: TransactionProps }) {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
-
+function Transaction({ transaction }: { transaction: TransactionType }) {
   return (
     <div className="grid text-sm hover:cursor-pointer gap-4 grid-flow-col grid-cols-5 p-3 hover:bg-background/90 rounded-lg">
       <div className="flex items-center space-x-2 col-span-2">

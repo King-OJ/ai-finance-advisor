@@ -1,4 +1,5 @@
 "use client";
+import { PortfolioType } from "@/utils/demoData";
 import { useState } from "react";
 import {
   LineChart,
@@ -7,60 +8,22 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
   PieChart,
   Pie,
   Cell,
 } from "recharts";
 
-export default function PortfolioOverview({}) {
+export default function PortfolioOverview({ data }: { data: PortfolioType }) {
   const [timeRange, setTimeRange] = useState("1M");
+
+  const { totalValue, performance, assets, allocation } = data;
 
   // Fallback data for development/preview
   const portfolioData: any = {
-    totalValue: 312590.45,
-    performance: {
-      "1W": [
-        { date: "02/19", value: 305000 },
-        { date: "02/20", value: 307000 },
-        { date: "02/21", value: 304500 },
-        { date: "02/22", value: 309000 },
-        { date: "02/23", value: 310000 },
-        { date: "02/24", value: 311500 },
-        { date: "02/25", value: 312590.45 },
-      ],
-      "1M": [
-        { date: "01/26", value: 298000 },
-        { date: "01/31", value: 301000 },
-        { date: "02/05", value: 303500 },
-        { date: "02/10", value: 305000 },
-        { date: "02/15", value: 308000 },
-        { date: "02/20", value: 307000 },
-        { date: "02/25", value: 312590.45 },
-      ],
-      "3M": [
-        { date: "Nov", value: 280000 },
-        { date: "Dec", value: 289000 },
-        { date: "Jan", value: 295000 },
-        { date: "Feb", value: 312590.45 },
-      ],
-      "1Y": [
-        { date: "Mar", value: 250000 },
-        { date: "May", value: 260000 },
-        { date: "Jul", value: 275000 },
-        { date: "Sep", value: 280000 },
-        { date: "Nov", value: 290000 },
-        { date: "Jan", value: 300000 },
-        { date: "Feb", value: 312590.45 },
-      ],
-    },
-    allocation: [
-      { name: "Stocks", value: 65 },
-      { name: "Bonds", value: 20 },
-      { name: "Real Estate", value: 10 },
-      { name: "Cash", value: 5 },
-    ],
+    totalValue,
+    performance,
+    allocation,
   };
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
@@ -119,7 +82,9 @@ export default function PortfolioOverview({}) {
         </div>
 
         <div className="bg-white rounded-lg shadow p-4 h-80">
-          <h3 className="text-lg font-medium mb-2">Asset Allocation</h3>
+          <h3 className="text-lg text-black font-medium mb-2">
+            Asset Allocation
+          </h3>
           <ResponsiveContainer width="100%" height="80%">
             <PieChart>
               <Pie

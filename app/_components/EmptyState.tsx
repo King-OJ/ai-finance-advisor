@@ -3,7 +3,7 @@ import { Beaker, Plus, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAppContext } from "./HomeWrapper";
 
-export default function EmptyDashboard({
+export default function EmptyState({
   onEnableDemo,
 }: {
   onEnableDemo: () => void;
@@ -13,10 +13,10 @@ export default function EmptyDashboard({
   return (
     <div className="flex flex-col items-center justify-center min-h-[40vh] text-center max-w-md mx-auto">
       <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6">
-        <Plus size={32} className="text-blue-600" />
+        <Plus size={32} className="text-primary" />
       </div>
 
-      <h2 className="text-2xl font-bold text-gray-900 mb-3">
+      <h2 className="text-2xl font-bold text-muted-foreground mb-3">
         No financial data yet
       </h2>
 

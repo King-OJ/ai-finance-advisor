@@ -11,49 +11,14 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import CreateGoalForm from "./CreateGoalForm";
+import { GoalType } from "@/utils/demoData";
+import { formatDate } from "@/utils/clientActions";
 
-export default function GoalsProgress({}) {
+export default function GoalsProgress({ data }: { data: GoalType[] }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Fallback data for development/preview
-  const goalsData = [
-    {
-      id: 1,
-      name: "Emergency Fund",
-      target: 10000,
-      current: 6500,
-      deadline: "2025-05-01",
-      category: "Saving",
-    },
-    {
-      id: 2,
-      name: "Vacation",
-      target: 3000,
-      current: 1500,
-      deadline: "2025-06-15",
-      category: "Travel",
-    },
-    {
-      id: 3,
-      name: "New Laptop",
-      target: 2000,
-      current: 800,
-      deadline: "2025-08-01",
-      category: "Purchase",
-    },
-  ];
 
   const calculateProgress = (current: number, target: number) => {
     return Math.min((current / target) * 100, 100);
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
   };
 
   return (
@@ -77,7 +42,7 @@ export default function GoalsProgress({}) {
       </div>
 
       <div className="space-y-4">
-        {goalsData.map((goal) => {
+        {data.map((goal) => {
           const progress = calculateProgress(goal.current, goal.target);
 
           return (

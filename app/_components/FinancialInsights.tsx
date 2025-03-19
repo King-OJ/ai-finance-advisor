@@ -1,40 +1,10 @@
 "use client";
 import React from "react";
 
-// components/dashboard/FinancialInsights.jsx
 import { Lightbulb, TrendingUp, TrendingDown } from "lucide-react";
+import { InsightType } from "@/utils/demoData";
 
-export default function FinancialInsights({}) {
-  // Fallback data for development/preview
-  const insightsData = [
-    {
-      id: 1,
-      type: "positive",
-      title: "Spending Reduction",
-      description:
-        "Your dining expenses decreased by 15% compared to last month.",
-      actionable:
-        "Keep it up! This could save you approximately $120 per month.",
-    },
-    {
-      id: 2,
-      type: "alert",
-      title: "Subscription Alert",
-      description:
-        "You have 3 streaming subscriptions totaling $35.97 monthly.",
-      actionable: "Consider consolidating to save $10-15 monthly.",
-    },
-    {
-      id: 3,
-      type: "opportunity",
-      title: "Investment Opportunity",
-      description:
-        "Your savings account has over $5,000 earning minimal interest.",
-      actionable:
-        "Moving to a high-yield account could earn you an additional $150 annually.",
-    },
-  ];
-
+export default function FinancialInsights({ data }: { data: InsightType[] }) {
   const getInsightIcon = (type: string) => {
     switch (type) {
       case "positive":
@@ -61,7 +31,7 @@ export default function FinancialInsights({}) {
 
   return (
     <div className="space-y-4 text-black">
-      {insightsData.map((insight) => (
+      {data.map((insight) => (
         <div
           key={insight.id}
           className={`p-4 border rounded-lg ${getInsightColor(insight.type)}`}

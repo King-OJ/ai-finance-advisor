@@ -1,20 +1,13 @@
 // components/dashboard/FinancialSummary.jsx
+import { SummaryDataType } from "@/utils/demoData";
 import { Wallet, TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 import React from "react";
 
-export default function FinancialSummary({}) {
-  // Fallback data for development/preview
-  const summaryData = {
-    totalBalance: 42580.65,
-    income: 5240.8,
-    expenses: 3890.45,
-    savingsRate: 25.8,
-  };
-
+export default function FinancialSummary({ data }: { data: SummaryDataType }) {
   const cards = [
     {
       title: "Total Balance",
-      value: summaryData.totalBalance,
+      value: data.totalBalance,
       icon: Wallet,
       color: "bg-blue-500",
       formatter: (val: number) =>
@@ -25,7 +18,7 @@ export default function FinancialSummary({}) {
     },
     {
       title: "Monthly Income",
-      value: summaryData.income,
+      value: data.income,
       icon: TrendingUp,
       color: "bg-green-500",
       formatter: (val: number) =>
@@ -36,7 +29,7 @@ export default function FinancialSummary({}) {
     },
     {
       title: "Monthly Expenses",
-      value: summaryData.expenses,
+      value: data.expenses,
       icon: TrendingDown,
       color: "bg-red-500",
       formatter: (val: number) =>
@@ -47,7 +40,7 @@ export default function FinancialSummary({}) {
     },
     {
       title: "Savings Rate",
-      value: summaryData.savingsRate,
+      value: data.savingsRate,
       icon: DollarSign,
       color: "bg-purple-500",
       formatter: (val: number) => `${val}%`,

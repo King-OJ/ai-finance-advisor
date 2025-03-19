@@ -10,10 +10,10 @@ import {
 } from "@/components/ui/dialog";
 import React, { useState } from "react";
 import PortfolioForm from "./PortfolioForm";
-import AssetForm from "./AssetForm";
 import PortfolioOverview from "./PortfolioOverview";
+import { PortfolioType } from "@/utils/demoData";
 
-function PortfolioPageContent() {
+function PortfolioPageContent({ data }: { data: PortfolioType }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -33,25 +33,7 @@ function PortfolioPageContent() {
         </DialogContent>
       </Dialog>
 
-      {/* <Dialog open={isAddAssetOpen} onOpenChange={setIsAddAssetOpen}>
-        <DialogTrigger asChild>
-          <Button className="font-bold">Add Asset</Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Add New Asset</DialogTitle>
-            <DialogDescription>
-              Enter a new asset name here. Click create when you are done.
-            </DialogDescription>
-          </DialogHeader>
-          <AssetForm
-            onSuccess={() => setIsAddAssetOpen(false)}
-            portfolioId="123"
-          />
-        </DialogContent>
-      </Dialog> */}
-
-      <PortfolioOverview />
+      <PortfolioOverview data={data} />
     </div>
   );
 }

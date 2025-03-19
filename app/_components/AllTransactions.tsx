@@ -11,51 +11,11 @@ import {
 import { Button } from "@/components/ui/button";
 import Transaction from "./Transaction";
 import AddTransactionForm from "./AddTransactionForm";
+import { TransactionType } from "@/utils/demoData";
 
-function AllTransactions() {
+function AllTransactions({ data }: { data: TransactionType[] }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const transactionsData = [
-    {
-      id: 1,
-      type: "expense",
-      category: "Groceries",
-      amount: 89.45,
-      date: "2025-02-25",
-      merchant: "Whole Foods",
-    },
-    {
-      id: 2,
-      type: "expense",
-      category: "Dining",
-      amount: 42.8,
-      date: "2025-02-24",
-      merchant: "Chipotle",
-    },
-    {
-      id: 3,
-      type: "income",
-      category: "Salary",
-      amount: 2450.0,
-      date: "2025-02-20",
-      merchant: "Employer Inc.",
-    },
-    {
-      id: 4,
-      type: "expense",
-      category: "Transportation",
-      amount: 35.0,
-      date: "2025-02-19",
-      merchant: "Uber",
-    },
-    {
-      id: 5,
-      type: "expense",
-      category: "Entertainment",
-      amount: 15.99,
-      date: "2025-02-18",
-      merchant: "Netflix",
-    },
-  ];
+
   return (
     <div className="bg-muted rounded-lg px-3 py-6">
       <div className="flex justify-between items-center mb-8 px-3">
@@ -90,7 +50,7 @@ function AllTransactions() {
         </li>
       </ul>
       <div className="space-y-4 text-sm">
-        {transactionsData.map((transaction) => (
+        {data.map((transaction) => (
           <Transaction key={transaction.id} transaction={transaction} />
         ))}
       </div>

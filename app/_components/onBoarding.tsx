@@ -137,8 +137,8 @@ export default function Onboarding({
                     <PiggyBank size={20} className="text-blue-600" />
                   </div>
                   <div>
-                    <h3 className="font-medium">Chase Bank</h3>
-                    <p className="text-sm text-gray-500">Checking, Savings</p>
+                    <h3 className="font-medium">First Bank</h3>
+                    <p className="text-sm text-gray-500">Current, Savings</p>
                   </div>
                 </div>
                 <Button variant="outline" size="sm">
