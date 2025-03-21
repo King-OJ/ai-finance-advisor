@@ -39,68 +39,48 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Transaction {
-  id          String    @id @default(cuid())
-  type        String
-  category    String
-  amount      Float
-  date        DateTime
-  description String?
-  userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime? @updatedAt
+model Expenses {
+  id        String    @id @default(cuid())
+  name      String
+  category  String
+  amount    Float
+  budgetId  String
+  budget    Budgets   @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
-model Asset {
-  id           String    @id @default(cuid())
-  portfolioId  String
-  portfolio    Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
-  name         String?
-  assetType    String    @default("stock")
-  costBasis    Float
-  currentPrice Float?
-  shares       Float
-  symbol       String
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime? @updatedAt
+model Income {
+  id        String   @id @default(cuid())
+  name      String
+  createdBy String
+  user      User     @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  emoji     String   @db.Text
+  createdAt DateTime @default(now())
 }
 
-model Portfolio {
-  id          String    @id @default(cuid())
-  userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name        String
-  description String?
-  assets      Asset[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime? @updatedAt
-}
-
-model Goal {
-  id            String    @id @default(cuid())
-  userId        String
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name          String
-  targetAmount  Float
-  currentAmount Float     @default(0)
-  deadline      DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime? @updatedAt
+model Budgets {
+  id        String     @id @default(cuid())
+  createdBy String
+  user      User       @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  name      String
+  amount    Float
+  expenses  Expenses[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime?  @updatedAt
 }
 
 model User {
-  id            String        @id @default(cuid())
-  email         String        @unique
+  id            String    @id @default(cuid())
+  email         String    @unique
   name          String?
   password      String?
   image         String?
   emailVerified DateTime?
-  role          String        @default("user")
-  portfolios    Portfolio[]
-  goals         Goal[]
+  role          String    @default("user")
+  income        Income[]
+  budgets       Budgets[]
   accounts      Account[]
-  transactions  Transaction[]
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime?     @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime? @updatedAt
 }

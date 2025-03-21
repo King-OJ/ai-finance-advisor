@@ -6,8 +6,9 @@ import { Bell, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import Notification from "./Notification";
+import { User } from "@/utils/types/user/userType";
 
-export default function HomeHeader() {
+export default function HomeHeader({ user }: { user: User }) {
   const [notifications, setNotifications] = useState([
     { id: 1, message: "Your monthly financial report is ready", isRead: false },
     {
@@ -30,7 +31,7 @@ export default function HomeHeader() {
     <header className="flex items-center justify-between">
       <div className="flex items-center space-x-2">
         <SidebarTrigger className="h-10 w-10" />
-        <h2 className="font-bold text-2xl ">Welcome OJ &#128075;</h2>
+        <h2 className="font-bold text-2xl ">Welcome {user?.name} &#128075;</h2>
       </div>
 
       <div className="flex items-center space-x-2">

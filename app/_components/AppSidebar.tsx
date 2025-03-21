@@ -1,6 +1,12 @@
 "use client";
 import React from "react";
-import { LayoutGrid, Lightbulb, List, Trophy, LineChart } from "lucide-react";
+import {
+  LayoutGrid,
+  CircleDollarSign,
+  PiggyBank,
+  ReceiptText,
+  ShieldCheck,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -29,24 +35,24 @@ function AppSidebar() {
       icon: LayoutGrid,
     },
     {
-      title: "Portfolio",
-      url: "/portfolio",
-      icon: LineChart,
+      title: "Income",
+      url: "/income",
+      icon: CircleDollarSign,
     },
     {
-      title: "AI Advisor",
-      url: "/ai_advisor",
-      icon: Lightbulb,
+      title: "Budgets",
+      url: "/budgets",
+      icon: PiggyBank,
     },
     {
-      title: "Goals",
-      url: "/goals",
-      icon: Trophy,
+      title: "Expenses",
+      url: "/expenses",
+      icon: ReceiptText,
     },
     {
-      title: "Transactions",
-      url: "/transactions",
-      icon: List,
+      title: "Upgrade",
+      url: "/upgrade",
+      icon: ShieldCheck,
     },
   ];
 
@@ -64,10 +70,16 @@ function AppSidebar() {
                   asChild
                   size={"lg"}
                   isActive={pathname.includes(item.url)}
-                  className="hover:bg-primary/60"
+                  className="hover:bg-primary/60 gap-4"
                 >
                   <Link href={item.url}>
-                    <item.icon className="text-primary" />
+                    <item.icon
+                      className={`w-auto h-auto ${
+                        pathname.includes(item.url)
+                          ? "text-white"
+                          : "text-primary"
+                      }`}
+                    />
                     <span>{item.title}</span>
                   </Link>
                 </SidebarMenuButton>

@@ -19,22 +19,6 @@ export default function DemoModeToggle({
 }) {
   const { isDemoMode, toggleDemoMode } = useAppContext();
 
-  // useEffect(() => {
-  //   // Check if demo mode is enabled in localStorage
-  //   const storedDemoMode = localStorage.getItem("demoMode") === "true";
-  //   setIsDemoMode(storedDemoMode);
-  // }, []);
-
-  // const handleToggle = () => {
-  //   const newDemoMode = !isDemoMode;
-  //   setIsDemoMode(newDemoMode);
-  //   localStorage.setItem("demoMode", newDemoMode.toString());
-
-  //   if (onToggle) {
-  //     onToggle(newDemoMode);
-  //   }
-  // };
-
   return (
     <div className="flex items-center space-x-2 p-2">
       <TooltipProvider>

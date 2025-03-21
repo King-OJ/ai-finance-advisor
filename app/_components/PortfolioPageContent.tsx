@@ -17,8 +17,8 @@ function PortfolioPageContent({ data }: { data: PortfolioType }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="space-y-6">
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+    <>
+      {/* <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogTrigger asChild>
           <Button className="font-bold">Create Portfolio</Button>
         </DialogTrigger>
@@ -31,10 +31,10 @@ function PortfolioPageContent({ data }: { data: PortfolioType }) {
           </DialogHeader>
           <PortfolioForm onSuccess={() => setIsModalOpen(false)} />
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
 
       <PortfolioOverview data={data} />
-    </div>
+    </>
   );
 }
 
