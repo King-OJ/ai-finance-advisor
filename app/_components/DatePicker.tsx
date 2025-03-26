@@ -15,8 +15,8 @@ function DatePicker({
   value,
   onChange,
 }: {
-  value: Date;
-  onChange: (date?: Date) => void;
+  value: string;
+  onChange: (date?: string) => void;
 }) {
   const [open, setOpen] = React.useState(false);
   return (
@@ -25,7 +25,7 @@ function DatePicker({
         <Button
           variant={"outline"}
           className={cn(
-            "w-[280px] justify-start text-left font-normal",
+            "w-full justify-start text-left font-normal",
             !value && "text-muted-foreground"
           )}
         >
@@ -36,12 +36,11 @@ function DatePicker({
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
-          selected={value}
+          selected={value ? new Date(value) : undefined}
           onSelect={(date) => {
-            onChange(date);
+            onChange(date?.toISOString());
             setOpen(false);
           }}
-          initialFocus
         />
       </PopoverContent>
     </Popover>

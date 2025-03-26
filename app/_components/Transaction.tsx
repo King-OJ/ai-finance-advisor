@@ -3,14 +3,14 @@ import React from "react";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import {
-  TransactionStatus,
-  TransactionType,
-  Transaction as type,
+  Status,
+  Type,
+  Transaction as TransactionType,
 } from "@/utils/types/transactions";
 import { formatDate, formatCurrency } from "@/utils/clientActions";
 
-function Transaction({ transaction }: { transaction: type }) {
-  const renderTransactionStatus = (status: TransactionStatus) => {
+function Transaction({ transaction }: { transaction: TransactionType }) {
+  const renderTransactionStatus = (status: Status) => {
     const statusVariants = {
       completed: "bg-green-100 text-green-800",
       pending: "bg-yellow-100 text-yellow-800",
@@ -34,7 +34,7 @@ function Transaction({ transaction }: { transaction: type }) {
         <Badge
           variant="outline"
           className={
-            transaction.type === TransactionType.credit
+            transaction.type === Type.credit
               ? "bg-green-100 text-green-800"
               : "bg-red-100 text-red-800"
           }

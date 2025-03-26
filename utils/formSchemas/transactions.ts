@@ -1,10 +1,10 @@
 import * as z from "zod";
-import { TransactionType } from "../types/transactions";
+import { Type, Status } from "../types/transactions";
 import { Category } from "../types/others";
 
 export const addTransactionFormSchema = z.object({
   merchant: z.string().min(1, "Merchant name is required"),
-  type: z.nativeEnum(TransactionType, {
+  type: z.nativeEnum(Type, {
     errorMap: () => ({ message: "Please select a valid type" }),
   }),
   category: z.nativeEnum(Category, {
@@ -19,12 +19,27 @@ export const addTransactionFormSchema = z.object({
   description: z.string().optional(),
 });
 
-export const searchTransactionSchema = z.object({
-  searchQuery: z.string().min(1, "Provide a search query"),
-  searchCategory: z.nativeEnum(Category, {
-    errorMap: () => ({ message: "Please select a valid category" }),
-  }),
-  searchType: z.nativeEnum(TransactionType, {
-    errorMap: () => ({ message: "Please select a valid type" }),
-  }),
-});
+export const TransactionFiltersSchema = z
+  .object({
+    searchQuery: z.string().optional(),
+    startDate: z.string().optional(),
+    endDate: z.string().optional(),
+    category: z.nativeEnum(Category).optional(),
+    type: z.nativeEnum(Type).optional(),
+    status: z.nativeEnum(Status).optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.startDate && data.endDate) {
+        const start = new Date(data.startDate);
+        const end = new Date(data.endDate);
+        return end >= start;
+      }
+
+      return true;
+    },
+    {
+      message: "End date must be after or the same as start date",
+      path: ["endDate"],
+    }
+  );

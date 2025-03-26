@@ -1,11 +1,11 @@
 import { Category } from "./others";
 
-export enum TransactionType {
+export enum Type {
   credit = "credit",
   debit = "debit",
 }
 
-export enum TransactionStatus {
+export enum Status {
   completed = "completed",
   pending = "pending",
   failed = "failed",
@@ -17,24 +17,18 @@ export interface Transaction {
   amount: number;
   description: string;
   category: Category;
-  type: TransactionType;
+  type: Type;
   accountId: string;
   merchant?: string;
-  status: TransactionStatus;
+  status: Status;
 }
 
 export interface TransactionFilters {
   startDate?: string;
   endDate?: string;
-  minAmount?: number;
-  maxAmount?: number;
-  categories?: string[];
-  types?: (TransactionType.credit | "TransactionType.debit")[];
-  status?: (
-    | TransactionStatus.completed
-    | TransactionStatus.pending
-    | TransactionStatus.failed
-  )[];
+  category?: Category;
+  type?: Type;
+  status?: Status;
   searchQuery?: string;
 }
 
@@ -45,9 +39,9 @@ export const mockTransactions: Transaction[] = [
     amount: 150.75,
     description: "Grocery shopping",
     category: Category.Groceries,
-    type: TransactionType.debit,
+    type: Type.debit,
     accountId: "acc123",
-    status: TransactionStatus.completed,
+    status: Status.completed,
     merchant: "SuperMart",
   },
   {
@@ -56,9 +50,9 @@ export const mockTransactions: Transaction[] = [
     amount: 250.0,
     description: "Salary payment",
     category: Category.Income,
-    type: TransactionType.credit,
+    type: Type.credit,
     accountId: "acc123",
-    status: TransactionStatus.completed,
+    status: Status.completed,
   },
   {
     id: "3",
@@ -66,9 +60,9 @@ export const mockTransactions: Transaction[] = [
     amount: 40.5,
     description: "Coffee at cafe",
     category: Category.Dining,
-    type: TransactionType.debit,
+    type: Type.debit,
     accountId: "acc124",
-    status: TransactionStatus.completed,
+    status: Status.completed,
     merchant: "Brewed Delight",
   },
   {
@@ -77,9 +71,9 @@ export const mockTransactions: Transaction[] = [
     amount: 300.0,
     description: "Transfer from savings",
     category: Category.Transfer,
-    type: TransactionType.credit,
+    type: Type.credit,
     accountId: "acc125",
-    status: TransactionStatus.completed,
+    status: Status.completed,
   },
   {
     id: "5",
@@ -87,9 +81,9 @@ export const mockTransactions: Transaction[] = [
     amount: 125.0,
     description: "Utility bill payment",
     category: Category.Bill,
-    type: TransactionType.debit,
+    type: Type.debit,
     accountId: "acc123",
-    status: TransactionStatus.pending,
+    status: Status.pending,
   },
   {
     id: "6",
@@ -97,9 +91,9 @@ export const mockTransactions: Transaction[] = [
     amount: 60.0,
     description: "Fuel refill",
     category: Category.Automotive,
-    type: TransactionType.debit,
+    type: Type.debit,
     accountId: "acc126",
-    status: TransactionStatus.completed,
+    status: Status.completed,
     merchant: "Fuel Express",
   },
   {
@@ -108,9 +102,9 @@ export const mockTransactions: Transaction[] = [
     amount: 200.0,
     description: "Freelance project payment",
     category: Category.Income,
-    type: TransactionType.credit,
+    type: Type.credit,
     accountId: "acc127",
-    status: TransactionStatus.completed,
+    status: Status.completed,
   },
   {
     id: "8",
@@ -118,9 +112,9 @@ export const mockTransactions: Transaction[] = [
     amount: 15.99,
     description: "Magazine subscription",
     category: Category.Subscriptions,
-    type: TransactionType.debit,
+    type: Type.debit,
     accountId: "acc128",
-    status: TransactionStatus.completed,
+    status: Status.completed,
     merchant: "Mag World",
   },
   {
@@ -129,9 +123,9 @@ export const mockTransactions: Transaction[] = [
     amount: 500.0,
     description: "Home improvement",
     category: Category.Home,
-    type: TransactionType.debit,
+    type: Type.debit,
     accountId: "acc129",
-    status: TransactionStatus.completed,
+    status: Status.completed,
     merchant: "Home Depot",
   },
   {
@@ -140,9 +134,9 @@ export const mockTransactions: Transaction[] = [
     amount: 75.5,
     description: "Dinner with friends",
     category: Category.Dining,
-    type: TransactionType.debit,
+    type: Type.debit,
     accountId: "acc130",
-    status: TransactionStatus.completed,
+    status: Status.completed,
     merchant: "The Bistro",
   },
   {
@@ -151,9 +145,9 @@ export const mockTransactions: Transaction[] = [
     amount: 90.0,
     description: "New shoes",
     category: Category.Shopping,
-    type: TransactionType.debit,
+    type: Type.debit,
     accountId: "acc131",
-    status: TransactionStatus.completed,
+    status: Status.completed,
     merchant: "Shoe Shop",
   },
   {
@@ -162,9 +156,9 @@ export const mockTransactions: Transaction[] = [
     amount: 180.0,
     description: "Car repair",
     category: Category.Automotive,
-    type: TransactionType.debit,
+    type: Type.debit,
     accountId: "acc132",
-    status: TransactionStatus.completed,
+    status: Status.completed,
     merchant: "CarFix Garage",
   },
   {
@@ -173,9 +167,9 @@ export const mockTransactions: Transaction[] = [
     amount: 1000.0,
     description: "Loan repayment",
     category: Category.Loan,
-    type: TransactionType.debit,
+    type: Type.debit,
     accountId: "acc133",
-    status: TransactionStatus.pending,
+    status: Status.pending,
   },
   {
     id: "14",
@@ -183,9 +177,9 @@ export const mockTransactions: Transaction[] = [
     amount: 1200.0,
     description: "Freelance project payment",
     category: Category.Income,
-    type: TransactionType.credit,
+    type: Type.credit,
     accountId: "acc134",
-    status: TransactionStatus.completed,
+    status: Status.completed,
   },
   {
     id: "15",
@@ -193,9 +187,9 @@ export const mockTransactions: Transaction[] = [
     amount: 45.75,
     description: "Book purchase",
     category: Category.Shopping,
-    type: TransactionType.debit,
+    type: Type.debit,
     accountId: "acc135",
-    status: TransactionStatus.completed,
+    status: Status.completed,
     merchant: "Bookstore",
   },
   {
@@ -204,9 +198,9 @@ export const mockTransactions: Transaction[] = [
     amount: 200.0,
     description: "Payment for project",
     category: Category.Income,
-    type: TransactionType.credit,
+    type: Type.credit,
     accountId: "acc136",
-    status: TransactionStatus.completed,
+    status: Status.completed,
   },
   {
     id: "17",
@@ -214,9 +208,9 @@ export const mockTransactions: Transaction[] = [
     amount: 50.0,
     description: "Concert tickets",
     category: Category.Entertainment,
-    type: TransactionType.debit,
+    type: Type.debit,
     accountId: "acc137",
-    status: TransactionStatus.completed,
+    status: Status.completed,
     merchant: "LiveNation",
   },
   {
@@ -225,9 +219,9 @@ export const mockTransactions: Transaction[] = [
     amount: 600.0,
     description: "Rent payment",
     category: Category.Rent,
-    type: TransactionType.debit,
+    type: Type.debit,
     accountId: "acc138",
-    status: TransactionStatus.completed,
+    status: Status.completed,
   },
   {
     id: "19",
@@ -235,9 +229,9 @@ export const mockTransactions: Transaction[] = [
     amount: 80.0,
     description: "Gym membership",
     category: Category.Health,
-    type: TransactionType.debit,
+    type: Type.debit,
     accountId: "acc139",
-    status: TransactionStatus.completed,
+    status: Status.completed,
     merchant: "Fitness World",
   },
   {
@@ -246,8 +240,8 @@ export const mockTransactions: Transaction[] = [
     amount: 600.0,
     description: "Bonus payment",
     category: Category.Income,
-    type: TransactionType.credit,
+    type: Type.credit,
     accountId: "acc140",
-    status: TransactionStatus.completed,
+    status: Status.completed,
   },
 ];

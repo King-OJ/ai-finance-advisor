@@ -133,8 +133,8 @@ export function CustomDatePickerField({
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className="flex flex-col space-x-0 space-y-2 md:flex-row md:space-y-0 md:space-x-2">
-          <FormLabel className="capitalize pt-3">{label || name}</FormLabel>
+        <FormItem className="flex flex-col">
+          <FormLabel>{label || name}</FormLabel>
           <div className="space-y-1">
             <FormControl>
               <DatePicker value={field.value} onChange={field.onChange} />

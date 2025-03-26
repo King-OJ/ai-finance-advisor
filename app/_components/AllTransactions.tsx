@@ -9,7 +9,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import * as z from "zod";
 
 import PaginationBtns from "./PaginationBtns";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -18,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import {
   mockTransactions,
   Transaction as TransactionType,
-  TransactionFilters,
+  TransactionFilters as FiltersType,
 } from "@/utils/types/transactions";
 import {
   Popover,
@@ -38,9 +37,7 @@ import {
 import Transaction from "./Transaction";
 import { CustomFormInputField } from "./FormComponents";
 import { Form } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { searchTransactionSchema } from "@/utils/formSchemas/transactions";
+import TransactionFilters from "./TransactionFilters";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -53,7 +50,7 @@ function AllTransactions({ data }: { data?: TransactionType[] }) {
   const [totalPages, setTotalPages] = useState(
     Math.ceil(transactions.length / ITEMS_PER_PAGE)
   );
-  const [filters, setFilters] = useState<TransactionFilters>({});
+  const [filters, setFilters] = useState<FiltersType>({});
   const startIndex = currentPage - 1;
   const paginatedTransactions = transactions.slice(
     startIndex,
@@ -95,84 +92,16 @@ function AllTransactions({ data }: { data?: TransactionType[] }) {
     }
   };
 
-  const form = useForm<z.infer<typeof searchTransactionSchema>>({
-    resolver: zodResolver(searchTransactionSchema),
-    defaultValues: {
-      searchQuery: "",
-    },
-  });
+  const onSubmit = async (values: FiltersType) => {
+    console.log(values);
+  };
 
   return (
     <Card className="w-full">
       <CardHeader className="space-y-6">
         <CardTitle>Transaction History</CardTitle>
 
-        <Form {...form}>
-          <form className="flex items-center justify-between w-full">
-            <div className="flex items-center space-x-2">
-              {/* <Input
-                placeholder="Search transactions"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-64"
-              /> */}
-              <CustomFormInputField
-                name="searchQuery"
-                placeholder="Search for transactions"
-                control={form.control}
-                className="w-64"
-              />
-              <Button variant="outline" size="icon" onClick={handleSearch}>
-                <Search />
-              </Button>
-            </div>
-
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-[240px] justify-start text-left font-normal",
-                    !dateRange.from && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {dateRange.from ? (
-                    dateRange.to ? (
-                      <>
-                        {format(dateRange.from, "LLL dd, y")} -{" "}
-                        {format(dateRange.to, "LLL dd, y")}
-                      </>
-                    ) : (
-                      format(dateRange.from, "LLL dd, y")
-                    )
-                  ) : (
-                    <span>Pick a date range</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                {dateRange.from && dateRange.to && (
-                  <Calendar
-                    autoFocus
-                    mode="range"
-                    defaultMonth={dateRange.from}
-                    selected={dateRange}
-                    // onSelect={setDateRange}
-                    numberOfMonths={2}
-                    onDayClick={handleDateRangeSelect}
-                  />
-                )}
-              </PopoverContent>
-            </Popover>
-          </form>
-
-          {/* 
-            <Button onClick={handleExport}>
-              <Download className="mr-2 h-4 w-4" />
-              Export
-            </Button> */}
-        </Form>
+        <TransactionFilters onFilterChange={() => {}} />
       </CardHeader>
       <CardContent>
         <Table>
