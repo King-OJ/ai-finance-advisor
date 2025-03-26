@@ -6,7 +6,7 @@ import { Bell, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import Notification from "./Notification";
-import { User } from "@/utils/types/user/userType";
+import { User } from "@/utils/types/user";
 
 export default function HomeHeader({ user }: { user: User }) {
   const [notifications, setNotifications] = useState([

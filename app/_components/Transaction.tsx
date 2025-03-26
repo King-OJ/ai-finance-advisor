@@ -1,41 +1,49 @@
+"use client";
 import React from "react";
-import { ArrowUpRight, ArrowDownRight, CreditCard } from "lucide-react";
-import { TransactionType } from "@/utils/demoData";
-import { formatDate } from "@/utils/clientActions";
+import { TableCell, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import {
+  TransactionStatus,
+  TransactionType,
+  Transaction as type,
+} from "@/utils/types/transactions";
+import { formatDate, formatCurrency } from "@/utils/clientActions";
 
-function Transaction({ transaction }: { transaction: TransactionType }) {
+function Transaction({ transaction }: { transaction: type }) {
+  const renderTransactionStatus = (status: TransactionStatus) => {
+    const statusVariants = {
+      completed: "bg-green-100 text-green-800",
+      pending: "bg-yellow-100 text-yellow-800",
+      failed: "bg-red-100 text-red-800",
+    };
+
+    return (
+      <Badge variant="outline" className={statusVariants[status]}>
+        {status}
+      </Badge>
+    );
+  };
+
   return (
-    <div className="grid text-sm hover:cursor-pointer gap-4 grid-flow-col grid-cols-5 p-3 hover:bg-background/90 rounded-lg">
-      <div className="flex items-center space-x-2 col-span-2">
-        <div
-          className={`p-[6px] rounded-full ${
-            transaction.type === "income"
-              ? "bg-green-200 text-green-600"
-              : "bg-red-200 text-red-600"
-          }`}
+    <TableRow key={transaction.id}>
+      <TableCell>{formatDate(transaction.date)}</TableCell>
+      <TableCell>{transaction.description}</TableCell>
+      <TableCell>{transaction.category}</TableCell>
+      <TableCell>{formatCurrency(transaction.amount)}</TableCell>
+      <TableCell>
+        <Badge
+          variant="outline"
+          className={
+            transaction.type === TransactionType.credit
+              ? "bg-green-100 text-green-800"
+              : "bg-red-100 text-red-800"
+          }
         >
-          {transaction.type === "income" ? (
-            <ArrowUpRight size={18} />
-          ) : (
-            <ArrowDownRight size={18} />
-          )}
-        </div>
-        <p className="truncate font-semibold">{transaction.merchant}</p>
-      </div>
-
-      <p className="">{formatDate(transaction.date)}</p>
-
-      <p className="">{transaction.category}</p>
-
-      <div
-        className={` font-semibold ${
-          transaction.type === "income" ? "text-green-600" : "text-red-600"
-        }`}
-      >
-        {transaction.type === "income" ? "+" : "-"}$
-        {transaction.amount.toFixed(2)}
-      </div>
-    </div>
+          {transaction.type}
+        </Badge>
+      </TableCell>
+      <TableCell>{renderTransactionStatus(transaction.status)}</TableCell>
+    </TableRow>
   );
 }
 

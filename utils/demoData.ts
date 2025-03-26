@@ -1,3 +1,5 @@
+import { BudgetType } from "./types/budget";
+
 export const demoData = {
   user: {
     id: "demo-user",
@@ -295,16 +297,6 @@ export type TransactionType = {
   merchant: string;
 };
 
-export type GoalType = {
-  id: string;
-  name: string;
-  target: number;
-  current: number;
-  deadline: Date;
-  category: string;
-  monthlyContribution: number;
-};
-
 export type CategoryType = {
   id: string;
   name: string;
@@ -317,7 +309,7 @@ export type MonthlySpendingType = { month: string; amount: number };
 export type DemoDataType = {
   summary: SummaryDataType;
   transactions: TransactionType[];
-  goals: GoalType[];
+  goals: BudgetType[];
   portfolio: PortfolioType;
   insights: InsightType[];
   categories: CategoryType[];

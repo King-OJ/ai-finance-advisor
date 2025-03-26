@@ -4,7 +4,17 @@ import React from "react";
 import { Lightbulb, TrendingUp, TrendingDown } from "lucide-react";
 import { InsightType } from "@/utils/demoData";
 
-export default function FinancialInsights({ data }: { data: InsightType[] }) {
+export default function FinancialInsights() {
+  const data = [
+    {
+      id: "01",
+      type: "outgoing",
+      title: "DSTv",
+      description: "Cum non minima nisi soluta porro nulla modi placeat optio?",
+      actionable:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore, atque. Cum non minima nisi soluta porro nulla modi placeat optio?",
+    },
+  ];
   const getInsightIcon = (type: string) => {
     switch (type) {
       case "positive":

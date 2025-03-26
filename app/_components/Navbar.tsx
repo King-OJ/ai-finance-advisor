@@ -14,7 +14,7 @@ function Navbar() {
   if (
     pathname.includes("/dashboard") ||
     pathname.includes("/income") ||
-    pathname.includes("/expenses") ||
+    pathname.includes("/transactions") ||
     pathname.includes("/budgets") ||
     pathname.includes("/upgrade")
   ) {

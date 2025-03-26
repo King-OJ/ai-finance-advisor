@@ -1,43 +1,48 @@
-// components/dashboard/RecentTransactions.jsx
 import { Button } from "@/components/ui/button";
 import Transaction from "./Transaction";
 import Link from "next/link";
-import { TransactionType } from "@/utils/demoData";
+import { Transaction as type } from "@/utils/types/transactions";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+  Table,
+  TableHead,
+  TableHeader,
+  TableBody,
+  TableRow,
+} from "@/components/ui/table";
 
-export default function RecentTransactions({
-  data,
-}: {
-  data: TransactionType[];
-}) {
+export default function RecentTransactions({ data }: { data: type[] }) {
   return (
-    <div className="bg-muted rounded-lg py-6 px-3">
-      <div className="flex justify-between items-center mb-8 px-3">
-        <h2 className="text-xl font-semibold">Recent Transactions</h2>
-        <Button variant="outline" size="sm">
-          <Link href={"/transactions"}>View All</Link>
-        </Button>
-      </div>
-
-      <ul className="grid grid-cols-5 grid-flow-col px-3 text-xs mb-4 gap-4">
-        <li className="col-span-2">
-          <p>Name</p>
-        </li>
-        <li className="">
-          <p>Date</p>
-        </li>
-        <li className="">
-          <p>Category</p>
-        </li>
-        <li className="">
-          <p>Amount</p>
-        </li>
-      </ul>
-
-      <div className="space-y-4 text-sm">
-        {data.map((transaction) => (
-          <Transaction key={transaction.id} transaction={transaction} />
-        ))}
-      </div>
-    </div>
+    <Card className="w-full">
+      <CardHeader>
+        <div className="flex justify-between items-center">
+          <CardTitle className="text-xl font-semibold">
+            Recent Transactions
+          </CardTitle>
+          <Button variant="outline" size="sm" className="bg-transparent">
+            <Link href={"/transactions"}>View All</Link>
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Date</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead>Category</TableHead>
+              <TableHead>Amount</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.map((transaction) => (
+              <Transaction key={transaction.id} transaction={transaction} />
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
   );
 }

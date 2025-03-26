@@ -6,12 +6,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { CustomFormInputField, CustomSelectField } from "./FormComponents";
 import { Button } from "@/components/ui/button";
-import { AddTransactionType } from "@/utils/types/types";
-import {
-  addTransactionFormSchema,
-  TransactionCategory,
-  TransactionType,
-} from "@/utils/formSchemas/schema";
+import { AddTransactionType, Category } from "@/utils/types/others";
+import { addTransactionFormSchema } from "@/utils/formSchemas/budget";
+import { TransactionType } from "@/utils/types/transactions";
 
 interface AddTransactionFormProps {
   onSuccess: () => void;
@@ -50,7 +47,7 @@ function AddTransactionForm({ onSuccess }: AddTransactionFormProps) {
             name="category"
             control={form.control}
             placeholder="Select Category"
-            values={Object.values(TransactionCategory)}
+            values={Object.values(Category)}
           />
           <CustomSelectField
             name="type"

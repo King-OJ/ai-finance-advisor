@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import { z } from "zod";
 import { CustomFormInputField } from "./FormComponents";
-import { SignInFormType } from "@/utils/types/types";
+import { SignInFormType } from "@/utils/types/others";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";

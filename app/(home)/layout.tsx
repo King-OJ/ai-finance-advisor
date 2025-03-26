@@ -18,7 +18,7 @@ async function layout({ children }: { children: ReactNode }) {
   return (
     <HomeWrapper>
       <div className="flex-1 flex flex-col">
-        <SidebarProvider>
+        <SidebarProvider defaultOpen={false}>
           <AppSidebar />
 
           <div className="flex-1 px-6 py-10 space-y-10">

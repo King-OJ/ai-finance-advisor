@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import { z } from "zod";
 import { CustomFormInputField } from "./FormComponents";
-import { SignUpFormType } from "@/utils/types/types";
+import { SignUpFormType } from "@/utils/types/others";
 import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";

@@ -23,6 +23,7 @@ type CustomFormInputFieldProps = {
   label?: string;
   placeholder?: string;
   type?: string;
+  className?: string;
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   control: Control<any>;
 };
@@ -33,6 +34,7 @@ export function CustomFormInputField({
   type,
   label,
   placeholder,
+  className,
 }: CustomFormInputFieldProps) {
   return (
     <FormField
@@ -40,7 +42,9 @@ export function CustomFormInputField({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className="capitalize">{label || name}</FormLabel>
+          {label && (
+            <FormLabel className="capitalize">{label || name}</FormLabel>
+          )}
           <FormControl>
             <Input
               placeholder={placeholder}
@@ -53,6 +57,7 @@ export function CustomFormInputField({
                     : field.value
                   : field.value || ""
               }
+              className={className}
               onChange={(e) =>
                 type == "number"
                   ? field.onChange(
@@ -128,7 +133,7 @@ export function CustomDatePickerField({
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className="flex space-y-0 space-x-2">
+        <FormItem className="flex flex-col space-x-0 space-y-2 md:flex-row md:space-y-0 md:space-x-2">
           <FormLabel className="capitalize pt-3">{label || name}</FormLabel>
           <div className="space-y-1">
             <FormControl>

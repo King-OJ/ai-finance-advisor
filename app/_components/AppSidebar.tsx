@@ -45,8 +45,8 @@ function AppSidebar() {
       icon: PiggyBank,
     },
     {
-      title: "Expenses",
-      url: "/expenses",
+      title: "Transactions",
+      url: "/transactions",
       icon: ReceiptText,
     },
     {

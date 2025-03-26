@@ -1,27 +1,29 @@
 "use client";
 import { Form } from "@/components/ui/form";
-import { createGoalSchema, GoalsCategory } from "@/utils/formSchemas/schema";
-import { CreateGoalType } from "@/utils/types/types";
+import { createBudgetSchema } from "@/utils/formSchemas/budget";
+import { Category, CreateGoalType } from "@/utils/types/others";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
+
 import {
   CustomDatePickerField,
   CustomFormInputField,
   CustomSelectField,
 } from "./FormComponents";
 import { Button } from "@/components/ui/button";
+import CategoryEmoji from "./CategoryEmoji";
 
 interface CreateGoalFormProps {
   onSuccess: () => void;
 }
 
-function CreateGoalForm({ onSuccess }: CreateGoalFormProps) {
+function CreateBudgetForm({ onSuccess }: CreateGoalFormProps) {
   const [isLoading, setIsLoading] = useState(false);
 
-  const form = useForm<z.infer<typeof createGoalSchema>>({
-    resolver: zodResolver(createGoalSchema),
+  const form = useForm<z.infer<typeof createBudgetSchema>>({
+    resolver: zodResolver(createBudgetSchema),
     defaultValues: {
       name: "",
       currentAmount: undefined,
@@ -34,18 +36,27 @@ function CreateGoalForm({ onSuccess }: CreateGoalFormProps) {
     onSuccess?.();
   };
 
+  const selectedCategory = form.watch("category");
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <CustomFormInputField name="name" control={form.control} />
-
-        <CustomSelectField
-          name="category"
+        <CustomFormInputField
+          name="name"
           control={form.control}
-          placeholder="Select type"
-          values={Object.values(GoalsCategory)}
+          placeholder="e.g Dubai Vacation"
         />
-
+        <div className="flex items-center space-x-4">
+          <div className="flex-1">
+            <CustomSelectField
+              name="category"
+              control={form.control}
+              placeholder="Select Category"
+              values={Object.values(Category)}
+            />
+          </div>
+          <CategoryEmoji category={selectedCategory} />
+        </div>
         <CustomDatePickerField
           control={form.control}
           name="deadline"
@@ -58,21 +69,27 @@ function CreateGoalForm({ onSuccess }: CreateGoalFormProps) {
             name="currentAmount"
             control={form.control}
             type="number"
+            placeholder="e.g $5000"
           />
           <CustomFormInputField
-            label="Target Amount"
+            label="Budget Target"
             name="targetAmount"
             control={form.control}
             type="number"
+            placeholder="e.g $5000"
           />
         </div>
 
-        <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Creating Goal..." : "Create Goal"}
+        <Button
+          type="submit"
+          disabled={isLoading || !form.formState.isValid}
+          className="w-full rounded-full font-bold"
+        >
+          {isLoading ? "Creating..." : "Create Budget"}
         </Button>
       </form>
     </Form>
   );
 }
 
-export default CreateGoalForm;
+export default CreateBudgetForm;

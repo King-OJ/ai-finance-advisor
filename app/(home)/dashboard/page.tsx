@@ -5,6 +5,8 @@ import { fetchPageData, getDemoModeFromCookies } from "@/utils/serverActions";
 import { DemoDataType } from "@/utils/demoData";
 import AppEmptyState from "@/app/_components/AppEmptyState";
 import Advice from "@/app/_components/Advice";
+import LatestBudgets from "@/app/_components/LatestBudgets";
+import { mockTransactions } from "@/utils/types/transactions";
 
 async function page() {
   const isDemoMode = await getDemoModeFromCookies();
@@ -19,13 +21,13 @@ async function page() {
     <div className="grid grid-cols-1 gap-6">
       <Advice />
       <FinancialSummary data={data.summary} />
-      <div className="grid grid-cols-3 gap-5">
-        <div className="col-span-2">
+      <div className="grid grid-cols-3 gap-8 mt-10">
+        <div className="col-span-2 space-y-8">
           <PortfolioOverview data={data.portfolio} />
+          <RecentTransactions data={mockTransactions.splice(0, 5)} />
         </div>
+        <LatestBudgets />
       </div>
-
-      <RecentTransactions data={data.transactions} />
     </div>
   );
 }
