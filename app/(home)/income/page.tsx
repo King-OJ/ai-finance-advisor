@@ -1,5 +1,8 @@
 import PageHeader from "@/app/_components/PageHeader";
-import { fetchPageData, getDemoModeFromCookies } from "@/utils/serverActions";
+import {
+  fetchPageData,
+  getDemoModeFromCookies,
+} from "@/utils/actions/serverActions";
 import React from "react";
 import AppEmptyState from "@/app/_components/AppEmptyState";
 import BudgetItem from "@/app/_components/LatestBudgets";

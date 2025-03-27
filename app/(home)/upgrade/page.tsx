@@ -2,7 +2,10 @@ import PageHeader from "@/app/_components/PageHeader";
 import { LineChart } from "lucide-react";
 import React from "react";
 import PortfolioPageContent from "@/app/_components/PortfolioPageContent";
-import { fetchPageData, getDemoModeFromCookies } from "@/utils/serverActions";
+import {
+  fetchPageData,
+  getDemoModeFromCookies,
+} from "@/utils/actions/serverActions";
 import AppEmptyState from "@/app/_components/AppEmptyState";
 
 async function page() {

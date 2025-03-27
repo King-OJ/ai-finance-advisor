@@ -1,7 +1,10 @@
 import AppEmptyState from "@/app/_components/AppEmptyState";
 import BudgetItem from "@/app/_components/BudgetItem";
 import PageHeader from "@/app/_components/PageHeader";
-import { fetchPageData, getDemoModeFromCookies } from "@/utils/serverActions";
+import {
+  fetchPageData,
+  getDemoModeFromCookies,
+} from "@/utils/actions/serverActions";
 import { BudgetType } from "@/utils/types/budget";
 import { Category } from "@/utils/types/others";
 import React from "react";

@@ -1,4 +1,4 @@
-import { Category, CategoryEmojis } from "./types/others";
+import { Category, CategoryEmojis } from "../types/others";
 
 export const formatDate = (date: Date) => {
   const dateFormatter = new Intl.DateTimeFormat("en-US", {

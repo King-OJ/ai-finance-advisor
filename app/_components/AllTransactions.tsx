@@ -13,7 +13,6 @@ import PaginationBtns from "./PaginationBtns";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 import {
-  mockTransactions,
   Transaction as TransactionType,
   TransactionFilters as FiltersType,
 } from "@/utils/types/transactions";
@@ -25,25 +24,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Transaction from "./Transaction";
 import TransactionFilters from "./TransactionFilters";
+import Transaction from "./Transaction";
 
 const ITEMS_PER_PAGE = 10;
 
-function AllTransactions({ data }: { data?: TransactionType[] }) {
-  const transactions = data || mockTransactions;
+interface AllTransactionsProps {
+  transactions: TransactionType[];
+  totalPages: number;
+}
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+function AllTransactions({ transactions, totalPages }: AllTransactionsProps) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(
-    Math.ceil(transactions.length / ITEMS_PER_PAGE)
-  );
+
   const [filters, setFilters] = useState<FiltersType>({});
-  const startIndex = currentPage - 1;
-  const paginatedTransactions = transactions.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE
-  );
 
   const [dateRange, setDateRange] = useState<{
     from: Date | undefined;
@@ -100,7 +94,7 @@ function AllTransactions({ data }: { data?: TransactionType[] }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedTransactions.map((transaction) => (
+            {transactions.map((transaction) => (
               <Transaction key={transaction.id} transaction={transaction} />
             ))}
           </TableBody>

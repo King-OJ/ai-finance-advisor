@@ -7,7 +7,7 @@ import {
   Type,
   Transaction as TransactionType,
 } from "@/utils/types/transactions";
-import { formatDate, formatCurrency } from "@/utils/clientActions";
+import { formatDate, formatCurrency } from "@/utils/actions/clientActions";
 
 function Transaction({ transaction }: { transaction: TransactionType }) {
   const renderTransactionStatus = (status: Status) => {

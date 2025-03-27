@@ -1,12 +1,15 @@
 import FinancialSummary from "@/app/_components/FinancialSummary";
 import PortfolioOverview from "@/app/_components/PortfolioOverview";
 import RecentTransactions from "@/app/_components/RecentTransactions";
-import { fetchPageData, getDemoModeFromCookies } from "@/utils/serverActions";
+import {
+  fetchPageData,
+  getDemoModeFromCookies,
+} from "@/utils/actions/serverActions";
 import { DemoDataType } from "@/utils/demoData";
 import AppEmptyState from "@/app/_components/AppEmptyState";
 import Advice from "@/app/_components/Advice";
 import LatestBudgets from "@/app/_components/LatestBudgets";
-import { mockTransactions } from "@/utils/types/transactions";
+import { mockTransactions } from "@/utils/mockData/transaction";
 
 async function page() {
   const isDemoMode = await getDemoModeFromCookies();
