@@ -39,7 +39,7 @@ export const TransactionFiltersSchema = z
       return true;
     },
     {
-      message: "End date must be after or the same as start date",
+      message: "End date must be after start date",
       path: ["endDate"],
     }
   );

@@ -8,25 +8,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 
 import PaginationBtns from "./PaginationBtns";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { CalendarIcon, Download, Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
+
 import {
   mockTransactions,
   Transaction as TransactionType,
   TransactionFilters as FiltersType,
 } from "@/utils/types/transactions";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+
 import {
   Table,
   TableBody,
@@ -35,8 +26,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Transaction from "./Transaction";
-import { CustomFormInputField } from "./FormComponents";
-import { Form } from "@/components/ui/form";
 import TransactionFilters from "./TransactionFilters";
 
 const ITEMS_PER_PAGE = 10;
@@ -45,7 +34,6 @@ function AllTransactions({ data }: { data?: TransactionType[] }) {
   const transactions = data || mockTransactions;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(
     Math.ceil(transactions.length / ITEMS_PER_PAGE)
@@ -61,13 +49,6 @@ function AllTransactions({ data }: { data?: TransactionType[] }) {
     from: Date | undefined;
     to: Date | undefined;
   }>({ to: undefined, from: undefined });
-
-  const handleSearch = () => {
-    setFilters((prev) => ({
-      ...prev,
-      searchQuery,
-    }));
-  };
 
   const handleDateRangeSelect = () => {
     setFilters((prev) => ({
@@ -92,8 +73,11 @@ function AllTransactions({ data }: { data?: TransactionType[] }) {
     }
   };
 
-  const onSubmit = async (values: FiltersType) => {
-    console.log(values);
+  const handleFiltersChange = (newFilters: FiltersType) => {
+    setFilters(newFilters);
+    console.log(newFilters);
+
+    setCurrentPage(1);
   };
 
   return (
@@ -101,7 +85,7 @@ function AllTransactions({ data }: { data?: TransactionType[] }) {
       <CardHeader className="space-y-6">
         <CardTitle>Transaction History</CardTitle>
 
-        <TransactionFilters onFilterChange={() => {}} />
+        <TransactionFilters onFilterChange={handleFiltersChange} />
       </CardHeader>
       <CardContent>
         <Table>

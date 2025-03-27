@@ -74,10 +74,10 @@ function HomeWrapper({ children }: PropsWithChildren) {
   };
 
   useEffect(() => {
-    const onboardingCompleted = Cookies.get("onboardingCompleted") == "true";
+    const onboardingCompleted = Cookies.get("onboardingCompleted") !== "true";
     const isDemoMode = Cookies.get("demoMode") === "true";
     setIsDemoMode(isDemoMode);
-    setIsOpen(!onboardingCompleted);
+    setIsOpen(onboardingCompleted);
   }, []);
 
   return (

@@ -17,6 +17,7 @@ import {
   CustomFormInputField,
   CustomSelectField,
 } from "./FormComponents";
+import { ResetIcon } from "@radix-ui/react-icons";
 
 interface TransactionFiltersProps {
   onFilterChange: (filters: FiltersType) => void;
@@ -29,6 +30,11 @@ function TransactionFilters({ onFilterChange }: TransactionFiltersProps) {
       searchQuery: "",
     },
   });
+
+  const watchedValues = form.watch();
+  const isFormDirty = Object.values(watchedValues).some(
+    (value) => value !== undefined && value !== ""
+  );
 
   const onSubmit = (data: FiltersType) => {
     onFilterChange(data);
@@ -65,33 +71,35 @@ function TransactionFilters({ onFilterChange }: TransactionFiltersProps) {
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 grid-flow-col md:grid-cols-3 gap-6 md:items-start">
+          {/* Status Selector */}
+          <CustomSelectField
+            values={Object.values(Status)}
+            name="status"
+            placeholder="Select Status"
+          />
+
           {/* Start Date */}
-          <CustomDatePickerField name="startDate" label="Start Date" />
+          <CustomDatePickerField name="startDate" title="Pick a Start Date" />
 
           {/* End Date */}
-          <CustomDatePickerField name="endDate" label="End Date" />
+          <CustomDatePickerField name="endDate" title="Pick an end Date" />
+        </div>
 
-          {/* Status Selector */}
-          <div className="self-end">
-            <CustomSelectField
-              values={Object.values(Status)}
-              name="status"
-              placeholder="Select Status"
-            />
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex items-end space-x-2">
-            <Button type="submit">Apply Filters</Button>
-            <Button
-              type="button"
-              onClick={handleReset}
-              className="bg-gray-200 text-gray-800"
-            >
-              Reset
-            </Button>
-          </div>
+        {/* Action Buttons */}
+        <div className="flex gap-2">
+          <Button disabled={!isFormDirty} type="submit" className="">
+            Apply Filters
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleReset}
+            disabled={!isFormDirty}
+          >
+            <ResetIcon className="mr-1" />
+            Reset
+          </Button>
         </div>
       </form>
     </Form>

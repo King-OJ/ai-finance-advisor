@@ -103,7 +103,7 @@ export function CustomSelectField({
               {values.map((value) => {
                 return (
                   <SelectItem key={value} value={value} className="capitalize">
-                    {value}
+                    {value.charAt(0).toUpperCase() + value.slice(1)}
                   </SelectItem>
                 );
               })}
@@ -118,7 +118,7 @@ export function CustomSelectField({
 
 type CustomDatePickerFieldProps = {
   name: string;
-  label?: string;
+  title?: string;
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   control?: Control<any>;
 };
@@ -126,7 +126,7 @@ type CustomDatePickerFieldProps = {
 export function CustomDatePickerField({
   control,
   name,
-  label,
+  title,
 }: CustomDatePickerFieldProps) {
   return (
     <FormField
@@ -134,10 +134,13 @@ export function CustomDatePickerField({
       name={name}
       render={({ field }) => (
         <FormItem className="flex flex-col">
-          <FormLabel>{label || name}</FormLabel>
           <div className="space-y-1">
             <FormControl>
-              <DatePicker value={field.value} onChange={field.onChange} />
+              <DatePicker
+                title={title}
+                value={field.value}
+                onChange={field.onChange}
+              />
             </FormControl>
             <FormMessage />
           </div>
