@@ -27,7 +27,10 @@ const AppStatesContext = createContext<AppContextType | undefined>(undefined);
 function HomeWrapper({ children }: PropsWithChildren) {
   const [isOpen, setIsOpen] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(false);
-  const closeModal = () => setIsOpen(false);
+  const closeModal = () => {
+    Cookies.set("onboardingCompleted", "true", { expires: Infinity });
+    setIsOpen(false);
+  };
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 4;
@@ -86,7 +89,7 @@ function HomeWrapper({ children }: PropsWithChildren) {
     >
       {children}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="w-full sm:w-full max-w-3xl">
+        <DialogContent className="w-full sm:w-full max-w-3xl border-none">
           <DialogHeader className="sr-only">
             <DialogTitle> Welcome to SmartFi</DialogTitle>
             <DialogDescription>

@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { Target, TrendingUp } from "lucide-react";
 import { formatDate, getEmojiForCategory } from "@/utils/actions/clientActions";

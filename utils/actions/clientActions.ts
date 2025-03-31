@@ -1,3 +1,4 @@
+"use client";
 import { Category, CategoryEmojis } from "../types/others";
 
 export const formatDate = (date: Date) => {

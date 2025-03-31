@@ -11,24 +11,15 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
-import { z } from "zod";
 import { CustomFormInputField } from "./FormComponents";
-import { SignUpFormType } from "@/utils/types/others";
 import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
-const signUpSchema = z.object({
-  name: z.string().min(3, { message: "Name must be at least 3 characters." }),
-  email: z.string().email({ message: "Please enter a valid email." }),
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters." }),
-});
+import { signUpSchema, SignUpSchemaType } from "@/utils/formSchemas/auth";
 
 function SignUpForm() {
-  const form = useForm<z.infer<typeof signUpSchema>>({
+  const form = useForm<SignUpSchemaType>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
       name: "",
@@ -41,7 +32,7 @@ function SignUpForm() {
   const router = useRouter();
   const { toast } = useToast();
 
-  const onSubmit = async (values: SignUpFormType) => {
+  const onSubmit = async (values: SignUpSchemaType) => {
     setIsSubmitting(true);
     await axios
       .post("/api/auth/signup", values)

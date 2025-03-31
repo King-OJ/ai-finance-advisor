@@ -8,6 +8,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import React from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface PaginationBtnsProps {
   currentPage: number;
@@ -20,6 +21,14 @@ function PaginationBtns({
   setCurrentPage,
   totalPages,
 }: PaginationBtnsProps) {
+  const params = new URLSearchParams();
+  const router = useRouter();
+
+  const updateUrl = () => {
+    params.set("page", currentPage.toString());
+    router.push(`/transactions?${params.toString()}`, { scroll: false });
+  };
+
   return (
     <div className="flex justify-between items-center mt-4">
       <Pagination>
@@ -28,7 +37,12 @@ function PaginationBtns({
             <PaginationItem>
               <PaginationPrevious
                 href="#"
-                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                onClick={() => {
+                  if (currentPage > 1) {
+                    setCurrentPage(currentPage - 1);
+                    updateUrl();
+                  }
+                }}
                 isActive={currentPage > 1}
               />
             </PaginationItem>
@@ -47,9 +61,12 @@ function PaginationBtns({
           <PaginationItem>
             <PaginationNext
               href="#"
-              onClick={() =>
-                setCurrentPage(Math.min(totalPages, currentPage + 1))
-              }
+              onClick={() => {
+                if (currentPage < totalPages) {
+                  setCurrentPage(currentPage + 1);
+                  updateUrl();
+                }
+              }}
               isActive={currentPage < totalPages}
             />
           </PaginationItem>

@@ -13,33 +13,26 @@ import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import { z } from "zod";
 import { CustomFormInputField } from "./FormComponents";
-import { SignInFormType } from "@/utils/types/others";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
-
-const signInSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email." }),
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters." }),
-});
+import { LoginSchema, LoginSchemaType } from "@/utils/formSchemas/auth";
 
 function LoginForm() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>();
   const { toast } = useToast();
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof signInSchema>>({
-    resolver: zodResolver(signInSchema),
+  const form = useForm<LoginSchemaType>({
+    resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const onSubmit = async (values: SignInFormType) => {
+  const onSubmit = async (values: LoginSchemaType) => {
     setIsSubmitting(true);
     const response = await signIn("credentials", {
       redirect: false,
@@ -61,10 +54,7 @@ function LoginForm() {
       className: "text-green-500",
     });
     form.reset();
-    setTimeout(() => {
-      router.push("/dashboard");
-      router.refresh();
-    }, 200);
+    router.push("/dashboard");
   };
 
   return (

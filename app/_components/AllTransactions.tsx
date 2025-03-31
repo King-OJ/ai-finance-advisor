@@ -1,14 +1,5 @@
 "use client";
-import React, { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-
+import React, { useEffect, useState } from "react";
 import PaginationBtns from "./PaginationBtns";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
@@ -26,53 +17,39 @@ import {
 } from "@/components/ui/table";
 import TransactionFilters from "./TransactionFilters";
 import Transaction from "./Transaction";
-
-const ITEMS_PER_PAGE = 10;
+import { useSearchParams } from "next/navigation";
 
 interface AllTransactionsProps {
-  transactions: TransactionType[];
+  data: TransactionType[];
   totalPages: number;
+  page: number;
 }
 
-function AllTransactions({ transactions, totalPages }: AllTransactionsProps) {
-  const [currentPage, setCurrentPage] = useState(1);
-
+function AllTransactions({ data, totalPages, page }: AllTransactionsProps) {
+  const [currentPage, setCurrentPage] = useState(page);
+  const [transactions, setTransactions] = useState<TransactionType[]>(data);
+  const searchParams = useSearchParams();
   const [filters, setFilters] = useState<FiltersType>({});
-
-  const [dateRange, setDateRange] = useState<{
-    from: Date | undefined;
-    to: Date | undefined;
-  }>({ to: undefined, from: undefined });
-
-  const handleDateRangeSelect = () => {
-    setFilters((prev) => ({
-      ...prev,
-      startDate: dateRange.from?.toISOString(),
-      endDate: dateRange.to?.toISOString(),
-    }));
-  };
-
-  const handleExport = async () => {
-    try {
-      // const blob = await transactionService.exportTransactions(filters);
-      // const url = window.URL.createObjectURL(blob);
-      // const a = document.createElement("a");
-      // a.href = url;
-      // a.download = "transactions.csv";
-      // document.body.appendChild(a);
-      // a.click();
-      // a.remove();
-    } catch (error) {
-      console.error("Export failed", error);
-    }
-  };
 
   const handleFiltersChange = (newFilters: FiltersType) => {
     setFilters(newFilters);
     console.log(newFilters);
 
-    setCurrentPage(1);
+    // setCurrentPage(1);
   };
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch(
+        `/api/transactions?${searchParams.toString()}`
+      );
+      if (response.ok) {
+        const newData = await response.json();
+        setTransactions(newData.transactions);
+      }
+    }
+    fetchData();
+  }, [searchParams]);
 
   return (
     <Card className="w-full">
