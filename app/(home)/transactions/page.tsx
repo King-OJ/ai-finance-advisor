@@ -5,13 +5,34 @@ import AppEmptyState from "@/app/_components/AppEmptyState";
 import AllTransactions from "@/app/_components/AllTransactions";
 import {
   fetchPageData,
-  fetchTransactions,
+  getTransactions,
   getDemoModeFromCookies,
 } from "@/utils/actions/serverActions";
 
-async function page() {
+interface PageProps {
+  params: {
+    page?: string;
+    search?: string;
+    category?: string;
+    type?: string;
+    status?: string;
+  };
+}
+
+async function page({ params }: PageProps) {
   const isDemoMode = await getDemoModeFromCookies();
-  const data = await fetchTransactions({});
+
+  const { page, status, type, category, search } = await params;
+
+  const currentPage = parseInt(page || "1");
+
+  const initialData = await getTransactions({
+    page: currentPage,
+    search,
+    status,
+    type,
+    category,
+  });
 
   if (isDemoMode == false || isDemoMode == undefined) {
     return <AppEmptyState />;
@@ -20,15 +41,9 @@ async function page() {
   return (
     <div className="space-y-8">
       <PageHeader title="All Transactions" />
-      <AllTransactions
-        data={data.transactions}
-        totalPages={data?.totalPages}
-        page={data?.page}
-      />
+      <AllTransactions initialData={initialData} />
     </div>
   );
 }
 
 export default page;
-
-export const dynamic = "force-dynamic"; // SSR on every request

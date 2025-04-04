@@ -26,8 +26,14 @@ export interface Transaction {
 export interface TransactionFilters {
   startDate?: string;
   endDate?: string;
-  category?: Category;
-  type?: Type;
-  status?: Status;
-  searchQuery?: string;
+  category?: Category | string;
+  type?: Type | string;
+  status?: Status | string;
+  search?: string;
+}
+
+export interface TransactionsResponse {
+  transactions: Transaction[];
+  totalPages: number;
+  currentPage: number;
 }

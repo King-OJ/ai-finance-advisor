@@ -21,7 +21,7 @@ export const addTransactionFormSchema = z.object({
 
 export const TransactionFiltersSchema = z
   .object({
-    searchQuery: z.string().optional(),
+    search: z.string().optional(),
     startDate: z.string().optional(),
     endDate: z.string().optional(),
     category: z.nativeEnum(Category).optional(),
@@ -43,3 +43,5 @@ export const TransactionFiltersSchema = z
       path: ["endDate"],
     }
   );
+
+export type FilterValues = z.infer<typeof TransactionFiltersSchema>;

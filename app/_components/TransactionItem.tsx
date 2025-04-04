@@ -9,7 +9,7 @@ import {
 } from "@/utils/types/transactions";
 import { formatDate, formatCurrency } from "@/utils/actions/clientActions";
 
-function Transaction({ transaction }: { transaction: TransactionType }) {
+function TransactionItem({ transaction }: { transaction: TransactionType }) {
   const renderTransactionStatus = (status: Status) => {
     const statusVariants = {
       completed: "bg-green-100 text-green-800",
@@ -47,4 +47,4 @@ function Transaction({ transaction }: { transaction: TransactionType }) {
   );
 }
 
-export default Transaction;
+export default TransactionItem;

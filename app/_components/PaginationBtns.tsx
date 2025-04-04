@@ -8,67 +8,52 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import React from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 interface PaginationBtnsProps {
   currentPage: number;
-  setCurrentPage: (page: number) => void;
+  onPageChange: (page: number) => void;
   totalPages: number;
 }
 
 function PaginationBtns({
   currentPage,
-  setCurrentPage,
+  onPageChange,
   totalPages,
 }: PaginationBtnsProps) {
-  const params = new URLSearchParams();
-  const router = useRouter();
-
-  const updateUrl = () => {
-    params.set("page", currentPage.toString());
-    router.push(`/transactions?${params.toString()}`, { scroll: false });
-  };
-
   return (
     <div className="flex justify-between items-center mt-4">
       <Pagination>
         <PaginationContent>
           {
             <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={() => {
-                  if (currentPage > 1) {
-                    setCurrentPage(currentPage - 1);
-                    updateUrl();
-                  }
-                }}
-                isActive={currentPage > 1}
-              />
+              <Button
+                onClick={() => onPageChange(currentPage - 1)}
+                disabled={currentPage == 1}
+                variant={"outline"}
+              >
+                Previous
+              </Button>
             </PaginationItem>
           }
           {[...Array(totalPages)].map((_, index) => (
             <PaginationItem key={index}>
-              <PaginationLink
-                href="#"
-                onClick={() => setCurrentPage(index + 1)}
-                isActive={currentPage === index + 1}
+              <Button
+                variant={currentPage === index + 1 ? "default" : "outline"}
+                onClick={() => onPageChange(index + 1)}
               >
                 {index + 1}
-              </PaginationLink>
+              </Button>
             </PaginationItem>
           ))}
           <PaginationItem>
-            <PaginationNext
-              href="#"
-              onClick={() => {
-                if (currentPage < totalPages) {
-                  setCurrentPage(currentPage + 1);
-                  updateUrl();
-                }
-              }}
-              isActive={currentPage < totalPages}
-            />
+            <Button
+              variant={"outline"}
+              onClick={() => onPageChange(currentPage + 1)}
+              disabled={currentPage == totalPages}
+            >
+              Next
+            </Button>
           </PaginationItem>
         </PaginationContent>
       </Pagination>

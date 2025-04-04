@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import Transaction from "./Transaction";
+import Transaction from "./TransactionItem";
 import Link from "next/link";
 import { Transaction as type } from "@/utils/types/transactions";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";

@@ -55,6 +55,7 @@ function LoginForm() {
     });
     form.reset();
     router.push("/dashboard");
+    setIsSubmitting(false);
   };
 
   return (

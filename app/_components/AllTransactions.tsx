@@ -1,11 +1,11 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import PaginationBtns from "./PaginationBtns";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 import {
-  Transaction as TransactionType,
   TransactionFilters as FiltersType,
+  TransactionsResponse,
 } from "@/utils/types/transactions";
 
 import {
@@ -16,47 +16,60 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import TransactionFilters from "./TransactionFilters";
-import Transaction from "./Transaction";
-import { useSearchParams } from "next/navigation";
+import TransactionItem from "./TransactionItem";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { getTransactions } from "@/utils/actions/serverActions";
 
 interface AllTransactionsProps {
-  data: TransactionType[];
-  totalPages: number;
-  page: number;
+  initialData: TransactionsResponse;
 }
 
-function AllTransactions({ data, totalPages, page }: AllTransactionsProps) {
-  const [currentPage, setCurrentPage] = useState(page);
-  const [transactions, setTransactions] = useState<TransactionType[]>(data);
+function AllTransactions({ initialData }: AllTransactionsProps) {
   const searchParams = useSearchParams();
-  const [filters, setFilters] = useState<FiltersType>({});
+  const router = useRouter();
 
-  const handleFiltersChange = (newFilters: FiltersType) => {
-    setFilters(newFilters);
-    console.log(newFilters);
+  // Get current params
+  const page = parseInt(searchParams.get("page") || "1");
+  const status = searchParams.get("status") || "";
+  const type = searchParams.get("type") || "";
+  const category = searchParams.get("category") || "";
+  const search = searchParams.get("search") || "";
 
-    // setCurrentPage(1);
+  const {
+    data = initialData,
+    isLoading,
+    isError,
+  } = useQuery<TransactionsResponse>({
+    queryKey: ["transactions", page, search, status, type, category],
+    queryFn: () => getTransactions({ page, search, status, type, category }),
+    initialData:
+      page === 1 && search === "" && !type && !category && !status
+        ? initialData
+        : undefined,
+    placeholderData: keepPreviousData,
+  });
+
+  const handlePageChange = (newPage: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", newPage.toString());
+    router.push(`/transactions?${params.toString()}`);
   };
 
-  useEffect(() => {
-    async function fetchData() {
-      const response = await fetch(
-        `/api/transactions?${searchParams.toString()}`
-      );
-      if (response.ok) {
-        const newData = await response.json();
-        setTransactions(newData.transactions);
-      }
-    }
-    fetchData();
-  }, [searchParams]);
+  if (isLoading && !data) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error loading transactions</div>;
+  }
 
   return (
     <Card className="w-full">
       <CardHeader className="space-y-6">
         <CardTitle>Transaction History</CardTitle>
 
-        <TransactionFilters onFilterChange={handleFiltersChange} />
+        <TransactionFilters />
       </CardHeader>
       <CardContent>
         <Table>
@@ -71,20 +84,24 @@ function AllTransactions({ data, totalPages, page }: AllTransactionsProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {transactions.map((transaction) => (
-              <Transaction key={transaction.id} transaction={transaction} />
+            {data.transactions.map((transaction) => (
+              <TransactionItem key={transaction.id} transaction={transaction} />
             ))}
           </TableBody>
         </Table>
 
         <PaginationBtns
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          totalPages={totalPages}
+          currentPage={page}
+          onPageChange={handlePageChange}
+          totalPages={data.totalPages}
         />
       </CardContent>
     </Card>
   );
+}
+
+function keepPreviousData<T>(previousData: T | undefined) {
+  return previousData;
 }
 
 export default AllTransactions;

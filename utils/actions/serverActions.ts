@@ -1,10 +1,10 @@
 "use server";
 import { cookies } from "next/headers";
 import axios from "axios";
-import { Status, Type } from "../types/transactions";
+import { Status, TransactionsResponse, Type } from "../types/transactions";
 import { Category } from "../types/others";
 import { NextRequest } from "next/server";
-import { GET as getTransactions } from "@/app/api/transactions/route";
+import { GET as fetchTransactions } from "@/app/api/transactions/route";
 
 export const fetchPageData = async (route: string) => {
   try {
@@ -27,19 +27,21 @@ export const fetchPageData = async (route: string) => {
   }
 };
 
-export async function fetchTransactions({
-  page = 1,
-  search = "",
-  status = null,
-  category = null,
-  type = null,
-}: {
-  page?: number;
+type GetTransactionsParams = {
+  page: number;
   search?: string;
-  status?: Status | null;
-  category?: Category | null;
-  type?: Type | null;
-}) {
+  status?: Status | string;
+  category?: Category | string;
+  type?: Type | string;
+};
+
+export async function getTransactions({
+  page,
+  search,
+  status,
+  category,
+  type,
+}: GetTransactionsParams): Promise<TransactionsResponse> {
   const url = new URL("/api/transactions", "http://dummy-base");
   url.searchParams.append("page", page.toString());
   if (search) url.searchParams.append("search", search);
@@ -48,7 +50,7 @@ export async function fetchTransactions({
   if (type) url.searchParams.append("status", type);
 
   const request = new NextRequest(url, { method: "GET" });
-  const response = await getTransactions(request);
+  const response = await fetchTransactions(request);
   const data = await response.json();
   return data;
 }
