@@ -1,6 +1,5 @@
 import { mockTransactions } from "@/utils/mockData/transaction";
 import { Transaction } from "@/utils/types/transactions";
-import { log } from "console";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -14,7 +13,7 @@ export async function GET(req: NextRequest) {
     const type = searchParams.get("type");
     const status = searchParams.get("status");
     const category = searchParams.get("category");
-    const limit = 10;
+    const pageSize = parseInt(searchParams.get("pageSize") || "10");
     const page = parseInt(searchParams.get("page") || "1");
 
     let filteredTransactions: Transaction[] = mockTransactions;
@@ -25,10 +24,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    console.log(`params: ${searchParams}`);
-
     if (type) {
-      console.log(`type: ${type}`);
       filteredTransactions = filteredTransactions.filter((t) => t.type == type);
     }
 
@@ -44,16 +40,18 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const total = filteredTransactions.length;
-    const start = (page - 1) * limit;
-    const end = start + limit;
+    const totalCount = filteredTransactions.length;
+    const totalPages = Math.ceil(totalCount / pageSize);
+    const start = (page - 1) * pageSize;
+    const end = start + pageSize;
     const paginatedTransactions = filteredTransactions.slice(start, end);
 
     return NextResponse.json({
       transactions: paginatedTransactions,
-      total,
-      page,
-      totalPages: Math.ceil(total / limit),
+      totalCount,
+      currentPage: page,
+      totalPages,
+      pageSize,
     });
 
     // if (isDemoMode) {

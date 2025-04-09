@@ -2,19 +2,11 @@
 
 import { SessionProvider, signOut, useSession } from "next-auth/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactNode, useEffect } from "react";
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 60 * 1000, // 1 minute
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+import { ReactNode, useEffect, useState } from "react";
 
 function SessionChecker({ children }: { children: ReactNode }) {
   const { data: session, status } = useSession();
+
   useEffect(() => {
     if (status == "authenticated" && session?.expires) {
       const expiresAt = new Date(session.expires).getTime();
@@ -40,6 +32,17 @@ function SessionChecker({ children }: { children: ReactNode }) {
 }
 
 export function Provider({ children }: { children: ReactNode }) {
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 60 * 1000, // 1 minute
+          },
+        },
+      })
+  );
+
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider>

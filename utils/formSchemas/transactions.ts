@@ -1,13 +1,11 @@
 import * as z from "zod";
-import { Type, Status } from "../types/transactions";
-import { Category } from "../types/others";
 
 export const addTransactionFormSchema = z.object({
   merchant: z.string().min(1, "Merchant name is required"),
-  type: z.nativeEnum(Type, {
+  type: z.enum(["income", "expense", "transfer"], {
     errorMap: () => ({ message: "Please select a valid type" }),
   }),
-  category: z.nativeEnum(Category, {
+  category: z.enum(["Food", "Entertainment", "Bills", "Salary", "Investment"], {
     errorMap: () => ({ message: "Please select a valid category" }),
   }),
   amount: z
@@ -19,29 +17,30 @@ export const addTransactionFormSchema = z.object({
   description: z.string().optional(),
 });
 
-export const TransactionFiltersSchema = z
-  .object({
-    search: z.string().optional(),
-    startDate: z.string().optional(),
-    endDate: z.string().optional(),
-    category: z.nativeEnum(Category).optional(),
-    type: z.nativeEnum(Type).optional(),
-    status: z.nativeEnum(Status).optional(),
-  })
-  .refine(
-    (data) => {
-      if (data.startDate && data.endDate) {
-        const start = new Date(data.startDate);
-        const end = new Date(data.endDate);
-        return end >= start;
-      }
+export const TransactionFiltersSchema = z.object({
+  search: z.string().optional(),
+  // startDate: z.string().optional(),
+  // endDate: z.string().optional(),
+  category: z
+    .enum(["Food", "Entertainment", "Bills", "Salary", "Investment"])
+    .optional(),
+  type: z.enum(["income", "expense", "transfer"]).optional(),
+  status: z.enum(["completed", "pending", "failed"]).optional(),
+});
+// .refine(
+//   (data) => {
+//     if (data.startDate && data.endDate) {
+//       const start = new Date(data.startDate);
+//       const end = new Date(data.endDate);
+//       return end >= start;
+//     }
 
-      return true;
-    },
-    {
-      message: "End date must be after start date",
-      path: ["endDate"],
-    }
-  );
+//     return true;
+//   },
+//   {
+//     message: "End date must be after start date",
+//     path: ["endDate"],
+//   }
+// );
 
 export type FilterValues = z.infer<typeof TransactionFiltersSchema>;

@@ -11,29 +11,52 @@ export enum Status {
   failed = "failed",
 }
 
-export interface Transaction {
+export type Transaction = {
   id: string;
   date: Date;
   amount: number;
   description: string;
-  category: Category;
-  type: Type;
-  accountId: string;
+  category: "Food" | "Entertainment" | "Bills" | "Salary" | "Investment";
+  type: "income" | "expense" | "transfer";
+  accountId?: string;
   merchant?: string;
-  status: Status;
-}
+  status: "completed" | "pending" | "failed";
+};
 
-export interface TransactionFilters {
+export type TransactionFilters = {
   startDate?: string;
   endDate?: string;
-  category?: Category | string;
-  type?: Type | string;
-  status?: Status | string;
+  category?: string;
+  type?: Transaction["type"] | string;
+  status?: Transaction["status"] | string;
   search?: string;
-}
+};
 
-export interface TransactionsResponse {
+export type TransactionResponse = {
   transactions: Transaction[];
+  totalCount: number;
   totalPages: number;
   currentPage: number;
-}
+  pageSize: number;
+};
+
+export type GetTransactionsParams = {
+  page?: number;
+  pageSize?: number;
+  search?: string;
+  status?: Status | string;
+  category?: Category | string;
+  type?: string;
+};
+
+export const statusValues: Transaction["status"][] = [
+  "pending",
+  "failed",
+  "completed",
+];
+
+export const typeValues: Transaction["type"][] = [
+  "income",
+  "expense",
+  "transfer",
+];

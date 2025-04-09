@@ -2,15 +2,11 @@
 import React from "react";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import {
-  Status,
-  Type,
-  Transaction as TransactionType,
-} from "@/utils/types/transactions";
+import { Transaction } from "@/utils/types/transactions";
 import { formatDate, formatCurrency } from "@/utils/actions/clientActions";
 
-function TransactionItem({ transaction }: { transaction: TransactionType }) {
-  const renderTransactionStatus = (status: Status) => {
+function TransactionItem({ transaction }: { transaction: Transaction }) {
+  const renderTransactionStatus = (status: Transaction["status"]) => {
     const statusVariants = {
       completed: "bg-green-100 text-green-800",
       pending: "bg-yellow-100 text-yellow-800",
@@ -34,9 +30,11 @@ function TransactionItem({ transaction }: { transaction: TransactionType }) {
         <Badge
           variant="outline"
           className={
-            transaction.type === Type.credit
+            transaction.type === "income"
               ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800"
+              : transaction.type === "expense"
+              ? "bg-red-100 text-red-800"
+              : "bg-yellow-100 text-yellow-800"
           }
         >
           {transaction.type}

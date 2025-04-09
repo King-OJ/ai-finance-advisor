@@ -78,6 +78,7 @@ export function CustomFormInputField({
 type CustomFormSelectFieldProps = {
   name: string;
   placeholder: string;
+  label?: string;
   values: string[];
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   control?: Control<any>;
@@ -88,6 +89,7 @@ export function CustomSelectField({
   values,
   control,
   name,
+  label,
 }: CustomFormSelectFieldProps) {
   return (
     <FormField
@@ -95,7 +97,12 @@ export function CustomSelectField({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
+          {label && <FormLabel>{label}</FormLabel>}
+          <Select
+            onValueChange={field.onChange}
+            value={field.value ?? undefined}
+            key={field.value ?? `${name}-reset`}
+          >
             <SelectTrigger>
               <SelectValue placeholder={placeholder} />
             </SelectTrigger>
