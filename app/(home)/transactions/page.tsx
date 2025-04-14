@@ -3,10 +3,8 @@ import PageHeader from "@/app/_components/PageHeader";
 import React from "react";
 import AppEmptyState from "@/app/_components/AppEmptyState";
 import AllTransactions from "@/app/_components/AllTransactions";
-import {
-  fetchPageData,
-  getDemoModeFromCookies,
-} from "@/utils/actions/serverActions";
+import { getDemoModeFromCookies } from "@/utils/actions/serverActions";
+import AddTransactionForm from "@/app/_components/AddTransactionForm";
 
 async function page() {
   const isDemoMode = await getDemoModeFromCookies();
@@ -17,7 +15,11 @@ async function page() {
 
   return (
     <div className="space-y-8">
-      <PageHeader title="All Transactions" />
+      <PageHeader
+        pageTitle="All Transactions"
+        btnTitle="Add Transaction"
+        Form={AddTransactionForm}
+      />
       <AllTransactions />
     </div>
   );

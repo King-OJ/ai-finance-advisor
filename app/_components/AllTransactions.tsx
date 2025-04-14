@@ -39,8 +39,6 @@ function AllTransactions() {
     (searchParams.get("status") as Transaction["status"]) || undefined;
   const initialType =
     (searchParams.get("type") as Transaction["type"]) || undefined;
-  const initialCategory =
-    (searchParams.get("category") as Transaction["category"]) || undefined;
   const initialSearch = searchParams.get("search") || "";
 
   const [page, setPage] = useState(initialPage);
@@ -55,7 +53,6 @@ function AllTransactions() {
       search: initialSearch,
       type: initialType,
       status: initialStatus,
-      category: initialCategory,
     },
     mode: "onChange",
   });
@@ -63,13 +60,11 @@ function AllTransactions() {
   const searchValue = form.watch("search");
   const typeValue = form.watch("type");
   const statusValue = form.watch("status");
-  const categoryValue = form.watch("category");
   const [debouncedSearch] = useDebounce(searchValue, 300);
 
   const filters: FilterValues = {
     search: debouncedSearch,
     type: typeValue,
-    category: categoryValue,
     status: statusValue,
   };
 
@@ -83,18 +78,15 @@ function AllTransactions() {
     form.reset({
       status: undefined,
       type: undefined,
-      category: undefined,
       search: "",
     });
-
-    console.log("Form state after reset:", form.watch());
   };
 
   useEffect(() => {
     if (!isInitialMount.current) {
       setPage(1);
     }
-  }, [debouncedSearch, typeValue, categoryValue, statusValue]);
+  }, [debouncedSearch, typeValue, statusValue]);
 
   useEffect(() => {
     // Skip the effect on initial render to prevent URL update loops
@@ -110,7 +102,6 @@ function AllTransactions() {
     if (filters.search) params.set("search", filters.search);
     if (filters.type) params.set("type", filters.type);
     if (filters.status) params.set("status", filters.status);
-
     // Compare current URL params with new params to avoid unnecessary updates
     const currentParams = new URL(window.location.href).searchParams;
     const currentParamsString = currentParams.toString();
@@ -124,7 +115,15 @@ function AllTransactions() {
         }
       );
     }
-  }, [page, pageSize, pathname, router, filters]);
+  }, [
+    page,
+    pageSize,
+    pathname,
+    router,
+    filters.search,
+    filters.type,
+    filters.search,
+  ]);
 
   if (isLoading && !data) {
     return <PageSkeleton />;
@@ -147,7 +146,7 @@ function AllTransactions() {
             <TableRow>
               <TableHead>Date</TableHead>
               <TableHead>Merchant</TableHead>
-              <TableHead>Category</TableHead>
+              <TableHead>Description</TableHead>
               <TableHead>Amount</TableHead>
               <TableHead>Type</TableHead>
               <TableHead>Status</TableHead>

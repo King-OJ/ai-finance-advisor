@@ -17,6 +17,51 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import DatePicker from "./DatePicker";
+import { Textarea } from "@/components/ui/textarea";
+
+type CustomFormTextareaProps = {
+  name: string;
+  label?: string;
+  rows?: number;
+  className?: string;
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+  control: Control<any>;
+};
+
+export function CustomFormTextarea({
+  control,
+  name,
+  label,
+  rows,
+  className,
+}: CustomFormTextareaProps) {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          {label && (
+            <FormLabel className="capitalize" htmlFor={name}>
+              {label || name}
+            </FormLabel>
+          )}
+          <FormControl>
+            <Textarea
+              id={name}
+              className={className}
+              value={field.value}
+              onChange={field.onChange}
+              rows={rows}
+            />
+          </FormControl>
+          {/* <FormDescription>This is your public display name.</FormDescription> */}
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+}
 
 type CustomFormInputFieldProps = {
   name: string;
@@ -43,10 +88,13 @@ export function CustomFormInputField({
       render={({ field }) => (
         <FormItem>
           {label && (
-            <FormLabel className="capitalize">{label || name}</FormLabel>
+            <FormLabel htmlFor={name} className="capitalize">
+              {label || name}
+            </FormLabel>
           )}
           <FormControl>
             <Input
+              id={name}
               placeholder={placeholder}
               type={type}
               {...field}
@@ -97,7 +145,11 @@ export function CustomSelectField({
       name={name}
       render={({ field }) => (
         <FormItem>
-          {label && <FormLabel>{label}</FormLabel>}
+          {label && (
+            <FormLabel htmlFor={name} className="capitalize">
+              {label}
+            </FormLabel>
+          )}
           <Select
             onValueChange={field.onChange}
             value={field.value ?? undefined}
@@ -125,6 +177,7 @@ export function CustomSelectField({
 
 type CustomDatePickerFieldProps = {
   name: string;
+  label?: string;
   title?: string;
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   control?: Control<any>;
@@ -134,6 +187,7 @@ export function CustomDatePickerField({
   control,
   name,
   title,
+  label,
 }: CustomDatePickerFieldProps) {
   return (
     <FormField
@@ -141,6 +195,7 @@ export function CustomDatePickerField({
       name={name}
       render={({ field }) => (
         <FormItem className="flex flex-col">
+          {label && <FormLabel className="capitalize">{label}</FormLabel>}
           <div className="space-y-1">
             <FormControl>
               <DatePicker

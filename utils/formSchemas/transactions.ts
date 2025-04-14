@@ -5,7 +5,7 @@ export const addTransactionFormSchema = z.object({
   type: z.enum(["income", "expense", "transfer"], {
     errorMap: () => ({ message: "Please select a valid type" }),
   }),
-  category: z.enum(["Food", "Entertainment", "Bills", "Salary", "Investment"], {
+  status: z.enum(["completed", "pending", "failed"], {
     errorMap: () => ({ message: "Please select a valid category" }),
   }),
   amount: z
@@ -21,9 +21,6 @@ export const TransactionFiltersSchema = z.object({
   search: z.string().optional(),
   // startDate: z.string().optional(),
   // endDate: z.string().optional(),
-  category: z
-    .enum(["Food", "Entertainment", "Bills", "Salary", "Investment"])
-    .optional(),
   type: z.enum(["income", "expense", "transfer"]).optional(),
   status: z.enum(["completed", "pending", "failed"]).optional(),
 });
@@ -44,3 +41,5 @@ export const TransactionFiltersSchema = z.object({
 // );
 
 export type FilterValues = z.infer<typeof TransactionFiltersSchema>;
+
+export type AddTransactionFormType = z.infer<typeof addTransactionFormSchema>;

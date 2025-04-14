@@ -66,7 +66,7 @@
     --muted: 240 38% 18%;
     --muted-foreground: 0 0% 65%;
     --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --accent-foreground: 242 34% 23%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 34% 45%;
@@ -86,6 +86,9 @@
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --green-color: 150 98% 35%;
+    --red-color: 0 84% 49%;
+    --yellow-color: 60 90% 50%;
   }
   .dark {
     --background: 240 10% 3.9%;

@@ -8,14 +8,14 @@ import { formatDate, formatCurrency } from "@/utils/actions/clientActions";
 function TransactionItem({ transaction }: { transaction: Transaction }) {
   const renderTransactionStatus = (status: Transaction["status"]) => {
     const statusVariants = {
-      completed: "bg-green-100 text-green-800",
-      pending: "bg-yellow-100 text-yellow-800",
-      failed: "bg-red-100 text-red-800",
+      completed: "bg-green/15 text-green",
+      pending: "bg-yellow/15 text-yellow",
+      failed: "bg-red/15 text-red",
     };
 
     return (
-      <Badge variant="outline" className={statusVariants[status]}>
-        {status}
+      <Badge className={statusVariants[status]}>
+        {status.charAt(0).toUpperCase() + status.slice(1)}
       </Badge>
     );
   };
@@ -26,20 +26,7 @@ function TransactionItem({ transaction }: { transaction: Transaction }) {
       <TableCell>{transaction.description}</TableCell>
       <TableCell>{transaction.category}</TableCell>
       <TableCell>{formatCurrency(transaction.amount)}</TableCell>
-      <TableCell>
-        <Badge
-          variant="outline"
-          className={
-            transaction.type === "income"
-              ? "bg-green-100 text-green-800"
-              : transaction.type === "expense"
-              ? "bg-red-100 text-red-800"
-              : "bg-yellow-100 text-yellow-800"
-          }
-        >
-          {transaction.type}
-        </Badge>
-      </TableCell>
+      <TableCell>{transaction.type}</TableCell>
       <TableCell>{renderTransactionStatus(transaction.status)}</TableCell>
     </TableRow>
   );

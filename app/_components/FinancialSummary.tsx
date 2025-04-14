@@ -10,7 +10,7 @@ export default function FinancialSummary({ data }: { data: SummaryDataType }) {
       title: "Total Income",
       value: data.income,
       icon: TrendingUp,
-      color: "bg-green-500",
+      color: "bg-green/70",
       formatter: (val: number) =>
         `$${val.toLocaleString("en-US", {
           minimumFractionDigits: 2,
@@ -21,7 +21,7 @@ export default function FinancialSummary({ data }: { data: SummaryDataType }) {
       title: "Total Expenses",
       value: data.expenses,
       icon: TrendingDown,
-      color: "bg-red-500",
+      color: "bg-red/70",
       formatter: (val: number) =>
         `$${val.toLocaleString("en-US", {
           minimumFractionDigits: 2,

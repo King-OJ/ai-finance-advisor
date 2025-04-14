@@ -36,8 +36,7 @@ export async function fetchTransactions(
 
   if (filters.search) url.searchParams.append("search", filters.search);
   if (filters.type) url.searchParams.append("type", filters.type);
-  if (filters.status) url.searchParams.append("category", filters.status);
-  if (filters.category) url.searchParams.append("category", filters.category);
+  if (filters.status) url.searchParams.append("status", filters.status);
 
   const res = await fetch(url.toString());
 

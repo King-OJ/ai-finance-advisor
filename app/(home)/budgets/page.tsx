@@ -1,18 +1,15 @@
+import AllBudgets from "@/app/_components/AllBudgets";
 import AppEmptyState from "@/app/_components/AppEmptyState";
 import BudgetItem from "@/app/_components/BudgetItem";
+import CreateBudgetForm from "@/app/_components/CreateBudgetForm";
 import PageHeader from "@/app/_components/PageHeader";
-import {
-  fetchPageData,
-  getDemoModeFromCookies,
-} from "@/utils/actions/serverActions";
-import { BudgetType } from "@/utils/types/budget";
+import { getDemoModeFromCookies } from "@/utils/actions/serverActions";
+import { Budget } from "@/utils/types/budget";
 import { Category } from "@/utils/types/others";
 import React from "react";
 
-async function BudgetsPage({ budgets }: { budgets?: BudgetType[] }) {
+async function BudgetsPage({ budgets }: { budgets?: Budget[] }) {
   const isDemoMode = await getDemoModeFromCookies();
-  // const data = await fetchPageData("/ai_advisor");
-  // const { advice } = data;
 
   if (isDemoMode == false || isDemoMode == undefined) {
     return <AppEmptyState />;
@@ -50,14 +47,18 @@ async function BudgetsPage({ budgets }: { budgets?: BudgetType[] }) {
 
   return (
     <div className="space-y-8">
-      <PageHeader title="My Budgets" />
+      <PageHeader
+        pageTitle="My Budgets"
+        btnTitle="Create Budget"
+        Form={CreateBudgetForm}
+      />
+      <AllBudgets />
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {/* <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
         {data.map((budget) => {
           return <BudgetItem key={budget.id} budget={budget} />;
         })}
-      </div>
-      {/* <FinancialInsights data={advice} /> */}
+      </div> */}
     </div>
   );
 }

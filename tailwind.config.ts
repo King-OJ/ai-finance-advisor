@@ -70,6 +70,9 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        green: "hsl(var(--green-color))",
+        red: "hsl(var(--red-color))",
+        yellow: "hsl(var(--yellow-color))",
       },
       borderRadius: {
         lg: "var(--radius)",

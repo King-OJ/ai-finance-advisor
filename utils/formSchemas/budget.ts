@@ -6,24 +6,29 @@ export const createBudgetSchema = z.object({
   category: z.nativeEnum(Category, {
     errorMap: () => ({ message: "Please select a valid category" }),
   }),
+  description: z.string().min(1, "Describe the goal").optional(),
   targetAmount: z
     .number({
-      required_error: "Enter amount for the transaction",
+      required_error: "Enter target  amount for the transaction",
       invalid_type_error: "Amount must be a number",
     })
     .min(10, "Amount must be at least $10")
     .max(20000, "Amount cannot be more than $20,000"),
   currentAmount: z.number({
-    required_error: "Enter amount for the transaction",
+    required_error: "Enter current amount for the transaction",
     invalid_type_error: "Amount must be a number",
   }),
-  deadline: z
-    .date({
-      required_error: "A date is required",
-    })
+  startDate: z.string({
+    required_error: "A date is required",
+  }),
+  endDate: z.string({
+    required_error: "A date is required",
+  }),
 
-    // Example of checking if the date is in the future
-    .refine((date) => date.getTime() > new Date().getTime(), {
-      message: "Date must be in the future",
-    }),
+  // Example of checking if the date is in the future
+  // .refine((date) => date.getTime() > new Date().getTime(), {
+  //   message: "Date must be in the future",
+  // }),
 });
+
+export type CreateBudgetType = z.infer<typeof createBudgetSchema>;

@@ -36,7 +36,7 @@ interface TransactionFiltersProps {
 
 function TransactionFilters({ resetFilters, form }: TransactionFiltersProps) {
   return (
-    <Card className="bg-background">
+    <Card className="bg-accent-foreground">
       <CardHeader>
         <CardTitle>Filter Transactions</CardTitle>
         <CardDescription>
@@ -70,7 +70,7 @@ function TransactionFilters({ resetFilters, form }: TransactionFiltersProps) {
             />
 
             <div className="mt-4">
-              <Button type="button" variant="outline" onClick={resetFilters}>
+              <Button type="button" variant="default" onClick={resetFilters}>
                 Reset Filters
               </Button>
             </div>
