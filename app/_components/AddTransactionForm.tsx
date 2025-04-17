@@ -10,7 +10,7 @@ import {
   addTransactionFormSchema,
   AddTransactionFormType,
 } from "@/utils/formSchemas/transactions";
-import { statusValues, typeValues } from "@/utils/types/transactions";
+import { typeValues } from "@/utils/types/transactions";
 import {
   DialogContent,
   DialogDescription,
@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dialog";
 
 interface AddTransactionFormProps {
-  onSuccess: () => void;
+  onSuccess?: () => void;
 }
 
 function AddTransactionForm({ onSuccess }: AddTransactionFormProps) {
@@ -66,12 +66,12 @@ function AddTransactionForm({ onSuccess }: AddTransactionFormProps) {
             label="amount"
           />
           <div className="grid grid-cols-2 gap-4">
-            <CustomSelectField
+            {/* <CustomSelectField
               name="status"
               control={form.control}
               placeholder="Select Status"
               values={Object.values(statusValues)}
-            />
+            /> */}
             <CustomSelectField
               name="type"
               control={form.control}

@@ -1,12 +1,12 @@
 import * as z from "zod";
-import { Category } from "../types/others";
+import { Category } from "../types/budget";
 
 export const createBudgetSchema = z.object({
-  name: z.string().min(1, "Goal name is required"),
+  name: z.string().min(1, "Budget name is required"),
   category: z.nativeEnum(Category, {
     errorMap: () => ({ message: "Please select a valid category" }),
   }),
-  description: z.string().min(1, "Describe the goal").optional(),
+  description: z.string().optional(),
   targetAmount: z
     .number({
       required_error: "Enter target  amount for the transaction",

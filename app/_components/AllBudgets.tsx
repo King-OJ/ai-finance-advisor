@@ -1,77 +1,44 @@
 "use client";
-import { Button } from "@/components/ui/button";
 
-import { FormLabel } from "@/components/ui/form";
-
-import { Input } from "@/components/ui/input";
-import { initialBudgets } from "@/utils/mockData/budget";
-import { Delete } from "lucide-react";
 import React, { useState } from "react";
-import { Textarea } from "@/components/ui/textarea";
 import BudgetItem from "./BudgetItem";
-import { Budget } from "@/utils/types/budget";
-import { CustomFormInputField } from "./FormComponents";
+import { Budget, BudgetsResponse } from "@/utils/types/budget";
+
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useDebounce } from "use-debounce";
+import { PageSkeleton } from "./PageSkeleton";
+import { useBudgets } from "@/utils/hooks/budgets/useBudgets";
 
 function AllBudgets() {
-  const [budgets, setBudgets] = useState<Budget[]>(initialBudgets);
-  const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    amount: 0,
-    spent: 0,
-    startDate: "",
-    endDate: "",
-    category: "",
-  });
-  const [formErrors, setFormErrors] = useState({});
+  // Get current params from URL
+  const initialPage = Number(searchParams.get("page")) || 1;
+  const initialPageSize = Number(searchParams.get("pageSize")) || 4;
 
-  // Handle card click to open dialog with selected budget data
+  const [page, setPage] = useState(initialPage);
+  const [pageSize] = useState(initialPageSize);
 
-  // Close dialog and reset form
+  const { data, isLoading, isError } = useBudgets({ page, pageSize });
+  const budgets = data?.budgets || [];
+  if (isLoading) {
+    return <PageSkeleton />;
+  }
 
-  // Update form data as user types
-  //   const handleInputChange = (e) => {
-  //     const { name, value } = e.target;
-  //     setFormData({
-  //       ...formData,
-  //       [name]:
-  //         name === "amount" || name === "spent" ? parseFloat(value) || 0 : value,
-  //     });
+  if (isError) {
+    return <div>Error loading budgets</div>;
+  }
 
-  //     // Clear error for this field when user starts typing
-  //     if (formErrors[name]) {
-  //       setFormErrors({
-  //         ...formErrors,
-  //         [name]: null,
-  //       });
-  //     }
-  //   };
-
-  // Validate form fields
-  //   const validateForm = () => {
-  //     const errors = {};
-
-  //     if (!formData.name.trim()) errors.name = "Budget name is required";
-  //     if (formData.amount <= 0)
-  //       errors.amount = "Amount must be greater than zero";
-  //     if (formData.spent < 0) errors.spent = "Spent amount cannot be negative";
-  //     if (!formData.startDate) errors.startDate = "Start date is required";
-  //     if (!formData.endDate) errors.endDate = "End date is required";
-  //     if (formData.startDate > formData.endDate)
-  //       errors.endDate = "End date must be after start date";
-
-  //     setFormErrors(errors);
-  //     return Object.keys(errors).length === 0;
-  //   };
-
-  return (
+  return budgets ? (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {budgets.map((budget) => (
+      {budgets.map((budget: Budget) => (
         <BudgetItem budget={budget} key={budget.id} />
       ))}
     </div>
+  ) : (
+    <div>No Budgets to display</div>
   );
 }
 

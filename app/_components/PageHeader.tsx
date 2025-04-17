@@ -6,7 +6,10 @@ import React, { useState } from "react";
 interface PageHeaderProps {
   pageTitle: string;
   btnTitle: string;
-  Form: React.ComponentType<{ onSuccess: () => void }>;
+  Form: React.ComponentType<{
+    onSuccess?: () => void;
+    closeDialogue?: () => void;
+  }>;
 }
 
 function PageHeader({ pageTitle, btnTitle, Form }: PageHeaderProps) {
@@ -20,7 +23,7 @@ function PageHeader({ pageTitle, btnTitle, Form }: PageHeaderProps) {
           <Button className="font-bold">{btnTitle}</Button>
         </DialogTrigger>
 
-        <Form onSuccess={() => setIsModalOpen(false)} />
+        <Form closeDialogue={() => setIsModalOpen(false)} />
       </Dialog>
     </div>
   );

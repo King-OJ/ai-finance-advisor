@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { statusValues, typeValues } from "@/utils/types/transactions";
+import { typeValues } from "@/utils/types/transactions";
 import React from "react";
 import { UseFormReturn } from "react-hook-form";
 
@@ -18,19 +18,18 @@ interface TransactionFiltersProps {
   resetFilters: () => void;
   form: UseFormReturn<
     {
+      type?: "income" | "expense" | undefined;
       search?: string | undefined;
-      category?:
-        | "Food"
-        | "Entertainment"
-        | "Bills"
-        | "Salary"
-        | "Investment"
-        | undefined;
-      type?: "income" | "expense" | "transfer" | undefined;
-      status?: "completed" | "pending" | "failed" | undefined;
+      startDate?: string | undefined;
+      endDate?: string | undefined;
     },
     any,
-    undefined
+    {
+      type?: "income" | "expense" | undefined;
+      search?: string | undefined;
+      startDate?: string | undefined;
+      endDate?: string | undefined;
+    }
   >;
 }
 
@@ -61,13 +60,13 @@ function TransactionFilters({ resetFilters, form }: TransactionFiltersProps) {
               control={form.control}
             />
 
-            <CustomSelectField
-              name={"status"}
-              placeholder={"All Statuses"}
+            {/* <CustomSelectField
+              name={"budget"}
+              placeholder={"All Budgets"}
               values={statusValues}
-              label="Status"
+              label="Budgets"
               control={form.control}
-            />
+            /> */}
 
             <div className="mt-4">
               <Button type="button" variant="default" onClick={resetFilters}>

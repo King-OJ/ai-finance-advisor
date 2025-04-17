@@ -35,8 +35,7 @@ function AllTransactions() {
   // Get current params from URL
   const initialPage = Number(searchParams.get("page")) || 1;
   const initialPageSize = Number(searchParams.get("pageSize")) || 10;
-  const initialStatus =
-    (searchParams.get("status") as Transaction["status"]) || undefined;
+
   const initialType =
     (searchParams.get("type") as Transaction["type"]) || undefined;
   const initialSearch = searchParams.get("search") || "";
@@ -52,20 +51,17 @@ function AllTransactions() {
     defaultValues: {
       search: initialSearch,
       type: initialType,
-      status: initialStatus,
     },
     mode: "onChange",
   });
 
   const searchValue = form.watch("search");
   const typeValue = form.watch("type");
-  const statusValue = form.watch("status");
   const [debouncedSearch] = useDebounce(searchValue, 300);
 
   const filters: FilterValues = {
     search: debouncedSearch,
     type: typeValue,
-    status: statusValue,
   };
 
   const { data, isLoading, isError } = useQuery<TransactionResponse>({
@@ -76,7 +72,6 @@ function AllTransactions() {
 
   const resetFilters = () => {
     form.reset({
-      status: undefined,
       type: undefined,
       search: "",
     });
@@ -86,7 +81,7 @@ function AllTransactions() {
     if (!isInitialMount.current) {
       setPage(1);
     }
-  }, [debouncedSearch, typeValue, statusValue]);
+  }, [debouncedSearch, typeValue]);
 
   useEffect(() => {
     // Skip the effect on initial render to prevent URL update loops
@@ -101,7 +96,6 @@ function AllTransactions() {
 
     if (filters.search) params.set("search", filters.search);
     if (filters.type) params.set("type", filters.type);
-    if (filters.status) params.set("status", filters.status);
     // Compare current URL params with new params to avoid unnecessary updates
     const currentParams = new URL(window.location.href).searchParams;
     const currentParamsString = currentParams.toString();
@@ -146,10 +140,9 @@ function AllTransactions() {
             <TableRow>
               <TableHead>Date</TableHead>
               <TableHead>Merchant</TableHead>
-              <TableHead>Description</TableHead>
+              <TableHead>Budget</TableHead>
               <TableHead>Amount</TableHead>
               <TableHead>Type</TableHead>
-              <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
 

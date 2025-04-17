@@ -4,16 +4,15 @@ import {
   createBudgetSchema,
   CreateBudgetType,
 } from "@/utils/formSchemas/budget";
-import { Category, CreateGoalType } from "@/utils/types/others";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 import {
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
 
 import {
@@ -23,16 +22,26 @@ import {
 } from "./FormComponents";
 import { Button } from "@/components/ui/button";
 import CategoryEmoji from "./CategoryEmoji";
-import { Budget } from "@/utils/types/budget";
+import { Budget, Category } from "@/utils/types/budget";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogDescription,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useCreateBudget } from "@/utils/hooks/budgets/useBudgetMutations";
 
-interface CreateGoalFormProps {
-  onSuccess?: () => void;
+interface CreateBudgetFormProps {
+  closeDialogue?: () => void;
   budget?: Budget;
 }
 
-function CreateBudgetForm({ onSuccess, budget }: CreateGoalFormProps) {
-  const [isLoading, setIsLoading] = useState(false);
-
+function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
   const form = useForm<CreateBudgetType>({
     resolver: zodResolver(createBudgetSchema),
     defaultValues: {
@@ -40,16 +49,41 @@ function CreateBudgetForm({ onSuccess, budget }: CreateGoalFormProps) {
       description: budget?.description || "",
       targetAmount: budget?.targetAmount || undefined,
       currentAmount: budget?.currentAmount || undefined,
-      startDate: budget?.startDate || "",
-      endDate: budget?.endDate || "",
+      startDate: budget?.startDate || undefined,
+      endDate: budget?.endDate || undefined,
       category: budget?.category || undefined,
     },
   });
 
-  const onSubmit = async (values: CreateBudgetType) => {
+  const { mutate, isPending } = useCreateBudget();
+
+  const onSubmit = (values: CreateBudgetType) => {
     console.log(values);
-    onSuccess?.();
+
+    const newBudget = {
+      name: values.name,
+      targetAmount: values.targetAmount,
+      currentAmount: values.currentAmount,
+      category: values.category.toString(),
+      startDate: new Date(values.startDate),
+      endDate: new Date(values.endDate),
+      description: values.description ?? null,
+    };
+
+    mutate(newBudget, {
+      onSuccess: () => {
+        form.reset(), closeDialogue && closeDialogue();
+      },
+      onError: (err) => console.error("Mutation failed:", err),
+      onSettled: () => console.log("Mutation completed (success/error)"),
+    });
   };
+
+  const handleCloseDialog = () => console.log("close dialogue");
+
+  const handleDelete = () => console.log("delete");
+
+  const handleSave = () => console.log("save");
 
   const selectedCategory = form.watch("category");
 
@@ -71,6 +105,12 @@ function CreateBudgetForm({ onSuccess, budget }: CreateGoalFormProps) {
             control={form.control}
             placeholder="e.g Dubai Vacation"
           />
+          <CustomFormInputField
+            name="description"
+            label="Budget Description"
+            control={form.control}
+            placeholder="Describe the budget (Optional) "
+          />
           <div className="flex items-end space-x-4">
             <div className="flex-1">
               <CustomSelectField
@@ -83,12 +123,22 @@ function CreateBudgetForm({ onSuccess, budget }: CreateGoalFormProps) {
             </div>
             <CategoryEmoji category={selectedCategory} />
           </div>
-          <CustomDatePickerField
-            control={form.control}
-            name="deadline"
-            title="Goal will by due by :"
-            label="deadline"
-          />
+
+          <div className="grid grid-cols-2 gap-4">
+            <CustomDatePickerField
+              control={form.control}
+              name="startDate"
+              title="Budget starts by :"
+              label="start date"
+            />
+
+            <CustomDatePickerField
+              control={form.control}
+              name="endDate"
+              title="Budget will by due by :"
+              label="end date"
+            />
+          </div>
 
           <div className="grid grid-cols-2 gap-4">
             <CustomFormInputField
@@ -107,13 +157,51 @@ function CreateBudgetForm({ onSuccess, budget }: CreateGoalFormProps) {
             />
           </div>
 
-          <Button
-            type="submit"
-            disabled={isLoading || !form.formState.isValid}
-            className="w-full rounded-full font-bold"
-          >
-            {isLoading ? "Creating..." : "Create"}
-          </Button>
+          {budget ? (
+            <DialogFooter className="flex justify-between sm:justify-between">
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive">Delete</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      your budget and remove it from our servers.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDelete}>
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+
+              <div>
+                <Button
+                  variant="outline"
+                  className="mr-2"
+                  onClick={closeDialogue}
+                >
+                  Cancel
+                </Button>
+                <Button onClick={handleSave}>Save Changes</Button>
+              </div>
+            </DialogFooter>
+          ) : (
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="font-bold w-full block max-w-sm mx-auto"
+            >
+              {isPending ? "Creating..." : "Create"}
+            </Button>
+          )}
         </form>
       </Form>
     </DialogContent>

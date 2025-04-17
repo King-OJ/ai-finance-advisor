@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,7 +8,7 @@ datasource db {
 }
 
 model Account {
-  id                String  @id @default(cuid())
+  id                Int     @id @default(autoincrement())
   type              String
   provider          String
   providerAccountId String
@@ -25,7 +19,7 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-  userId            String
+  userId            Int
   user              User    @relation(fields: [userId], references: [id])
 
   @@unique([provider, providerAccountId])
@@ -39,48 +33,45 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Expenses {
-  id        String    @id @default(cuid())
-  name      String
-  category  String
-  amount    Float
-  budgetId  String
-  budget    Budgets   @relation(fields: [budgetId], references: [id], onDelete: Cascade)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
+model Budget {
+  id            Int           @id @default(autoincrement())
+  name          String
+  category      String
+  description   String?
+  currentAmount Float
+  targetAmount  Float
+  startDate     DateTime
+  endDate       DateTime
+  transactions  Transaction[]
+  createdBy     Int
+  user          User          @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime?     @updatedAt
 }
 
-model Income {
+model Transaction {
   id        String   @id @default(cuid())
-  name      String
-  createdBy String
+  merchant  String
+  category  String
+  budgetId  Int?
+  createdBy Int
   user      User     @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  budget    Budget?  @relation(fields: [budgetId], references: [id], onDelete: Cascade)
   emoji     String   @db.Text
   createdAt DateTime @default(now())
 }
 
-model Budgets {
-  id        String     @id @default(cuid())
-  createdBy String
-  user      User       @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  name      String
-  amount    Float
-  expenses  Expenses[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime?  @updatedAt
-}
-
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
+  id            Int           @id @default(autoincrement())
+  email         String        @unique
   name          String?
   password      String?
   image         String?
   emailVerified DateTime?
-  role          String    @default("user")
-  income        Income[]
-  budgets       Budgets[]
+  role          String        @default("user")
+  transactions  Transaction[]
+  budgets       Budget[]
   accounts      Account[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime? @updatedAt
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime?     @updatedAt
 }

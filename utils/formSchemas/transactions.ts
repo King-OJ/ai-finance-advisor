@@ -2,12 +2,12 @@ import * as z from "zod";
 
 export const addTransactionFormSchema = z.object({
   merchant: z.string().min(1, "Merchant name is required"),
-  type: z.enum(["income", "expense", "transfer"], {
+  type: z.enum(["income", "expense"], {
     errorMap: () => ({ message: "Please select a valid type" }),
   }),
-  status: z.enum(["completed", "pending", "failed"], {
-    errorMap: () => ({ message: "Please select a valid category" }),
-  }),
+  // status: z.enum(["completed", "pending", "failed"], {
+  //   errorMap: () => ({ message: "Please select a valid category" }),
+  // }),
   amount: z
     .number({
       required_error: "Enter amount for this transaction",
@@ -19,10 +19,9 @@ export const addTransactionFormSchema = z.object({
 
 export const TransactionFiltersSchema = z.object({
   search: z.string().optional(),
-  // startDate: z.string().optional(),
-  // endDate: z.string().optional(),
-  type: z.enum(["income", "expense", "transfer"]).optional(),
-  status: z.enum(["completed", "pending", "failed"]).optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+  type: z.enum(["income", "expense"]).optional(),
 });
 // .refine(
 //   (data) => {

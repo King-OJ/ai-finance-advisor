@@ -1,4 +1,5 @@
 import { demoData } from "@/utils/demoData";
+import { mockTransactions } from "@/utils/mockData/transaction";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -9,7 +10,7 @@ export async function GET(req: NextRequest) {
   if (isDemoMode) {
     return NextResponse.json({
       ...demoData,
-      transactions: demoData.transactions.slice(0, 6),
+      transactions: mockTransactions.slice(0, 6),
     });
   }
 

@@ -11,7 +11,6 @@ export async function GET(req: NextRequest) {
 
     const search = searchParams.get("search");
     const type = searchParams.get("type");
-    const status = searchParams.get("status");
     const category = searchParams.get("category");
     const pageSize = parseInt(searchParams.get("pageSize") || "10");
     const page = parseInt(searchParams.get("page") || "1");
@@ -31,12 +30,6 @@ export async function GET(req: NextRequest) {
     if (category) {
       filteredTransactions = filteredTransactions.filter(
         (t) => t.category == type
-      );
-    }
-
-    if (status) {
-      filteredTransactions = filteredTransactions.filter(
-        (t) => t.status == status
       );
     }
 

@@ -1,6 +1,6 @@
 "use state";
+import { Category, CategoryEmojis } from "@/utils/types/budget";
 import React from "react";
-import { Category, CategoryEmojis } from "@/utils/types/others";
 
 function CategoryEmoji({ category }: { category: Category }) {
   if (category == undefined) {

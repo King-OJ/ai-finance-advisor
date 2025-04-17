@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
-import Transaction from "./TransactionItem";
 import Link from "next/link";
-import { Transaction as type } from "@/utils/types/transactions";
+import { Transaction } from "@/utils/types/transactions";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -10,8 +9,9 @@ import {
   TableBody,
   TableRow,
 } from "@/components/ui/table";
+import TransactionItem from "./TransactionItem";
 
-export default function RecentTransactions({ data }: { data: type[] }) {
+export default function RecentTransactions({ data }: { data: Transaction[] }) {
   return (
     <Card className="w-full">
       <CardHeader>
@@ -33,12 +33,11 @@ export default function RecentTransactions({ data }: { data: type[] }) {
               <TableHead>Category</TableHead>
               <TableHead>Amount</TableHead>
               <TableHead>Type</TableHead>
-              <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {data.map((transaction) => (
-              <Transaction key={transaction.id} transaction={transaction} />
+              <TransactionItem key={transaction.id} transaction={transaction} />
             ))}
           </TableBody>
         </Table>

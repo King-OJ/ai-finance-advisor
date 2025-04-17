@@ -1,4 +1,4 @@
-import { Category } from "./others";
+import { Budget } from "./budget";
 
 export enum Type {
   credit = "credit",
@@ -16,11 +16,10 @@ export type Transaction = {
   date: Date;
   amount: number;
   description: string;
-  category: "Food" | "Entertainment" | "Bills" | "Salary" | "Investment";
-  type: "income" | "expense" | "transfer";
+  category: Budget["category"];
+  type: "income" | "expense";
   accountId?: string;
   merchant?: string;
-  status: "completed" | "pending" | "failed";
 };
 
 export type TransactionFilters = {
@@ -28,7 +27,6 @@ export type TransactionFilters = {
   endDate?: string;
   category?: string;
   type?: Transaction["type"] | string;
-  status?: Transaction["status"] | string;
   search?: string;
 };
 
@@ -45,18 +43,8 @@ export type GetTransactionsParams = {
   pageSize?: number;
   search?: string;
   status?: Status | string;
-  category?: Category | string;
+  category?: Budget["category"] | string;
   type?: string;
 };
 
-export const statusValues: Transaction["status"][] = [
-  "pending",
-  "failed",
-  "completed",
-];
-
-export const typeValues: Transaction["type"][] = [
-  "income",
-  "expense",
-  "transfer",
-];
+export const typeValues: Transaction["type"][] = ["income", "expense"];

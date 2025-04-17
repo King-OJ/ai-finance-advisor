@@ -1,26 +1,27 @@
-import { BudgetType } from "@/utils/types/budget";
+import { Budget, Category } from "@/utils/types/budget";
 import BudgetItem from "./BudgetItem";
-import { Category } from "@/utils/types/others";
 
-export default function LatestBudgets({ list }: { list?: BudgetType[] }) {
+export default function LatestBudgets({ list }: { list?: Budget[] }) {
   const data = list || [
     {
-      id: "01",
+      id: 1,
       name: "Gucci Cloth",
-      target: 4000,
-      current: 1000,
-      deadline: new Date("2025-02-25"),
+      description: "Just an outing cloth",
+      targetAmount: 4000,
+      currentAmount: 1000,
+      startDate: "2025-02-25",
+      endDate: "2025-04-25",
       category: Category.Shopping,
-      monthlyContribution: 200,
     },
     {
-      id: "02",
+      id: 2,
       name: "House rent",
-      target: 4000,
-      current: 1000,
-      deadline: new Date("2025-02-25"),
+      description: "A necessary house payment",
+      targetAmount: 4000,
+      currentAmount: 1000,
+      startDate: "2025-02-25",
       category: Category.Home,
-      monthlyContribution: 200,
+      endDate: "2025-05-26",
     },
   ];
 

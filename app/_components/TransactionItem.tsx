@@ -6,16 +6,15 @@ import { Transaction } from "@/utils/types/transactions";
 import { formatDate, formatCurrency } from "@/utils/actions/clientActions";
 
 function TransactionItem({ transaction }: { transaction: Transaction }) {
-  const renderTransactionStatus = (status: Transaction["status"]) => {
-    const statusVariants = {
-      completed: "bg-green/15 text-green",
-      pending: "bg-yellow/15 text-yellow",
-      failed: "bg-red/15 text-red",
+  const renderTransactionType = (type: Transaction["type"]) => {
+    const typeVariants = {
+      income: "bg-green/15 text-green",
+      expense: "bg-red/15 text-red",
     };
 
     return (
-      <Badge className={statusVariants[status]}>
-        {status.charAt(0).toUpperCase() + status.slice(1)}
+      <Badge className={typeVariants[type]}>
+        {type.charAt(0).toUpperCase() + type.slice(1)}
       </Badge>
     );
   };
@@ -26,8 +25,7 @@ function TransactionItem({ transaction }: { transaction: Transaction }) {
       <TableCell>{transaction.description}</TableCell>
       <TableCell>{transaction.category}</TableCell>
       <TableCell>{formatCurrency(transaction.amount)}</TableCell>
-      <TableCell>{transaction.type}</TableCell>
-      <TableCell>{renderTransactionStatus(transaction.status)}</TableCell>
+      <TableCell>{renderTransactionType(transaction.type)}</TableCell>
     </TableRow>
   );
 }

@@ -1,8 +1,7 @@
-import { Budget } from "../types/budget";
-import { Category } from "../types/others";
+import { Budget, Category } from "../types/budget";
 
 // Sample budget data
-export const initialBudgets: Budget[] = [
+export const demoBudgets: Budget[] = [
   {
     id: 1,
     name: "Monthly Expenses",

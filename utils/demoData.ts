@@ -1,4 +1,4 @@
-import { BudgetType } from "./types/budget";
+import { Budget } from "./types/budget";
 
 export const demoData = {
   user: {
@@ -309,7 +309,7 @@ export type MonthlySpendingType = { month: string; amount: number };
 export type DemoDataType = {
   summary: SummaryDataType;
   transactions: TransactionType[];
-  goals: BudgetType[];
+  budget: Budget[];
   portfolio: PortfolioType;
   insights: InsightType[];
   categories: CategoryType[];
