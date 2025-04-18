@@ -4,7 +4,7 @@ import prisma from "@/utils/prisma";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
-const getUserId = async () => {
+export const getUserId = async () => {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
   if (!userId) {
@@ -29,24 +29,25 @@ export async function GET(req: NextRequest) {
     const pageSize = parseInt(searchParams.get("pageSize") || "4");
     const page = parseInt(searchParams.get("page") || "1");
 
-    const budgets = await prisma.budget.findMany({
-      where: {
-        createdBy: Number(userId),
-      },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-    const totalCount = budgets.length;
-    const totalPages = Math.ceil(totalCount / pageSize);
+    const [budgets, totalCount] = await Promise.all([
+      prisma.budget.findMany({
+        where: {
+          createdBy: Number(userId),
+        },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        orderBy: {
+          createdAt: "desc",
+        },
+      }),
+      prisma.budget.count(),
+    ]);
 
     return NextResponse.json({
       budgets,
       totalCount,
       currentPage: page,
-      totalPages,
+      totalPages: Math.ceil(totalCount / pageSize),
       pageSize,
     });
   } catch (error) {

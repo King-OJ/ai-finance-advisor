@@ -50,8 +50,8 @@ function LoginForm() {
     }
 
     toast({
-      title: "Login successful!",
-      className: "text-green-500",
+      title: "Login successful!Redirecting...",
+      className: "text-green",
     });
     form.reset();
     router.push("/dashboard");

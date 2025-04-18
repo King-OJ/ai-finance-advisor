@@ -17,10 +17,9 @@ export const useCreateBudget = () => {
 
     onMutate: async (newBudget) => {
       await queryClient.cancelQueries({ queryKey: ["budgets"] });
-
       const previousBudgets = queryClient.getQueryData(["budgets"]) || [];
 
-      queryClient.setQueryData(["budgets"], (old: Budget[]) => [
+      queryClient.setQueryData(["budgets"], (old: Budget[] | undefined) => [
         ...(old || []),
         { ...newBudget, id: Date.now().toString() },
       ]);
@@ -36,6 +35,75 @@ export const useCreateBudget = () => {
 
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["budgets"] });
+    },
+  });
+};
+
+export const useDeleteBudget = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: number) =>
+      fetch(`/api/budgets/${id}`, { method: "DELETE" }),
+    onMutate: async (id: number) => {
+      await queryClient.cancelQueries({ queryKey: ["budgets"] });
+      const previousBudgets = queryClient.getQueryData(["budgets"]) || [];
+
+      queryClient.setQueryData(
+        ["budgets"],
+        (old: Budget[]) => old?.filter((budget) => budget.id !== id) || []
+      );
+
+      return { previousBudgets };
+    },
+    onError: (err, _, context) => {
+      queryClient.setQueryData(["budgets"], context?.previousBudgets);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["budgets"] });
+    },
+  });
+};
+
+export const useEditBudget = () => {
+  const queryClient = useQueryClient();
+
+  const onSettled = () => {
+    queryClient.invalidateQueries({ queryKey: ["budgets"] });
+  };
+
+  const mutationFn = (
+    updatedBudget: Omit<Budget, "createdAt" | "updatedAt" | "createdBy">
+  ) =>
+    fetch(`/api/budgets/${updatedBudget.id}`, {
+      method: "PATCH",
+      body: JSON.stringify(updatedBudget),
+    }).then((res) => res.json());
+
+  const onMutate = async (
+    updatedBudget: Omit<Budget, "createdAt" | "updatedAt" | "createdBy">
+  ) => {
+    await queryClient.cancelQueries({ queryKey: ["budgets"] });
+    const previousBudgets = queryClient.getQueryData(["budgets"]) || [];
+    queryClient.setQueryData(
+      ["budgets"],
+      (old: Budget[]) =>
+        old.map((budget) =>
+          budget.id === updatedBudget.id
+            ? { ...budget, ...updatedBudget }
+            : budget
+        ) || []
+    );
+
+    return { previousBudgets };
+  };
+
+  return useMutation({
+    mutationFn,
+    onMutate,
+    onSettled,
+    onError: (err, _, context) => {
+      queryClient.setQueryData(["budgets"], context?.previousBudgets);
     },
   });
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { GetBudgetsParams } from "../../types/budget";
 
 export const useBudgets = (params: GetBudgetsParams = {}) => {
@@ -22,6 +22,7 @@ export const useBudgets = (params: GetBudgetsParams = {}) => {
   return useQuery({
     queryKey,
     queryFn,
-    placeholderData: "previous",
+    placeholderData: keepPreviousData,
+    staleTime: 0,
   });
 };

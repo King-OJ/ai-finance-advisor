@@ -5,7 +5,7 @@ import {
   CreateBudgetType,
 } from "@/utils/formSchemas/budget";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import {
   DialogContent,
@@ -34,7 +34,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useCreateBudget } from "@/utils/hooks/budgets/useBudgetMutations";
+import {
+  useCreateBudget,
+  useDeleteBudget,
+  useEditBudget,
+} from "@/utils/hooks/budgets/useBudgetMutations";
+import { useToast } from "@/hooks/use-toast";
 
 interface CreateBudgetFormProps {
   closeDialogue?: () => void;
@@ -42,6 +47,8 @@ interface CreateBudgetFormProps {
 }
 
 function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
+
   const form = useForm<CreateBudgetType>({
     resolver: zodResolver(createBudgetSchema),
     defaultValues: {
@@ -54,12 +61,14 @@ function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
       category: budget?.category || undefined,
     },
   });
+  const { toast } = useToast();
+  const { mutate: createBudget, isPending: isCreatingBudget } =
+    useCreateBudget();
+  const { mutate: editBudget, isPending: isEditingBudget } = useEditBudget();
+  const { mutate: deleteBudget, isPending: isDeletingBudget } =
+    useDeleteBudget();
 
-  const { mutate, isPending } = useCreateBudget();
-
-  const onSubmit = (values: CreateBudgetType) => {
-    console.log(values);
-
+  const onCreate = (values: CreateBudgetType) => {
     const newBudget = {
       name: values.name,
       targetAmount: values.targetAmount,
@@ -70,20 +79,79 @@ function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
       description: values.description ?? null,
     };
 
-    mutate(newBudget, {
+    createBudget(newBudget, {
       onSuccess: () => {
-        form.reset(), closeDialogue && closeDialogue();
+        form.reset();
+        closeDialogue?.();
+
+        toast({
+          title: "New Budget Created!",
+          className: "text-green",
+        });
       },
-      onError: (err) => console.error("Mutation failed:", err),
-      onSettled: () => console.log("Mutation completed (success/error)"),
+      onError: (err) =>
+        toast({
+          title: "Error creating budget",
+          description: err.message,
+          variant: "destructive",
+        }),
+      onSettled: () => {},
     });
   };
 
-  const handleCloseDialog = () => console.log("close dialogue");
+  const onSave = (values: CreateBudgetType) => {
+    const newBudget = {
+      id: budget!.id,
+      name: values.name,
+      targetAmount: values.targetAmount,
+      currentAmount: values.currentAmount,
+      category: values.category.toString(),
+      startDate: new Date(values.startDate),
+      endDate: new Date(values.endDate),
+      description: values.description ?? null,
+    };
 
-  const handleDelete = () => console.log("delete");
+    editBudget(newBudget, {
+      onSuccess: () => {
+        form.reset();
+        closeDialogue?.();
 
-  const handleSave = () => console.log("save");
+        toast({
+          title: "Budget updated Succesfully!",
+          className: "text-green",
+        });
+      },
+      onError: (err) =>
+        toast({
+          title: "Error creating budget",
+          description: err.message,
+          variant: "destructive",
+        }),
+      onSettled: () => {},
+    });
+  };
+
+  const handleDelete = () => {
+    deleteBudget(budget!.id, {
+      onSuccess: () => {
+        toast({
+          title: "Budget deleted successfully",
+          variant: "default",
+          className: "text-green",
+        }); // Close the main dialog
+      },
+      onError: (error) => {
+        toast({
+          title: "Error deleting budget",
+          description: error.message,
+          variant: "destructive",
+        });
+      },
+      onSettled: () => {
+        setIsDeleteDialogOpen(false); // Close delete confirmation dialog
+      },
+    });
+  };
 
   const selectedCategory = form.watch("category");
 
@@ -98,7 +166,12 @@ function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
       </DialogHeader>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form
+          className="space-y-8"
+          onSubmit={
+            budget ? form.handleSubmit(onSave) : form.handleSubmit(onCreate)
+          }
+        >
           <CustomFormInputField
             name="name"
             label="Budget Name"
@@ -159,11 +232,14 @@ function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
 
           {budget ? (
             <DialogFooter className="flex justify-between sm:justify-between">
-              <AlertDialog>
+              <AlertDialog
+                open={isDeleteDialogOpen}
+                onOpenChange={setIsDeleteDialogOpen}
+              >
                 <AlertDialogTrigger asChild>
                   <Button variant="destructive">Delete</Button>
                 </AlertDialogTrigger>
-                <AlertDialogContent>
+                <AlertDialogContent className="border-none">
                   <AlertDialogHeader>
                     <AlertDialogTitle>
                       Are you absolutely sure?
@@ -175,8 +251,11 @@ function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDelete}>
-                      Delete
+                    <AlertDialogAction
+                      onClick={handleDelete}
+                      disabled={isDeletingBudget}
+                    >
+                      {isDeletingBudget ? "Deleting" : "Delete"}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -184,22 +263,25 @@ function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
 
               <div>
                 <Button
+                  type="button"
                   variant="outline"
                   className="mr-2"
                   onClick={closeDialogue}
                 >
                   Cancel
                 </Button>
-                <Button onClick={handleSave}>Save Changes</Button>
+                <Button disabled={isEditingBudget} type="submit">
+                  {isEditingBudget ? "Saving" : "Save Changes"}
+                </Button>
               </div>
             </DialogFooter>
           ) : (
             <Button
               type="submit"
-              disabled={isPending}
+              disabled={isCreatingBudget}
               className="font-bold w-full block max-w-sm mx-auto"
             >
-              {isPending ? "Creating..." : "Create"}
+              {isCreatingBudget ? "Creating..." : "Create"}
             </Button>
           )}
         </form>
