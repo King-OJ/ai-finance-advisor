@@ -16,7 +16,7 @@ import {
 import TransactionFilters from "./TransactionFilters";
 import TransactionItem from "./TransactionItem";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { fetchTransactions } from "@/utils/actions/clientActions";
 import { PageSkeleton } from "./PageSkeleton";
 import {
@@ -172,10 +172,6 @@ function AllTransactions() {
       </CardContent>
     </Card>
   );
-}
-
-function keepPreviousData<T>(previousData: T | undefined) {
-  return previousData;
 }
 
 export default AllTransactions;

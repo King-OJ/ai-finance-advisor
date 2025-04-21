@@ -16,6 +16,7 @@ function Navbar() {
     pathname.includes("/income") ||
     pathname.includes("/transactions") ||
     pathname.includes("/budgets") ||
+    pathname.includes("/budgets/**") ||
     pathname.includes("/upgrade")
   ) {
     return null;

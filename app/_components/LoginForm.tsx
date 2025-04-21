@@ -50,7 +50,7 @@ function LoginForm() {
     }
 
     toast({
-      title: "Login successful!Redirecting...",
+      title: "Login successful! Redirecting...",
       className: "text-green",
     });
     form.reset();

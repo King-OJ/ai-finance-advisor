@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import {
   Banknote,
   Calendar,
-  Delete,
+  FileText,
   Pencil,
   PieChart,
   Target,
@@ -24,6 +24,7 @@ import { formatDate, getEmojiForCategory } from "@/utils/actions/clientActions";
 import { Dialog } from "@/components/ui/dialog";
 
 import CreateBudgetForm from "./CreateBudgetForm";
+import Link from "next/link";
 
 const calculateProgress = (current: number, target: number) => {
   return Math.min((current / target) * 100, 100);
@@ -34,7 +35,7 @@ function BudgetItem({ budget }: { budget: Budget }) {
     setIsDialogOpen(false);
   };
 
-  const handleCardClick = () => {
+  const openDialogueModal = () => {
     setIsDialogOpen(true);
   };
 
@@ -60,7 +61,6 @@ function BudgetItem({ budget }: { budget: Budget }) {
       <Card
         key={budget.id}
         className="cursor-pointer hover:shadow-lg transition-shadow"
-        onClick={() => handleCardClick()}
       >
         <CardHeader className="pb-2">
           <div className="flex justify-between items-start">
@@ -118,10 +118,17 @@ function BudgetItem({ budget }: { budget: Budget }) {
             </div>
           </div>
         </CardContent>
-        <CardFooter className="pb-0 pt-6">
-          <Button className="w-full">
-            <Pencil className="h-4 w-4 mr-2" />
+        <CardFooter className="pb-0 pt-6 flex items-center flex-col space-y-4">
+          <Button onClick={openDialogueModal} className="w-full">
+            <Pencil className="h-4 w-4 mr-2 " />
             Edit Budget
+          </Button>
+
+          <Button className="w-full" variant={"outline"} asChild>
+            <Link href={`/budgets/${budget.id}`}>
+              <FileText className="h-4 w-4 mr-2" />
+              View Budget
+            </Link>
           </Button>
         </CardFooter>
       </Card>

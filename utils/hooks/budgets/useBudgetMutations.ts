@@ -1,5 +1,6 @@
 "use client";
 
+import { useToast } from "@/hooks/use-toast";
 import { Budget } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -67,6 +68,7 @@ export const useDeleteBudget = () => {
 
 export const useEditBudget = () => {
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const onSettled = () => {
     queryClient.invalidateQueries({ queryKey: ["budgets"] });
@@ -88,7 +90,7 @@ export const useEditBudget = () => {
     queryClient.setQueryData(
       ["budgets"],
       (old: Budget[]) =>
-        old.map((budget) =>
+        old?.map((budget) =>
           budget.id === updatedBudget.id
             ? { ...budget, ...updatedBudget }
             : budget
@@ -102,7 +104,13 @@ export const useEditBudget = () => {
     mutationFn,
     onMutate,
     onSettled,
-    onError: (err, _, context) => {
+    onError: (error, _, context) => {
+      toast({
+        title: "Update failed",
+        description: error.message,
+        variant: "destructive",
+      });
+      // Rollback on error
       queryClient.setQueryData(["budgets"], context?.previousBudgets);
     },
   });

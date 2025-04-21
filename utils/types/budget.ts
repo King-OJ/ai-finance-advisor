@@ -1,3 +1,5 @@
+import { Transaction } from "./transactions";
+
 export enum Category {
   Transfer = "Transfer",
   Home = "Home",
@@ -45,6 +47,7 @@ export type Budget = {
   startDate: string;
   endDate: string;
   category: Category;
+  transactions?: Transaction[]
 };
 
 export type BudgetsResponse = {

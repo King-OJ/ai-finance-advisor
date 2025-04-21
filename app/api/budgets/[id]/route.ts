@@ -28,3 +28,49 @@ export async function DELETE(
     );
   }
 }
+
+export async function PATCH(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { id } = await params;
+    const budgetId = Number(id);
+    if (isNaN(budgetId)) {
+      return NextResponse.json({ error: "Invalid budget ID" }, { status: 400 });
+    }
+
+    const userId = await getUserId();
+    const {
+      name,
+      category,
+      description,
+      currentAmount,
+      targetAmount,
+      startDate,
+      endDate,
+    } = await req.json();
+
+    const updatedBudget = await prisma.budget.update({
+      where: {
+        id: budgetId,
+        createdBy: userId,
+      },
+      data: {
+        name,
+        currentAmount,
+        description,
+        category,
+        startDate,
+        endDate,
+        targetAmount,
+      },
+    });
+    return NextResponse.json(updatedBudget);
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Budget update failed!" },
+      { status: 404 }
+    );
+  }
+}

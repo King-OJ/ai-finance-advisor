@@ -61,10 +61,23 @@ function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
       category: budget?.category || undefined,
     },
   });
+
+  React.useEffect(() => {
+    form.reset({
+      name: budget?.name || "",
+      description: budget?.description || "",
+      targetAmount: budget?.targetAmount || undefined,
+      currentAmount: budget?.currentAmount || undefined,
+      startDate: budget?.startDate || undefined,
+      endDate: budget?.endDate || undefined,
+      category: budget?.category || undefined,
+    });
+  }, [budget?.id, form.reset]); // Reset when budget ID changes
+
   const { toast } = useToast();
   const { mutate: createBudget, isPending: isCreatingBudget } =
     useCreateBudget();
-  const { mutate: editBudget, isPending: isEditingBudget } = useEditBudget();
+  const { mutate: editBudget, isPending: isSavingBudget } = useEditBudget();
   const { mutate: deleteBudget, isPending: isDeletingBudget } =
     useDeleteBudget();
 
@@ -113,25 +126,18 @@ function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
 
     editBudget(newBudget, {
       onSuccess: () => {
-        form.reset();
         closeDialogue?.();
 
         toast({
-          title: "Budget updated Succesfully!",
+          title: "Budget updated!",
           className: "text-green",
         });
       },
-      onError: (err) =>
-        toast({
-          title: "Error creating budget",
-          description: err.message,
-          variant: "destructive",
-        }),
-      onSettled: () => {},
     });
   };
 
-  const handleDelete = () => {
+  const handleDelete = (e: React.MouseEvent) => {
+    e.preventDefault();
     deleteBudget(budget!.id, {
       onSuccess: () => {
         toast({
@@ -139,16 +145,15 @@ function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
           variant: "default",
           className: "text-green",
         }); // Close the main dialog
+        setIsDeleteDialogOpen(false);
       },
       onError: (error) => {
         toast({
-          title: "Error deleting budget",
+          title: "Deletion Failed",
           description: error.message,
           variant: "destructive",
         });
-      },
-      onSettled: () => {
-        setIsDeleteDialogOpen(false); // Close delete confirmation dialog
+        setIsDeleteDialogOpen(true);
       },
     });
   };
@@ -252,7 +257,7 @@ function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction
-                      onClick={handleDelete}
+                      onClick={(e) => handleDelete(e)}
                       disabled={isDeletingBudget}
                     >
                       {isDeletingBudget ? "Deleting" : "Delete"}
@@ -270,8 +275,11 @@ function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
                 >
                   Cancel
                 </Button>
-                <Button disabled={isEditingBudget} type="submit">
-                  {isEditingBudget ? "Saving" : "Save Changes"}
+                <Button
+                  disabled={!form.formState.isDirty || isSavingBudget}
+                  type="submit"
+                >
+                  {isSavingBudget ? "Saving" : "Save Changes"}
                 </Button>
               </div>
             </DialogFooter>

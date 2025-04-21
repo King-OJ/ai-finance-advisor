@@ -48,7 +48,7 @@ export const authOptions: NextAuthOptions = {
           });
 
           if (!user) {
-            throw new CustomError(401, "Account not found!");
+            throw new CustomError(401, "Account does not exist!");
           }
 
           const isPasswordMatch = await compare(password, user.password!);

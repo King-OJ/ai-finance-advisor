@@ -10,7 +10,7 @@ export const getUserId = async () => {
   if (!userId) {
     throw new Error();
   }
-  return userId;
+  return Number(userId);
 };
 
 export async function GET(req: NextRequest) {
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
     const [budgets, totalCount] = await Promise.all([
       prisma.budget.findMany({
         where: {
-          createdBy: Number(userId),
+          createdBy: userId,
         },
         skip: (page - 1) * pageSize,
         take: pageSize,
@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
       pageSize,
     });
   } catch (error) {
-    console.error("Error fetching transactions:", error);
+    console.error("Error fetching budgets:", error);
     return NextResponse.json(
       { success: false, error: "Failed to fetch budgets" },
       { status: 500 }
@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
         startDate,
         endDate,
         targetAmount,
-        createdBy: Number(userId),
+        createdBy: userId,
       },
     });
     return NextResponse.json(budget);
