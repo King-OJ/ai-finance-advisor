@@ -54,8 +54,8 @@ function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
     defaultValues: {
       name: budget?.name || "",
       description: budget?.description || "",
-      targetAmount: budget?.targetAmount || undefined,
-      currentAmount: budget?.currentAmount || undefined,
+      amount: budget?.amount || undefined,
+      spent: budget?.spent || undefined,
       startDate: budget?.startDate || undefined,
       endDate: budget?.endDate || undefined,
       category: budget?.category || undefined,
@@ -66,8 +66,8 @@ function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
     form.reset({
       name: budget?.name || "",
       description: budget?.description || "",
-      targetAmount: budget?.targetAmount || undefined,
-      currentAmount: budget?.currentAmount || undefined,
+      amount: budget?.amount || undefined,
+      spent: budget?.spent || undefined,
       startDate: budget?.startDate || undefined,
       endDate: budget?.endDate || undefined,
       category: budget?.category || undefined,
@@ -84,8 +84,8 @@ function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
   const onCreate = (values: CreateBudgetType) => {
     const newBudget = {
       name: values.name,
-      targetAmount: values.targetAmount,
-      currentAmount: values.currentAmount,
+      amount: values.amount,
+      spent: values.spent,
       category: values.category.toString(),
       startDate: new Date(values.startDate),
       endDate: new Date(values.endDate),
@@ -116,8 +116,8 @@ function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
     const newBudget = {
       id: budget!.id,
       name: values.name,
-      targetAmount: values.targetAmount,
-      currentAmount: values.currentAmount,
+      amount: values.amount,
+      spent: values.spent,
       category: values.category.toString(),
       startDate: new Date(values.startDate),
       endDate: new Date(values.endDate),
@@ -220,15 +220,15 @@ function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
 
           <div className="grid grid-cols-2 gap-4">
             <CustomFormInputField
-              label="Current Amount"
-              name="currentAmount"
+              label="Budget Amount"
+              name="amount"
               control={form.control}
               type="number"
               placeholder="e.g $5000"
             />
             <CustomFormInputField
-              label="Budget Target"
-              name="targetAmount"
+              label="Amount Spent"
+              name="spent"
               control={form.control}
               type="number"
               placeholder="e.g $5000"

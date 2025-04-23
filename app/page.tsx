@@ -30,7 +30,7 @@ export default function Home() {
             <Link href={"/dashboard"}>Get Financial Advice</Link>
           </Button>
           <Button variant="outline" asChild>
-            <Link href={"/signup"}>Sign Up</Link>
+            <Link href={"/auth"}>Sign Up</Link>
           </Button>
         </div>
       </div>

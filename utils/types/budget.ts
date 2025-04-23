@@ -42,12 +42,12 @@ export type Budget = {
   id: number;
   name: string;
   description: string;
-  currentAmount: number;
-  targetAmount: number;
+  amount: number;
+  spent: number;
   startDate: string;
   endDate: string;
   category: Category;
-  transactions?: Transaction[]
+  transactions?: Transaction[];
 };
 
 export type BudgetsResponse = {

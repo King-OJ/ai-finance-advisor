@@ -8,8 +8,7 @@ import { usePathname } from "next/navigation";
 function Navbar() {
   const pathname = usePathname();
 
-  const isSignUpPage = pathname == "/signup";
-  const isloginPage = pathname == "/login";
+  const isAuthPage = pathname == "/auth";
 
   if (
     pathname.includes("/dashboard") ||
@@ -26,7 +25,7 @@ function Navbar() {
     <header className="flex justify-between items-center p-6 w-full">
       <AppLogoAndTitle />
 
-      {isSignUpPage || isloginPage ? null : (
+      {isAuthPage ? null : (
         <nav>
           <Button>
             <Link href={"/dashboard"}>Get Started</Link>

@@ -7,15 +7,15 @@ export const createBudgetSchema = z.object({
     errorMap: () => ({ message: "Please select a valid category" }),
   }),
   description: z.string().optional(),
-  targetAmount: z
+  amount: z
     .number({
-      required_error: "Enter target  amount for the transaction",
+      required_error: "Enter amount for the budget",
       invalid_type_error: "Amount must be a number",
     })
     .min(10, "Amount must be at least $10")
     .max(20000, "Amount cannot be more than $20,000"),
-  currentAmount: z.number({
-    required_error: "Enter current amount for the transaction",
+  spent: z.number({
+    required_error: "Enter amount spent inside the budget",
     invalid_type_error: "Amount must be a number",
   }),
   startDate: z.string({

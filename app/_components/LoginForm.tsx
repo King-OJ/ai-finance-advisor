@@ -11,15 +11,13 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
-import { z } from "zod";
 import { CustomFormInputField } from "./FormComponents";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import Link from "next/link";
 import { LoginSchema, LoginSchemaType } from "@/utils/formSchemas/auth";
 
-function LoginForm() {
+function LoginForm({ toggleLogin }: { toggleLogin: () => void }) {
   const [isSubmitting, setIsSubmitting] = useState<boolean>();
   const { toast } = useToast();
   const router = useRouter();
@@ -61,7 +59,7 @@ function LoginForm() {
   return (
     <Card className="w-80 sm:w-full max-w-lg mx-auto">
       <CardHeader>
-        <CardTitle className="text-lg md:text-xl">Sign In</CardTitle>
+        <CardTitle className="text-lg md:text-xl">Login</CardTitle>
         <CardDescription>Welcome Back</CardDescription>
       </CardHeader>
 
@@ -101,8 +99,13 @@ function LoginForm() {
 
         <p className="mt-4 text-center text-sm">
           Don't have an account?{" "}
-          <Button asChild variant={"ghost"} size={"sm"}>
-            <Link href="/signup">Sign Up</Link>
+          <Button
+            variant={"outline"}
+            className="rounded-none"
+            size={"sm"}
+            onClick={toggleLogin}
+          >
+            Sign Up
           </Button>
         </p>
       </CardContent>

@@ -12,7 +12,7 @@ async function layout({ children }: { children: ReactNode }) {
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    redirect("/login");
+    redirect("/auth");
   }
 
   return (

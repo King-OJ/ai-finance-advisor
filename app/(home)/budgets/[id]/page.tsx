@@ -1,7 +1,9 @@
-import React from "react";
+import BudgetDetailPage from "@/app/_components/BudgetDetailPage";
 
-function page() {
-  return <div>Budget details page</div>;
-}
+const BudgetDetailsPage = async ({ params }: { params: { id: string } }) => {
+  const { id } = await params;
 
-export default page;
+  return <BudgetDetailPage id={Number(id)} />;
+};
+
+export default BudgetDetailsPage;

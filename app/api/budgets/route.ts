@@ -8,7 +8,7 @@ export const getUserId = async () => {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
   if (!userId) {
-    throw new Error();
+    throw new Error("Invalid user id");
   }
   return Number(userId);
 };
@@ -62,25 +62,18 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const userId = await getUserId();
-    const {
-      name,
-      category,
-      description,
-      currentAmount,
-      targetAmount,
-      startDate,
-      endDate,
-    } = await req.json();
+    const { name, category, description, amount, spent, startDate, endDate } =
+      await req.json();
 
     const budget = await prisma.budget.create({
       data: {
         name,
-        currentAmount,
+        amount,
         description,
         category,
         startDate,
         endDate,
-        targetAmount,
+        spent,
         createdBy: userId,
       },
     });

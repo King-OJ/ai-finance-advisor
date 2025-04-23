@@ -26,3 +26,16 @@ export const useBudgets = (params: GetBudgetsParams = {}) => {
     staleTime: 0,
   });
 };
+
+export const useBudgetsDetail = (id: number) => {
+  return useQuery({
+    queryKey: ["budget", id],
+    queryFn: async () => {
+      const res = await fetch(`/api/budgets/${id}`);
+      if (!res.ok) throw new Error("Failed to fetch budget");
+      return res.json();
+    },
+    enabled: !!id, // Only fetch when ID exists
+    staleTime: 60 * 1000, // 1 minute cache
+  });
+};

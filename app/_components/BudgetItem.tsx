@@ -20,15 +20,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { Budget } from "@/utils/types/budget";
 import { Progress } from "@/components/ui/progress";
-import { formatDate, getEmojiForCategory } from "@/utils/actions/clientActions";
+import {
+  calculateProgress,
+  formatDate,
+  getEmojiForCategory,
+} from "@/utils/actions/clientActions";
 import { Dialog } from "@/components/ui/dialog";
 
 import CreateBudgetForm from "./CreateBudgetForm";
 import Link from "next/link";
-
-const calculateProgress = (current: number, target: number) => {
-  return Math.min((current / target) * 100, 100);
-};
 
 function BudgetItem({ budget }: { budget: Budget }) {
   const handleCloseDialog = () => {
@@ -41,9 +41,6 @@ function BudgetItem({ budget }: { budget: Budget }) {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const getPercentSpent = (current: number, target: number) => {
-    return Math.min(Math.round((current / target) * 100), 100);
-  };
   const categoryEmoji = getEmojiForCategory(budget.category);
 
   // Save budget changes
@@ -76,33 +73,28 @@ function BudgetItem({ budget }: { budget: Budget }) {
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <Banknote className="h-4 w-4 text-gray-500" />
-                <span className="text-sm text-gray-500">Target</span>
+                <span className="text-sm text-gray-500">Amount</span>
               </div>
               <span className="font-medium">
-                ${budget.targetAmount.toLocaleString()}
+                ${budget.amount.toLocaleString()}
               </span>
             </div>
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <PieChart className="h-4 w-4 text-gray-500" />
-                <span className="text-sm text-gray-500">Current</span>
+                <span className="text-sm text-gray-500">Spent</span>
               </div>
               <span className="font-medium">
-                ${budget.currentAmount.toLocaleString()}
+                ${budget.spent.toLocaleString()}
               </span>
             </div>
             <div className="space-y-1">
               <div className="flex justify-between text-sm">
                 <span>Progress</span>
-                <span>
-                  {getPercentSpent(budget.currentAmount, budget.targetAmount)}%
-                </span>
+                <span>{calculateProgress(budget.spent, budget.amount)}%</span>
               </div>
               <Progress
-                value={getPercentSpent(
-                  budget.currentAmount,
-                  budget.targetAmount
-                )}
+                value={calculateProgress(budget.spent, budget.amount)}
               />
             </div>
             <div className="flex justify-between items-center text-sm text-gray-500">

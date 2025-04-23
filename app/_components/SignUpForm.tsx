@@ -15,10 +15,9 @@ import { CustomFormInputField } from "./FormComponents";
 import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { signUpSchema, SignUpSchemaType } from "@/utils/formSchemas/auth";
 
-function SignUpForm() {
+function SignUpForm({ toggleLogin }: { toggleLogin: () => void }) {
   const form = useForm<SignUpSchemaType>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -69,7 +68,7 @@ function SignUpForm() {
 
       <CardContent>
         <Form {...form}>
-          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+          <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
             <CustomFormInputField
               name={"name"}
               control={form.control}
@@ -99,8 +98,13 @@ function SignUpForm() {
 
         <p className="mt-4 text-center text-sm">
           Already have an account?{" "}
-          <Button asChild variant={"ghost"} size={"sm"}>
-            <Link href="/login">Login</Link>
+          <Button
+            onClick={toggleLogin}
+            className="rounded-none"
+            variant={"outline"}
+            size={"sm"}
+          >
+            Login
           </Button>
         </p>
       </CardContent>

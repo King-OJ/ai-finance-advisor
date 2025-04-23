@@ -6,8 +6,8 @@ const demoBudgets = [
     id: 1,
     name: "Monthly Expenses",
     description: "Regular monthly household expenses",
-    targetAmount: 2500,
-    currentAmount: 1800,
+    amount: 2500,
+    spent: 1800,
     startDate: "2025-04-01",
     endDate: "2025-04-30",
     category: "Home",
@@ -16,8 +16,8 @@ const demoBudgets = [
     id: 2,
     name: "Vacation Fund",
     description: "Saving for summer vacation",
-    targetAmount: 5000,
-    currentAmount: 1200,
+    amount: 5000,
+    spent: 1200,
     startDate: "2025-01-01",
     endDate: "2025-07-31",
     category: "Vacation",
@@ -26,8 +26,8 @@ const demoBudgets = [
     id: 3,
     name: "Emergency Fund",
     description: "For unexpected expenses",
-    targetAmount: 10000,
-    currentAmount: 0,
+    amount: 10000,
+    spent: 0,
     startDate: "2025-01-01",
     endDate: "2025-12-31",
     category: "Others",
@@ -36,23 +36,16 @@ const demoBudgets = [
 
 async function main() {
   for (const budget of demoBudgets) {
-    const {
-      name,
-      category,
-      description,
-      endDate,
-      startDate,
-      currentAmount,
-      targetAmount,
-    } = budget;
+    const { name, category, description, endDate, startDate, spent, amount } =
+      budget;
 
     await prisma.budget.create({
       data: {
         name,
         description,
         category,
-        currentAmount,
-        targetAmount,
+        spent,
+        amount,
         startDate: new Date(startDate),
         endDate: new Date(endDate),
         createdBy: 1,

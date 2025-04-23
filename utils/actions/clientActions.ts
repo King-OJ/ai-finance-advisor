@@ -1,5 +1,5 @@
 "use client";
-import { CreateBudgetType } from "../formSchemas/budget";
+import { differenceInDays, format, startOfMonth } from "date-fns";
 import {
   BudgetsResponse,
   Category,
@@ -53,45 +53,13 @@ export async function fetchTransactions(
   return res.json();
 }
 
-export async function fetchBudgets(
-  params: GetBudgetsParams
-): Promise<BudgetsResponse> {
-  const { page = 1, pageSize = 4, ...filters } = params;
+export const dateFormatter = (date: Date) => format(date, "yyyy-MM-dd");
 
-  const url = new URL("/api/budgets", window.location.origin);
-  url.searchParams.append("page", page.toString());
-  url.searchParams.append("pageSize", pageSize.toString());
+export const diffInDays = (date1: Date, date2: Date) =>
+  differenceInDays(date1, date2);
 
-  if (filters.search) url.searchParams.append("search", filters.search);
-  if (filters.category) url.searchParams.append("search", filters.category);
-  if (filters.sort) url.searchParams.append("type", filters.sort);
-  if (filters.deadline) url.searchParams.append("status", filters.deadline);
+export const calculateProgress = (current: number, amount: number) =>
+  Math.min((current / amount) * 100, 100);
 
-  const res = await fetch(url.toString());
-
-  if (!res.ok) {
-    throw new Error(`Failed to fetch budgets: ${res.status}`);
-  }
-
-  return res.json();
-}
-
-export async function createBudget({ budget }: { budget: CreateBudgetType }) {
-  const response = await fetch("/api/budgets", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ ...budget }),
-  });
-  if (!response.ok) throw new Error("Failed to create budget");
-  return response.json();
-}
-
-export async function deletBudget({ budgetId }: { budgetId: number }) {
-  const response = await fetch("/api/budgets", {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ budgetId }),
-  });
-  if (!response.ok) throw new Error("Failed to delete budget");
-  return response.json();
-}
+export const calculateAvalBal = (spent: number, amount: number) =>
+  amount - spent;
