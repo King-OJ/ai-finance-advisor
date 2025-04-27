@@ -101,62 +101,6 @@ const budgetData = {
   ],
 };
 
-// Sample transaction data
-const generateTransactions = () => {
-  const categories = [
-    "Groceries",
-    "Utilities",
-    "Subscriptions",
-    "Dining",
-    "Transportation",
-  ];
-  const merchants = [
-    "Whole Foods",
-    "Safeway",
-    "PG&E",
-    "Water Company",
-    "Netflix",
-    "Spotify",
-    "Amazon Prime",
-    "Uber",
-    "Lyft",
-    "Chevron",
-    "Target",
-    "Walmart",
-    "CVS",
-    "Walgreens",
-    "Starbucks",
-    "Local Restaurant",
-    "Gym Membership",
-    "Internet Provider",
-    "Phone Company",
-  ];
-
-  const transactions = [];
-
-  // Generate 85 transactions
-  for (let i = 1; i <= 85; i++) {
-    const date = new Date(2025, 3, Math.floor(Math.random() * 30) + 1);
-    const amount = Math.floor(Math.random() * 150) + 10;
-    const categoryIndex = Math.floor(Math.random() * categories.length);
-    const merchantIndex = Math.floor(Math.random() * merchants.length);
-
-    transactions.push({
-      id: `txn-${i}`,
-      date: date.toISOString().split("T")[0],
-      amount: amount,
-      merchant: merchants[merchantIndex],
-      category: categories[categoryIndex],
-      status: Math.random() > 0.05 ? "Completed" : "Pending",
-    });
-  }
-
-  // Sort by date, newest first
-  return transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-};
-
-const transactions = generateTransactions();
-
 function BudgetDetailPage({ id }: { id: number }) {
   const { data: budget, isLoading, error } = useBudgetsDetail(id);
 
@@ -164,6 +108,12 @@ function BudgetDetailPage({ id }: { id: number }) {
   const [transactionsPerPage, setTransactionsPerPage] = useState(10);
   const [activeTab, setActiveTab] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
+
+  if (isLoading) {
+    return <PageSkeleton />;
+  }
+
+  const { transactions } = budget;
 
   // Calculate dates and remaining days
   const today = new Date();
@@ -262,10 +212,6 @@ function BudgetDetailPage({ id }: { id: number }) {
     (a, b) => b[1] - a[1]
   )[0];
 
-  if (isLoading) {
-    return <PageSkeleton />;
-  }
-
   return (
     <div className="container mx-auto py-8 px-4">
       {/* Header Section */}
@@ -276,7 +222,9 @@ function BudgetDetailPage({ id }: { id: number }) {
           <div className="flex flex-wrap gap-2 mt-2">
             <Badge variant="outline">{budget.category}</Badge>
             <Badge
-              variant={budgetData.status === "Active" ? "success" : "secondary"}
+              className={
+                budgetData.status === "Active" ? "success" : "secondary"
+              }
             >
               {budgetData.status}
             </Badge>
@@ -304,7 +252,7 @@ function BudgetDetailPage({ id }: { id: number }) {
           <CardContent>
             <div className="flex items-center">
               <Banknote className="h-5 w-5 mr-2 text-gray-400" />
-              <span className="text-3xl font-bold">${budget.targetAmount}</span>
+              <span className="text-3xl font-bold">${budget.amount}</span>
             </div>
           </CardContent>
         </Card>
@@ -319,23 +267,15 @@ function BudgetDetailPage({ id }: { id: number }) {
           <CardContent>
             <div className="flex items-center mb-2">
               <ArrowDownCircle className="h-5 w-5 mr-2 text-red-500" />
-              <span className="text-3xl font-bold">
-                ${budget.currentAmount}
-              </span>
+              <span className="text-3xl font-bold">${budget.spent}</span>
             </div>
             <div className="space-y-1">
               <div className="flex justify-between text-sm">
                 <span>Progress</span>
-                <span>
-                  {calculateProgress(budget.currentAmount, budget.targetAmount)}
-                  %
-                </span>
+                <span>{calculateProgress(budget.spent, budget.amount)}%</span>
               </div>
               <Progress
-                value={calculateProgress(
-                  budget.currentAmount,
-                  budget.targetAmount
-                )}
+                value={calculateProgress(budget.spent, budget.amount)}
                 className="h-2"
               />
             </div>
@@ -351,7 +291,7 @@ function BudgetDetailPage({ id }: { id: number }) {
             <div className="flex items-center">
               <ArrowUpCircle className="h-5 w-5 mr-2 text-green-500" />
               <span className="text-3xl font-bold">
-                ${calculateAvalBal(budget.currentAmount, budget.targetAmount)}
+                ${calculateAvalBal(budget.spent, budget.amount)}
               </span>
             </div>
           </CardContent>
@@ -428,6 +368,7 @@ function BudgetDetailPage({ id }: { id: number }) {
       </div>
 
       {/* Transactions Section */}
+
       <div id="transactions-section" className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
@@ -479,7 +420,7 @@ function BudgetDetailPage({ id }: { id: number }) {
               {currentTransactions.map((transaction) => (
                 <TableRow key={transaction.id}>
                   <TableCell className="font-medium">
-                    {transaction.date}
+                    {dateFormatter(transaction.date)}
                   </TableCell>
                   <TableCell>{transaction.merchant}</TableCell>
                   <TableCell>

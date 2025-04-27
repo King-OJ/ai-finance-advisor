@@ -12,29 +12,38 @@ const getBudgetId = (id: string) => {
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
     const budgetId = getBudgetId(id);
     const userId = await getUserId();
 
-    const budget = await prisma.budget.findUnique({
-      where: {
-        id: budgetId,
-        createdBy: userId,
-      },
-      include: {
-        transactions: true,
-      },
-    });
+    const budget = await prisma.budget
+      .findUnique({
+        where: {
+          id: budgetId,
+          createdBy: userId,
+        },
+        include: {
+          transactions: true,
+        },
+      })
+      .catch((err) => {
+        throw new Error(`Prisma query failed: ${err.message}`);
+      });
 
     if (!budget) {
-      return NextResponse.json({ error: "Budget not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: `Budget with ID ${budgetId} not found or not owned by user` },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json(budget);
   } catch (error) {
+    console.error(error);
+
     return NextResponse.json(
       { error: "Failed to fetch budget" },
       { status: 500 }
@@ -44,7 +53,7 @@ export async function GET(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
@@ -68,7 +77,7 @@ export async function DELETE(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;

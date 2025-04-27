@@ -8,7 +8,7 @@ export const getUserId = async () => {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
   if (!userId) {
-    throw new Error("Invalid user id");
+    throw new Error("User is unauthenticated");
   }
   return Number(userId);
 };

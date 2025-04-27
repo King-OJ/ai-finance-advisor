@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { hash } from "bcrypt";
 import { CustomError } from "@/utils/CustomError";
 
-async function withErrorHandling(
+export async function withErrorHandling(
   handler: (req: NextRequest) => Promise<NextResponse>,
   req: NextRequest
 ): Promise<NextResponse> {
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
       console.log("create is not the problem");
 
       return NextResponse.json(
-        { id: user.id, email: user.email, name: user.name },
+        { message: "Account created!" },
         { status: 201 }
       );
     } catch (error: any) {

@@ -1,41 +1,25 @@
 import { Transaction } from "./transactions";
 
 export enum Category {
-  Transfer = "Transfer",
-  Home = "Home",
-  Bill = "Bill",
   Vacation = "Vacation",
-  Health = "Health & Fitness",
-  Shopping = "Shopping",
-  Entertainment = "Entertainment",
-  Rent = "Rent",
-  Income = "Income",
-  Automotive = "Automotive",
-  Loan = "Loan",
-  Subscriptions = "Subscriptions",
-  Transportation = "Transportation",
-  Dining = "Dining",
+  Medicals = "Medicals",
   Groceries = "Groceries",
-  Others = "Others",
+  Investments = "Investments",
+  Utilities = "Utilities",
+  Subscriptions = "Subscriptions",
+  Dining = "Dining",
+  Transportation = "Transportation",
 }
 
 export const CategoryEmojis: Record<Category, string> = {
   [Category.Groceries]: "🛒",
   [Category.Vacation]: "✈️",
-  [Category.Bill]: "🔌",
   [Category.Dining]: "🍽️",
-  [Category.Shopping]: "🛍️",
-  [Category.Entertainment]: "🎬",
-  [Category.Rent]: "🏠",
-  [Category.Automotive]: "🚗",
   [Category.Subscriptions]: "🔁",
-  [Category.Income]: "💵",
-  [Category.Loan]: "🏦",
-  [Category.Home]: "🏠",
+  [Category.Investments]: "💵",
+  [Category.Utilities]: "🏠",
   [Category.Transportation]: "🚌",
-  [Category.Transfer]: "💸",
-  [Category.Health]: "💊",
-  [Category.Others]: "❓",
+  [Category.Medicals]: "💊",
 };
 
 export type Budget = {

@@ -53,11 +53,14 @@ model Transaction {
   id        String   @id @default(cuid())
   merchant  String
   category  String
-  budgetId  Int?
+  budgetId  Int
   createdBy Int
+  date      DateTime
+  amount    Float
+  status    Boolean? @default(false)
   user      User     @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   budget    Budget?  @relation(fields: [budgetId], references: [id], onDelete: Cascade)
-  emoji     String   @db.Text
+
   createdAt DateTime @default(now())
 }
 
