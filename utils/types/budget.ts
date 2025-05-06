@@ -1,6 +1,6 @@
 import { Transaction } from "./transactions";
 
-export enum Category {
+export enum Categories {
   Vacation = "Vacation",
   Medicals = "Medicals",
   Groceries = "Groceries",
@@ -11,15 +11,15 @@ export enum Category {
   Transportation = "Transportation",
 }
 
-export const CategoryEmojis: Record<Category, string> = {
-  [Category.Groceries]: "🛒",
-  [Category.Vacation]: "✈️",
-  [Category.Dining]: "🍽️",
-  [Category.Subscriptions]: "🔁",
-  [Category.Investments]: "💵",
-  [Category.Utilities]: "🏠",
-  [Category.Transportation]: "🚌",
-  [Category.Medicals]: "💊",
+export const CategoryEmojis: Record<Categories, string> = {
+  [Categories.Groceries]: "🛒",
+  [Categories.Vacation]: "✈️",
+  [Categories.Dining]: "🍽️",
+  [Categories.Subscriptions]: "🔁",
+  [Categories.Investments]: "💵",
+  [Categories.Utilities]: "🏠",
+  [Categories.Transportation]: "🚌",
+  [Categories.Medicals]: "💊",
 };
 
 export type Budget = {
@@ -30,7 +30,7 @@ export type Budget = {
   spent: number;
   startDate: string;
   endDate: string;
-  category: Category;
+  category: Categories;
   transactions?: Transaction[];
 };
 

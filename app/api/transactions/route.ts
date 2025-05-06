@@ -23,10 +23,6 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    if (type) {
-      filteredTransactions = filteredTransactions.filter((t) => t.type == type);
-    }
-
     if (category) {
       filteredTransactions = filteredTransactions.filter(
         (t) => t.category == type

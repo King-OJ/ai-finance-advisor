@@ -12,12 +12,12 @@ export enum Status {
 }
 
 export type Transaction = {
-  id: string;
+  id?: string;
   date: Date;
   amount: number;
   description: string;
   category: Budget["category"];
-  type: "income" | "expense";
+  status: boolean;
   accountId?: string;
   merchant?: string;
 };
@@ -26,7 +26,7 @@ export type TransactionFilters = {
   startDate?: string;
   endDate?: string;
   category?: string;
-  type?: Transaction["type"] | string;
+  status?: boolean;
   search?: string;
 };
 
@@ -46,5 +46,3 @@ export type GetTransactionsParams = {
   category?: Budget["category"] | string;
   type?: string;
 };
-
-export const typeValues: Transaction["type"][] = ["income", "expense"];

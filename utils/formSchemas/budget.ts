@@ -1,9 +1,9 @@
 import * as z from "zod";
-import { Category } from "../types/budget";
+import { Categories } from "../types/budget";
 
 export const createBudgetSchema = z.object({
   name: z.string().min(1, "Budget name is required"),
-  category: z.nativeEnum(Category, {
+  category: z.nativeEnum(Categories, {
     errorMap: () => ({ message: "Please select a valid category" }),
   }),
   description: z.string().optional(),

@@ -75,18 +75,14 @@ function BudgetItem({ budget }: { budget: Budget }) {
                 <Banknote className="h-4 w-4 text-gray-500" />
                 <span className="text-sm text-gray-500">Amount</span>
               </div>
-              <span className="font-medium">
-                ${budget.amount.toLocaleString()}
-              </span>
+              <span className="font-medium">${budget.amount}</span>
             </div>
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <PieChart className="h-4 w-4 text-gray-500" />
                 <span className="text-sm text-gray-500">Spent</span>
               </div>
-              <span className="font-medium">
-                ${budget.spent.toLocaleString()}
-              </span>
+              <span className="font-medium">${budget.spent}</span>
             </div>
             <div className="space-y-1">
               <div className="flex justify-between text-sm">

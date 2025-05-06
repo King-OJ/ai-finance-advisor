@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -18,15 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+
 import {
   Select,
   SelectContent,
@@ -44,7 +36,6 @@ import {
   ArrowUpCircle,
   ArrowDownCircle,
   Filter,
-  Download,
   Calendar,
   Banknote,
   TrendingUp,
@@ -60,6 +51,14 @@ import {
   dateFormatter,
   diffInDays,
 } from "@/utils/actions/clientActions";
+import TransactionItem from "./TransactionItem";
+import { Transaction } from "@/utils/types/transactions";
+import { Categories } from "@/utils/types/budget";
+import { useBudgetTransactions } from "@/utils/hooks/budgets/useBudgetTransactions";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import PaginationBtns from "./PaginationBtns";
+import { useQueryClient } from "@tanstack/react-query";
+import TransactionSkeleton from "./TransactionSkeleton";
 
 // Sample budget data
 const budgetData = {
@@ -102,115 +101,88 @@ const budgetData = {
 };
 
 function BudgetDetailPage({ id }: { id: number }) {
-  const { data: budget, isLoading, error } = useBudgetsDetail(id);
+  const [isFirstFilterChange, setIsFirstFilterChange] = useState(true);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [transactionsPerPage, setTransactionsPerPage] = useState(10);
-  const [activeTab, setActiveTab] = useState("all");
-  const [categoryFilter, setCategoryFilter] = useState("all");
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
-  if (isLoading) {
+  const {
+    data: budget,
+    isLoading: isPageLoading,
+    error: budgetError,
+  } = useBudgetsDetail(id);
+
+  const [filters, setFilters] = useState({
+    page: parseInt(searchParams.get("page") || "1"),
+    perPage: parseInt(searchParams.get("perPage") || "10"),
+    category: searchParams.get("category") || "",
+  });
+
+  const { data: transactionsData, isFetching } = useBudgetTransactions(
+    id,
+    filters,
+    isFirstFilterChange ? budget?.transactions : undefined
+  );
+
+  const showTransactionsLoading =
+    isFetching || (isFirstFilterChange && !transactionsData);
+  const displayTransactions = transactionsData?.data || [];
+  const pagination = transactionsData?.pagination || {
+    page: filters.page,
+    perPage: filters.perPage,
+    total: budget?.transactions?.length || 0,
+    totalPages: Math.ceil(
+      (budget?.transactions?.length || 0) / filters.perPage
+    ),
+  };
+
+  // const [categoryFilter, setCategoryFilter] = useState("all");
+
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      // Reset to page 1 when filters change
+      if (name !== "page") params.set("page", "1");
+      return params.toString();
+    },
+    [searchParams]
+  );
+
+  // Calculate dates and remaining days
+  const today: Date = new Date();
+  const endDate: Date = new Date(budgetData?.endDate);
+  const daysRemaining = diffInDays(budget?.endDate, budget?.startDate);
+
+  // Handler for category filter change
+  const handleCategoryChange = (category: string) => {
+    router.push(pathname + "?" + createQueryString("category", category));
+  };
+
+  // Handler for per page change
+  const handlePerPageChange = async (perPage: string) => {
+    setIsFirstFilterChange(false);
+    setFilters((prev) => ({
+      ...prev,
+      perPage: Number(perPage),
+      page: 1,
+    }));
+  };
+
+  // Handler for page change
+  const handlePageChange = (page: number) => {
+    router.push(pathname + "?" + createQueryString("page", page.toString()));
+  };
+
+  if (isPageLoading) {
     return <PageSkeleton />;
   }
 
-  const { transactions } = budget;
-
-  // Calculate dates and remaining days
-  const today = new Date();
-  const endDate = new Date(budgetData.endDate);
-  const daysRemaining = Math.max(
-    0,
-    Math.ceil((endDate - today) / (1000 * 60 * 60 * 24))
-  );
-
-  // Filter transactions based on category
-  const filteredTransactions =
-    categoryFilter === "all"
-      ? transactions
-      : transactions.filter((txn) => txn.category === categoryFilter);
-
-  // Get unique categories for filter
-  const uniqueCategories = [
-    ...new Set(transactions.map((txn) => txn.category)),
-  ];
-
-  // Pagination logic
-  const indexOfLastTransaction = currentPage * transactionsPerPage;
-  const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
-  const currentTransactions = filteredTransactions.slice(
-    indexOfFirstTransaction,
-    indexOfLastTransaction
-  );
-  const totalPages = Math.ceil(
-    filteredTransactions.length / transactionsPerPage
-  );
-
-  // Page numbers to display
-  const getPageNumbers = () => {
-    const pageNumbers = [];
-
-    // Always show first page
-    pageNumbers.push(1);
-
-    // Show current page and surrounding pages
-    for (
-      let i = Math.max(2, currentPage - 1);
-      i <= Math.min(totalPages - 1, currentPage + 1);
-      i++
-    ) {
-      if (!pageNumbers.includes(i)) {
-        pageNumbers.push(i);
-      }
-    }
-
-    // Always show last page if there's more than one page
-    if (totalPages > 1) {
-      pageNumbers.push(totalPages);
-    }
-
-    // Add ellipsis where needed
-    const withEllipsis = [];
-    for (let i = 0; i < pageNumbers.length; i++) {
-      withEllipsis.push(pageNumbers[i]);
-
-      // Add ellipsis between non-consecutive page numbers
-      if (
-        i < pageNumbers.length - 1 &&
-        pageNumbers[i + 1] - pageNumbers[i] > 1
-      ) {
-        withEllipsis.push("ellipsis");
-      }
-    }
-
-    return withEllipsis;
-  };
-
-  const handlePageChange = (page) => {
-    // Scroll to top of transaction list
-    document
-      .getElementById("transactions-section")
-      .scrollIntoView({ behavior: "smooth" });
-    setCurrentPage(page);
-  };
-
-  const handlePerPageChange = (value) => {
-    setTransactionsPerPage(Number(value));
-    setCurrentPage(1); // Reset to first page when changing items per page
-  };
-
-  // Get spending by category
-  const spendingByCategory = {};
-  transactions.forEach((txn) => {
-    if (!spendingByCategory[txn.category]) {
-      spendingByCategory[txn.category] = 0;
-    }
-    spendingByCategory[txn.category] += txn.amount;
-  });
-
-  // Get top spending category
-  const topCategory = Object.entries(spendingByCategory).sort(
-    (a, b) => b[1] - a[1]
-  )[0];
+  if (budgetError) {
+    return <div>Error loading budget</div>;
+  }
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -331,7 +303,7 @@ function BudgetDetailPage({ id }: { id: number }) {
                 <p className="mb-1 text-sm font-medium">Daily Spending Rate</p>
                 <div className="flex items-baseline">
                   <span className="text-2xl font-bold">
-                    ${Math.round(budgetData.spent / (30 - daysRemaining))}
+                    ${Math.round(budgetData.spent / (30 + daysRemaining))}
                   </span>
                   <span className="ml-2 text-sm text-gray-500">per day</span>
                 </div>
@@ -342,9 +314,9 @@ function BudgetDetailPage({ id }: { id: number }) {
                   Top Spending Category
                 </p>
                 <div className="flex items-baseline">
-                  <span className="text-2xl font-bold">{topCategory[0]}</span>
+                  <span className="text-2xl font-bold">{"Subscription"}</span>
                   <span className="ml-2 text-sm text-gray-500">
-                    ${topCategory[1].toLocaleString()} total
+                    ${50} total
                   </span>
                 </div>
               </div>
@@ -355,7 +327,11 @@ function BudgetDetailPage({ id }: { id: number }) {
                 </p>
                 <div className="flex items-baseline">
                   <span className="text-2xl font-bold">
-                    ${Math.round(budgetData.remaining / daysRemaining)}
+                    $
+                    {Math.round(
+                      calculateAvalBal(budget.spent, budget.amount) /
+                        daysRemaining
+                    )}
                   </span>
                   <span className="ml-2 text-sm text-gray-500">
                     per day remaining
@@ -368,158 +344,108 @@ function BudgetDetailPage({ id }: { id: number }) {
       </div>
 
       {/* Transactions Section */}
-
-      <div id="transactions-section" className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center">
-            <h2 className="text-2xl font-bold">Transactions</h2>
-            <Badge variant="outline" className="ml-2">
-              {filteredTransactions.length} total
-            </Badge>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <Filter className="h-4 w-4 text-gray-500" />
-            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                {uniqueCategories.map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {category}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <Tabs defaultValue="all" className="mb-4" onValueChange={setActiveTab}>
-          <TabsList>
-            <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="groceries">Groceries</TabsTrigger>
-            <TabsTrigger value="utilities">Utilities</TabsTrigger>
-            <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
-          </TabsList>
-        </Tabs>
-
-        <Card>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Merchant</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {currentTransactions.map((transaction) => (
-                <TableRow key={transaction.id}>
-                  <TableCell className="font-medium">
-                    {dateFormatter(transaction.date)}
-                  </TableCell>
-                  <TableCell>{transaction.merchant}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline">{transaction.category}</Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    ${transaction.amount.toFixed(2)}
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        transaction.status === "Completed"
-                          ? "outline"
-                          : "secondary"
-                      }
-                    >
-                      {transaction.status}
-                    </Badge>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-
-          {/* Pagination Controls */}
-          <CardFooter className="flex items-center justify-between px-6 py-4 border-t">
-            <div className="flex items-center space-x-2">
-              <p className="text-sm text-gray-500">
-                Showing {indexOfFirstTransaction + 1}-
-                {Math.min(indexOfLastTransaction, filteredTransactions.length)}{" "}
-                of {filteredTransactions.length}
-              </p>
-              <Select
-                value={transactionsPerPage.toString()}
-                onValueChange={handlePerPageChange}
-              >
-                <SelectTrigger className="w-[70px]">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="5">5</SelectItem>
-                  <SelectItem value="10">10</SelectItem>
-                  <SelectItem value="20">20</SelectItem>
-                  <SelectItem value="50">50</SelectItem>
-                </SelectContent>
-              </Select>
-              <span className="text-sm text-gray-500">per page</span>
+      {displayTransactions?.length > 0 ? (
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold">Transactions</h2>
+              <Badge variant="outline" className="ml-2">
+                {transactionsData.pagination.total} total
+              </Badge>
             </div>
 
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    onClick={() =>
-                      currentPage > 1 && handlePageChange(currentPage - 1)
-                    }
-                    className={
-                      currentPage === 1
-                        ? "pointer-events-none opacity-50"
-                        : "cursor-pointer"
-                    }
-                  />
-                </PaginationItem>
+            <div className="flex items-center space-x-2">
+              <Filter className="h-4 w-4 text-gray-500" />
+              {/* <Select value={categoryFilter} onValueChange={setCategoryFilter}> */}
+              <Select>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Filter by category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {Object.values(Categories).map((category: string) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
 
-                {getPageNumbers().map((page, index) =>
-                  page === "ellipsis" ? (
-                    <PaginationItem key={`ellipsis-${index}`}>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  ) : (
-                    <PaginationItem key={page}>
-                      <PaginationLink
-                        isActive={page === currentPage}
-                        onClick={() => handlePageChange(page)}
-                      >
-                        {page}
-                      </PaginationLink>
-                    </PaginationItem>
-                  )
+          <Tabs
+            defaultValue="all"
+            className="mb-4"
+            // onValueChange={setActiveTab}
+          >
+            <TabsList>
+              <TabsTrigger value="all">All</TabsTrigger>
+              <TabsTrigger value="Groceries">Groceries</TabsTrigger>
+              <TabsTrigger value="Utilities">Utilities</TabsTrigger>
+              <TabsTrigger value="Subscriptions">Subscriptions</TabsTrigger>
+            </TabsList>
+          </Tabs>
+
+          <Card>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Merchant</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead className="text-right">Amount</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {showTransactionsLoading ? (
+                  <TransactionSkeleton rows={filters.perPage} />
+                ) : (
+                  displayTransactions.map((transaction: Transaction) => (
+                    <TransactionItem
+                      key={transaction.id}
+                      transaction={transaction}
+                    />
+                  ))
                 )}
+              </TableBody>
+            </Table>
 
-                <PaginationItem>
-                  <PaginationNext
-                    onClick={() =>
-                      currentPage < totalPages &&
-                      handlePageChange(currentPage + 1)
-                    }
-                    className={
-                      currentPage === totalPages
-                        ? "pointer-events-none opacity-50"
-                        : "cursor-pointer"
-                    }
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </CardFooter>
-        </Card>
-      </div>
+            {/* Pagination Controls */}
+            <CardFooter className="flex items-center justify-between px-0 py-4 border-t">
+              <div className="flex items-center space-x-2">
+                <p className="text-sm text-gray-500">
+                  Showing {transactionsData.pagination.page} -
+                  {transactionsData.pagination.perPage} of{" "}
+                  {transactionsData.pagination.total} entries
+                </p>
+                <Select
+                  value={transactionsData.pagination.perPage.toString()}
+                  onValueChange={(value) => handlePerPageChange(value)}
+                >
+                  <SelectTrigger className="w-[70px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="5">5</SelectItem>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="15">15</SelectItem>
+                    <SelectItem value="20">20</SelectItem>
+                  </SelectContent>
+                </Select>
+                <span className="text-sm text-gray-500">per page</span>
+              </div>
+
+              <PaginationBtns
+                page={pagination.page}
+                totalPages={pagination.totalPages}
+              />
+            </CardFooter>
+          </Card>
+        </div>
+      ) : (
+        <div>Your budget has no transactions to display</div>
+      )}
     </div>
   );
 }

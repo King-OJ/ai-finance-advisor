@@ -12,23 +12,17 @@ import React from "react";
 
 interface PaginationBtnsProps {
   page: number;
-  setPage: (arg: (prev: number) => number) => void;
   totalPages: number;
 }
 
-function PaginationBtns({ page, setPage, totalPages }: PaginationBtnsProps) {
+function PaginationBtns({ page, totalPages }: PaginationBtnsProps) {
   const renderPaginationItems = () => {
     const items = [];
 
     //always show page 1 button
     items.push(
       <PaginationItem key="first">
-        <PaginationLink
-          onClick={() => setPage((prev) => 1)}
-          isActive={page === 1}
-        >
-          1
-        </PaginationLink>
+        <PaginationLink isActive={page === 1}>1</PaginationLink>
       </PaginationItem>
     );
 
@@ -50,12 +44,7 @@ function PaginationBtns({ page, setPage, totalPages }: PaginationBtnsProps) {
 
       items.push(
         <PaginationItem key={i}>
-          <PaginationLink
-            onClick={() => setPage(() => i)}
-            isActive={page === i}
-          >
-            {i}
-          </PaginationLink>
+          <PaginationLink isActive={page === i}>{i}</PaginationLink>
         </PaginationItem>
       );
     }
@@ -73,10 +62,7 @@ function PaginationBtns({ page, setPage, totalPages }: PaginationBtnsProps) {
     if (totalPages > 1) {
       items.push(
         <PaginationItem key="last">
-          <PaginationLink
-            onClick={() => setPage(() => totalPages)}
-            isActive={page === totalPages}
-          >
+          <PaginationLink isActive={page === totalPages}>
             {totalPages}
           </PaginationLink>
         </PaginationItem>
@@ -87,36 +73,29 @@ function PaginationBtns({ page, setPage, totalPages }: PaginationBtnsProps) {
   };
 
   return (
-    <div className="flex justify-between items-center mt-4">
-      <Pagination>
-        <PaginationContent>
-          {
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                aria-disabled={page === 1}
-                className={page === 1 ? "pointer-events-none opacity-50" : ""}
-              />
-            </PaginationItem>
-          }
-
-          {renderPaginationItems()}
-
+    <Pagination className="justify-end">
+      <PaginationContent>
+        {
           <PaginationItem>
-            <PaginationNext
-              onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-              aria-disabled={page === totalPages}
-              className={
-                page === totalPages ? "pointer-events-none opacity-50" : ""
-              }
+            <PaginationPrevious
+              aria-disabled={page === 1}
+              className={page === 1 ? "pointer-events-none opacity-50" : ""}
             />
           </PaginationItem>
-        </PaginationContent>
-      </Pagination>
-      <span className="text-sm text-muted-foreground">
-        Page {page} of {totalPages}
-      </span>
-    </div>
+        }
+
+        {renderPaginationItems()}
+
+        <PaginationItem>
+          <PaginationNext
+            aria-disabled={page === totalPages}
+            className={
+              page === totalPages ? "pointer-events-none opacity-50" : ""
+            }
+          />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
   );
 }
 

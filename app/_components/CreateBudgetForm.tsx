@@ -22,7 +22,7 @@ import {
 } from "./FormComponents";
 import { Button } from "@/components/ui/button";
 import CategoryEmoji from "./CategoryEmoji";
-import { Budget, Category } from "@/utils/types/budget";
+import { Budget, Categories } from "@/utils/types/budget";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -196,7 +196,7 @@ function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
                 label="budget category"
                 control={form.control}
                 placeholder="Select Category"
-                values={Object.values(Category)}
+                values={Object.values(Categories)}
               />
             </div>
             <CategoryEmoji category={selectedCategory} />
