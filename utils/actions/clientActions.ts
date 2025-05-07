@@ -2,7 +2,7 @@
 import { differenceInDays, format, startOfMonth } from "date-fns";
 import {
   BudgetsResponse,
-  Category,
+  Categories,
   CategoryEmojis,
   GetBudgetsParams,
 } from "../types/budget";
@@ -20,7 +20,7 @@ export const formatDate = (date: Date) => {
 
   return dateFormatter.format(new Date(date));
 };
-export const getEmojiForCategory = (category: Category) => {
+export const getEmojiForCategory = (category: Categories) => {
   return CategoryEmojis[category];
 };
 
@@ -59,7 +59,7 @@ export const diffInDays = (date1: Date, date2: Date) =>
   differenceInDays(date1, date2);
 
 export const calculateProgress = (current: number, amount: number) =>
-  Math.min((current / amount) * 100, 100);
+  Math.round((current / amount) * 100);
 
 export const calculateAvalBal = (spent: number, amount: number) =>
   amount - spent;

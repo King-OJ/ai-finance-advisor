@@ -47,7 +47,7 @@ function AllBudgets() {
       {data && data.totalPages > 1 && (
         <PaginationBtns
           page={page}
-          setPage={setPage}
+          handlePageChange={setPage}
           totalPages={data.totalPages}
         />
       )}

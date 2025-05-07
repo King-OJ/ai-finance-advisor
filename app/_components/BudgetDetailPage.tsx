@@ -12,8 +12,6 @@ import {
 import {
   Table,
   TableBody,
-  TableCaption,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
@@ -26,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -51,14 +49,14 @@ import {
   dateFormatter,
   diffInDays,
 } from "@/utils/actions/clientActions";
-import TransactionItem from "./TransactionItem";
 import { Transaction } from "@/utils/types/transactions";
 import { Categories } from "@/utils/types/budget";
 import { useBudgetTransactions } from "@/utils/hooks/budgets/useBudgetTransactions";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import PaginationBtns from "./PaginationBtns";
-import { useQueryClient } from "@tanstack/react-query";
 import TransactionSkeleton from "./TransactionSkeleton";
+import BudgetTransactionItem from "./BudgetTransactionItem";
+import PerPageFilter from "./PerPageFilter";
 
 // Sample budget data
 const budgetData = {
@@ -101,11 +99,9 @@ const budgetData = {
 };
 
 function BudgetDetailPage({ id }: { id: number }) {
-  const [isFirstFilterChange, setIsFirstFilterChange] = useState(true);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
 
   const {
     data: budget,
@@ -114,20 +110,20 @@ function BudgetDetailPage({ id }: { id: number }) {
   } = useBudgetsDetail(id);
 
   const [filters, setFilters] = useState({
-    page: parseInt(searchParams.get("page") || "1"),
-    perPage: parseInt(searchParams.get("perPage") || "10"),
-    category: searchParams.get("category") || "",
+    page: 1,
+    perPage: 10,
+    category: "",
   });
 
   const { data: transactionsData, isFetching } = useBudgetTransactions(
     id,
     filters,
-    isFirstFilterChange ? budget?.transactions : undefined
+    isFirstLoad ? budget?.transactions : undefined
   );
 
   const showTransactionsLoading =
-    isFetching || (isFirstFilterChange && !transactionsData);
-  const displayTransactions = transactionsData?.data || [];
+    isFetching || (isFirstLoad && !transactionsData);
+  const filteredTransactions = transactionsData?.data || [];
   const pagination = transactionsData?.pagination || {
     page: filters.page,
     perPage: filters.perPage,
@@ -137,20 +133,6 @@ function BudgetDetailPage({ id }: { id: number }) {
     ),
   };
 
-  // const [categoryFilter, setCategoryFilter] = useState("all");
-
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set(name, value);
-
-      // Reset to page 1 when filters change
-      if (name !== "page") params.set("page", "1");
-      return params.toString();
-    },
-    [searchParams]
-  );
-
   // Calculate dates and remaining days
   const today: Date = new Date();
   const endDate: Date = new Date(budgetData?.endDate);
@@ -158,12 +140,26 @@ function BudgetDetailPage({ id }: { id: number }) {
 
   // Handler for category filter change
   const handleCategoryChange = (category: string) => {
-    router.push(pathname + "?" + createQueryString("category", category));
+    setIsFirstLoad(false);
+    if (category == "all") {
+      setFilters((prev) => ({
+        ...prev,
+        category: "",
+        page: 1,
+      }));
+    } else {
+      setFilters((prev) => ({
+        ...prev,
+        category,
+        page: 1,
+      }));
+    }
+    // router.push(pathname + "?" + createQueryString("category", category));
   };
 
   // Handler for per page change
   const handlePerPageChange = async (perPage: string) => {
-    setIsFirstFilterChange(false);
+    setIsFirstLoad(false);
     setFilters((prev) => ({
       ...prev,
       perPage: Number(perPage),
@@ -173,7 +169,11 @@ function BudgetDetailPage({ id }: { id: number }) {
 
   // Handler for page change
   const handlePageChange = (page: number) => {
-    router.push(pathname + "?" + createQueryString("page", page.toString()));
+    setIsFirstLoad(false);
+    setFilters((prev) => ({
+      ...prev,
+      page,
+    }));
   };
 
   if (isPageLoading) {
@@ -344,7 +344,7 @@ function BudgetDetailPage({ id }: { id: number }) {
       </div>
 
       {/* Transactions Section */}
-      {displayTransactions?.length > 0 ? (
+      {filteredTransactions?.length > 0 ? (
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
@@ -357,9 +357,12 @@ function BudgetDetailPage({ id }: { id: number }) {
             <div className="flex items-center space-x-2">
               <Filter className="h-4 w-4 text-gray-500" />
               {/* <Select value={categoryFilter} onValueChange={setCategoryFilter}> */}
-              <Select>
+              <Select
+                value={filters.category}
+                onValueChange={handleCategoryChange}
+              >
                 <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Filter by category" />
+                  <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Categories</SelectItem>
@@ -376,7 +379,7 @@ function BudgetDetailPage({ id }: { id: number }) {
           <Tabs
             defaultValue="all"
             className="mb-4"
-            // onValueChange={setActiveTab}
+            onValueChange={handleCategoryChange}
           >
             <TabsList>
               <TabsTrigger value="all">All</TabsTrigger>
@@ -401,8 +404,8 @@ function BudgetDetailPage({ id }: { id: number }) {
                 {showTransactionsLoading ? (
                   <TransactionSkeleton rows={filters.perPage} />
                 ) : (
-                  displayTransactions.map((transaction: Transaction) => (
-                    <TransactionItem
+                  filteredTransactions.map((transaction: Transaction) => (
+                    <BudgetTransactionItem
                       key={transaction.id}
                       transaction={transaction}
                     />
@@ -413,38 +416,27 @@ function BudgetDetailPage({ id }: { id: number }) {
 
             {/* Pagination Controls */}
             <CardFooter className="flex items-center justify-between px-0 py-4 border-t">
-              <div className="flex items-center space-x-2">
-                <p className="text-sm text-gray-500">
-                  Showing {transactionsData.pagination.page} -
-                  {transactionsData.pagination.perPage} of{" "}
-                  {transactionsData.pagination.total} entries
-                </p>
-                <Select
-                  value={transactionsData.pagination.perPage.toString()}
-                  onValueChange={(value) => handlePerPageChange(value)}
-                >
-                  <SelectTrigger className="w-[70px]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="5">5</SelectItem>
-                    <SelectItem value="10">10</SelectItem>
-                    <SelectItem value="15">15</SelectItem>
-                    <SelectItem value="20">20</SelectItem>
-                  </SelectContent>
-                </Select>
-                <span className="text-sm text-gray-500">per page</span>
-              </div>
+              <PerPageFilter
+                transactions={filteredTransactions}
+                page={filters.page}
+                totalResult={transactionsData.pagination.total}
+                perPage={filters.perPage}
+                handlePerPageChange={handlePerPageChange}
+              />
 
               <PaginationBtns
                 page={pagination.page}
                 totalPages={pagination.totalPages}
+                handlePageChange={handlePageChange}
               />
             </CardFooter>
           </Card>
         </div>
       ) : (
-        <div>Your budget has no transactions to display</div>
+        <div>
+          No transactions for this budget. Your budget transactions will be
+          displayed here.
+        </div>
       )}
     </div>
   );

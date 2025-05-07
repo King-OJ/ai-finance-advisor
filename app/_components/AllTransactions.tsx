@@ -1,9 +1,13 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import PaginationBtns from "./PaginationBtns";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-
-import { TransactionResponse, Transaction } from "@/utils/types/transactions";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 
 import {
   Table,
@@ -16,8 +20,6 @@ import {
 import TransactionFilters from "./TransactionFilters";
 import TransactionItem from "./TransactionItem";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { fetchTransactions } from "@/utils/actions/clientActions";
 import { PageSkeleton } from "./PageSkeleton";
 import {
   FilterValues,
@@ -26,22 +28,23 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useDebounce } from "use-debounce";
+import { useTransactions } from "@/utils/hooks/transactions/useTransactions";
+import {
+  Select,
+  SelectContent,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { SelectItem } from "@radix-ui/react-select";
+import TransactionSkeleton from "./TransactionSkeleton";
+import PerPageFilter from "./PerPageFilter";
 
 function AllTransactions() {
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
 
-  // Get current params from URL
-  const initialPage = Number(searchParams.get("page")) || 1;
-  const initialPageSize = Number(searchParams.get("pageSize")) || 10;
-
-  const initialType =
-    (searchParams.get("type") as Transaction["type"]) || undefined;
+  // const initialType =
+  //   (searchParams.get("type") as Transaction["type"]) || undefined;
   const initialSearch = searchParams.get("search") || "";
-
-  const [page, setPage] = useState(initialPage);
-  const [pageSize, setPageSize] = useState(initialPageSize);
 
   // Track if this is the initial render
   const isInitialMount = useRef(true);
@@ -50,76 +53,54 @@ function AllTransactions() {
     resolver: zodResolver(TransactionFiltersSchema),
     defaultValues: {
       search: initialSearch,
-      type: initialType,
     },
     mode: "onChange",
   });
 
   const searchValue = form.watch("search");
-  const typeValue = form.watch("type");
+  // const typeValue = form.watch("type");
   const [debouncedSearch] = useDebounce(searchValue, 300);
 
-  const filters: FilterValues = {
-    search: debouncedSearch,
-    type: typeValue,
-  };
+  const {
+    data: pageData,
+    isLoading,
+    isError,
+    isFetching,
+    setFilters,
+    filters,
+  } = useTransactions();
 
-  const { data, isLoading, isError } = useQuery<TransactionResponse>({
-    queryKey: ["transactions", { page, pageSize, ...filters }],
-    queryFn: () => fetchTransactions({ page, pageSize, ...filters }),
-    placeholderData: keepPreviousData,
-  });
+  const showTransactionsLoading = isFetching || !pageData;
 
   const resetFilters = () => {
     form.reset({
-      type: undefined,
       search: "",
     });
   };
 
-  useEffect(() => {
-    if (!isInitialMount.current) {
-      setPage(1);
-    }
-  }, [debouncedSearch, typeValue]);
+  // Handler for per page change
+  const handlePerPageChange = async (perPage: string) => {
+    setFilters({ perPage: Number(perPage), page: 1 });
+  };
 
-  useEffect(() => {
-    // Skip the effect on initial render to prevent URL update loops
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
-    }
-    const params = new URLSearchParams();
+  // Handler for page change
+  const handlePageChange = (page: number) => {
+    setFilters({ page, perPage: filters.perPage });
+  };
 
-    if (page !== 1) params.set("page", page.toString());
-    if (pageSize !== 10) params.set("pageSize", pageSize.toString());
+  const handleCategoryChange = (category: string) => {
+    setFilters({ category: category == "All" ? undefined : category, page: 1 });
+  };
 
-    if (filters.search) params.set("search", filters.search);
-    if (filters.type) params.set("type", filters.type);
-    // Compare current URL params with new params to avoid unnecessary updates
-    const currentParams = new URL(window.location.href).searchParams;
-    const currentParamsString = currentParams.toString();
-    const newParamsString = params.toString();
+  const filteredTransactions = pageData?.data || [];
+  const pagination = pageData?.pagination || {
+    page: filters.page,
+    perPage: filters.perPage,
+    total: 0,
+    totalPages: 0,
+  };
 
-    if (currentParamsString !== newParamsString) {
-      router.push(
-        `${pathname}${newParamsString ? `?${newParamsString}` : ""}`,
-        {
-          scroll: false,
-        }
-      );
-    }
-  }, [
-    page,
-    pageSize,
-    pathname,
-    router,
-    filters.search,
-    filters.type,
-    filters.search,
-  ]);
-
-  if (isLoading && !data) {
+  if (isLoading && !pageData) {
     return <PageSkeleton />;
   }
 
@@ -132,44 +113,71 @@ function AllTransactions() {
       <CardHeader className="space-y-6">
         <CardTitle>Transaction History</CardTitle>
 
-        <TransactionFilters form={form} resetFilters={resetFilters} />
+        <TransactionFilters
+          handlCategoryChange={handleCategoryChange}
+          defaultCategory={filters.category}
+          form={form}
+          resetFilters={resetFilters}
+        />
       </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>Merchant</TableHead>
-              <TableHead>Budget</TableHead>
-              <TableHead>Amount</TableHead>
-              <TableHead>Type</TableHead>
-            </TableRow>
-          </TableHeader>
+      {pageData &&
+        (filteredTransactions.length > 0 ? (
+          <>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Merchant</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Budget</TableHead>
+                    <TableHead>Amount</TableHead>
+                  </TableRow>
+                </TableHeader>
 
-          {data && data.transactions.length > 0 ? (
-            <TableBody>
-              {data.transactions.map((transaction) => (
-                <TransactionItem
-                  key={transaction.id}
-                  transaction={transaction}
-                />
-              ))}
-            </TableBody>
-          ) : (
-            <TableCaption>
-              There is no transaction for this filter. Adjust your search filter
-              or reset
-            </TableCaption>
-          )}
-        </Table>
-        {data && data.totalPages > 1 && (
-          <PaginationBtns
-            page={data.currentPage}
-            setPage={setPage}
-            totalPages={data.totalPages}
-          />
-        )}
-      </CardContent>
+                {filteredTransactions.length > 0 ? (
+                  <TableBody>
+                    {showTransactionsLoading ? (
+                      <TransactionSkeleton rows={filters.perPage} />
+                    ) : (
+                      filteredTransactions.map((transaction) => (
+                        <TransactionItem
+                          key={transaction.id}
+                          transaction={transaction}
+                        />
+                      ))
+                    )}
+                  </TableBody>
+                ) : (
+                  <TableCaption>
+                    There is no transaction for this filter. Adjust your search
+                    filter or reset
+                  </TableCaption>
+                )}
+              </Table>
+            </CardContent>
+            {/* Pagination Controls */}
+            <CardFooter className="flex items-center justify-between px-0 py-4 border-t">
+              <PerPageFilter
+                transactions={filteredTransactions}
+                page={filters.page}
+                totalResult={pageData.pagination.total}
+                perPage={filters.perPage}
+                handlePerPageChange={handlePerPageChange}
+              />
+
+              <PaginationBtns
+                page={pagination.page}
+                totalPages={pagination.totalPages}
+                handlePageChange={handlePageChange}
+              />
+            </CardFooter>
+          </>
+        ) : (
+          <CardContent>
+            <p>You currently have no transactions</p>
+          </CardContent>
+        ))}
     </Card>
   );
 }

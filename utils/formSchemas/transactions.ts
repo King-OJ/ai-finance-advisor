@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { Categories } from "../types/budget";
 
 export const addTransactionFormSchema = z.object({
   merchant: z.string().min(1, "Merchant name is required"),
@@ -21,7 +22,8 @@ export const TransactionFiltersSchema = z.object({
   search: z.string().optional(),
   startDate: z.string().optional(),
   endDate: z.string().optional(),
-  type: z.enum(["income", "expense"]).optional(),
+  budget: z.string().optional(),
+  category: z.nativeEnum(Categories).optional(),
 });
 // .refine(
 //   (data) => {

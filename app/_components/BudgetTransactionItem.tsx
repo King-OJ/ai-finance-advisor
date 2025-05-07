@@ -5,7 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import { Transaction } from "@/utils/types/transactions";
 import { formatDate } from "@/utils/actions/clientActions";
 
-function TransactionItem({ transaction }: { transaction: Transaction }) {
+function BudgetTransactionItem({ transaction }: { transaction: Transaction }) {
+  const renderTransactionStatus = (status: Transaction["status"]) => {
+    return (
+      <Badge className={status ? "bg-green/30" : "bg-yellow/30"}>
+        {status ? "Completed" : "Pending"}
+      </Badge>
+    );
+  };
+
   return (
     <TableRow>
       <TableCell className="font-medium">
@@ -15,10 +23,12 @@ function TransactionItem({ transaction }: { transaction: Transaction }) {
       <TableCell>
         <Badge variant="outline">{transaction.category}</Badge>
       </TableCell>
-      <TableCell>Budget Name</TableCell>
-      <TableCell>${transaction.amount.toFixed(2)}</TableCell>
+      <TableCell className="text-right">
+        ${transaction.amount.toFixed(2)}
+      </TableCell>
+      <TableCell>{renderTransactionStatus(transaction.status)}</TableCell>
     </TableRow>
   );
 }
 
-export default TransactionItem;
+export default BudgetTransactionItem;

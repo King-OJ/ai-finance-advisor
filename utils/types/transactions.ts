@@ -23,19 +23,20 @@ export type Transaction = {
 };
 
 export type TransactionFilters = {
-  startDate?: string;
-  endDate?: string;
+  page?: number;
+  perPage?: number;
+  budgetId?: string;
   category?: string;
-  status?: boolean;
-  search?: string;
 };
 
 export type TransactionResponse = {
-  transactions: Transaction[];
-  totalCount: number;
-  totalPages: number;
-  currentPage: number;
-  pageSize: number;
+  data: Transaction[];
+  pagination: {
+    page: number;
+    perPage: number;
+    total: number;
+    totalPages: number;
+  };
 };
 
 export type GetTransactionsParams = {

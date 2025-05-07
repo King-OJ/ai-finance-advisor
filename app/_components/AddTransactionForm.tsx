@@ -10,7 +10,6 @@ import {
   addTransactionFormSchema,
   AddTransactionFormType,
 } from "@/utils/formSchemas/transactions";
-import { typeValues } from "@/utils/types/transactions";
 import {
   DialogContent,
   DialogDescription,
@@ -72,12 +71,12 @@ function AddTransactionForm({ onSuccess }: AddTransactionFormProps) {
               placeholder="Select Status"
               values={Object.values(statusValues)}
             /> */}
-            <CustomSelectField
+            {/* <CustomSelectField
               name="type"
               control={form.control}
               placeholder="Select Type"
               values={Object.values(typeValues)}
-            />
+            /> */}
           </div>
 
           <div className="flex w-full justify-center">

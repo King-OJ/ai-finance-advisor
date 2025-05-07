@@ -13,7 +13,7 @@ async function BudgetsPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 container mx-auto">
       <PageHeader
         pageTitle="My Budgets"
         btnTitle="Create Budget"

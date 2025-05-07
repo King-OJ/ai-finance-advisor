@@ -13,16 +13,30 @@ import React from "react";
 interface PaginationBtnsProps {
   page: number;
   totalPages: number;
+  handlePageChange: (page: number) => void;
+  handlePrevious?: (page: string) => void;
+  handleNext?: (page: string) => void;
 }
 
-function PaginationBtns({ page, totalPages }: PaginationBtnsProps) {
+function PaginationBtns({
+  page,
+  totalPages,
+  handlePageChange,
+  handlePrevious,
+  handleNext,
+}: PaginationBtnsProps) {
   const renderPaginationItems = () => {
     const items = [];
 
     //always show page 1 button
     items.push(
       <PaginationItem key="first">
-        <PaginationLink isActive={page === 1}>1</PaginationLink>
+        <PaginationLink
+          onClick={() => handlePageChange(1)}
+          isActive={page === 1}
+        >
+          1
+        </PaginationLink>
       </PaginationItem>
     );
 
@@ -44,7 +58,12 @@ function PaginationBtns({ page, totalPages }: PaginationBtnsProps) {
 
       items.push(
         <PaginationItem key={i}>
-          <PaginationLink isActive={page === i}>{i}</PaginationLink>
+          <PaginationLink
+            onClick={() => handlePageChange(i)}
+            isActive={page === i}
+          >
+            {i}
+          </PaginationLink>
         </PaginationItem>
       );
     }
@@ -58,11 +77,13 @@ function PaginationBtns({ page, totalPages }: PaginationBtnsProps) {
       );
     }
 
-    // Always show last page if there's more than one page
     if (totalPages > 1) {
       items.push(
         <PaginationItem key="last">
-          <PaginationLink isActive={page === totalPages}>
+          <PaginationLink
+            onClick={() => handlePageChange(totalPages)}
+            isActive={page === totalPages}
+          >
             {totalPages}
           </PaginationLink>
         </PaginationItem>
@@ -78,6 +99,7 @@ function PaginationBtns({ page, totalPages }: PaginationBtnsProps) {
         {
           <PaginationItem>
             <PaginationPrevious
+              onClick={() => handlePageChange(page - 1)}
               aria-disabled={page === 1}
               className={page === 1 ? "pointer-events-none opacity-50" : ""}
             />
@@ -88,6 +110,7 @@ function PaginationBtns({ page, totalPages }: PaginationBtnsProps) {
 
         <PaginationItem>
           <PaginationNext
+            onClick={() => handlePageChange(page + 1)}
             aria-disabled={page === totalPages}
             className={
               page === totalPages ? "pointer-events-none opacity-50" : ""

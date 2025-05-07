@@ -1,7 +1,6 @@
 "use client";
 import { Transaction } from "@prisma/client";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 
 export function useBudgetTransactions(

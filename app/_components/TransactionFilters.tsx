@@ -1,6 +1,5 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { typeValues } from "@/utils/types/transactions";
 import React from "react";
 import { UseFormReturn } from "react-hook-form";
 
@@ -13,19 +12,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { CustomFormInputField, CustomSelectField } from "./FormComponents";
+import { Categories } from "@/utils/types/budget";
 
 interface TransactionFiltersProps {
   resetFilters: () => void;
+  handlCategoryChange: (category: string) => void;
+  defaultCategory: string | null;
   form: UseFormReturn<
     {
-      type?: "income" | "expense" | undefined;
+      category?: Categories | undefined;
       search?: string | undefined;
       startDate?: string | undefined;
       endDate?: string | undefined;
     },
     any,
     {
-      type?: "income" | "expense" | undefined;
+      category?: Categories | undefined;
       search?: string | undefined;
       startDate?: string | undefined;
       endDate?: string | undefined;
@@ -33,7 +35,12 @@ interface TransactionFiltersProps {
   >;
 }
 
-function TransactionFilters({ resetFilters, form }: TransactionFiltersProps) {
+function TransactionFilters({
+  resetFilters,
+  form,
+  defaultCategory,
+  handlCategoryChange,
+}: TransactionFiltersProps) {
   return (
     <Card className="bg-accent-foreground">
       <CardHeader>
@@ -53,26 +60,27 @@ function TransactionFilters({ resetFilters, form }: TransactionFiltersProps) {
             />
 
             <CustomSelectField
-              name={"type"}
-              placeholder={"All Types"}
-              values={typeValues}
-              label="Type"
+              name={"budget"}
+              placeholder={"All Budgets"}
+              values={["House", "Car", "Shop"]}
+              label="Budgets"
               control={form.control}
             />
 
-            {/* <CustomSelectField
-              name={"budget"}
-              placeholder={"All Budgets"}
-              values={statusValues}
-              label="Budgets"
+            <CustomSelectField
+              name={"categories"}
+              defaultValue={defaultCategory}
+              placeholder={"All Categories"}
+              values={["All", ...Object.values(Categories)]}
+              label="Categories"
               control={form.control}
-            /> */}
-
-            <div className="mt-4">
-              <Button type="button" variant="default" onClick={resetFilters}>
-                Reset Filters
-              </Button>
-            </div>
+              onChange={handlCategoryChange}
+            />
+          </div>
+          <div className="mt-4 flex md:justify-end">
+            <Button type="button" variant="default" onClick={resetFilters}>
+              Reset Filters
+            </Button>
           </div>
         </Form>
       </CardContent>
