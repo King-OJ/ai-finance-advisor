@@ -4,7 +4,12 @@ import * as z from "zod";
 import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { CustomFormInputField, CustomSelectField } from "./FormComponents";
+import {
+  CheckboxWithText,
+  CustomDatePickerField,
+  CustomFormInputField,
+  CustomSelectField,
+} from "./FormComponents";
 import { Button } from "@/components/ui/button";
 import {
   addTransactionFormSchema,
@@ -16,32 +21,53 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Categories } from "@/utils/types/budget";
+import { formatDate } from "@/utils/actions/clientActions";
+import { useAddTransactions } from "@/utils/hooks/transactions/useTransactionMutations";
 
 interface AddTransactionFormProps {
-  onSuccess?: () => void;
+  closeDialog: () => void;
+  budgets: {
+    id: number;
+    name: string;
+  }[];
 }
 
-function AddTransactionForm({ onSuccess }: AddTransactionFormProps) {
-  const [isLoading, setIsLoading] = useState(false);
-
+function AddTransactionForm({ closeDialog, budgets }: AddTransactionFormProps) {
   const form = useForm<AddTransactionFormType>({
     resolver: zodResolver(addTransactionFormSchema),
     defaultValues: {
       merchant: "",
+      status: true,
+      amount: 0,
+      date: formatDate(new Date()).toString(),
     },
   });
 
+  const { mutate: addTransaction, isPending } = useAddTransactions(closeDialog);
+
   const onSubmit = async (values: AddTransactionFormType) => {
-    console.log(values);
-    onSuccess?.();
+    const { merchant, status, amount, category, budgetId, date } = values;
+    const newTransaction = {
+      merchant,
+      status,
+      amount,
+      category,
+      date: new Date(date),
+      budgetId: Number(budgetId),
+    };
+    addTransaction(newTransaction, {
+      onSettled: () => {
+        form.reset();
+      },
+    });
   };
   return (
     <DialogContent className="border-none py-10">
       <DialogHeader className="mb-2">
-        <DialogTitle>Create New Transaction</DialogTitle>
+        <DialogTitle>Add New Transaction</DialogTitle>
         <DialogDescription>
-          Enter your transaction details here. Click{" "}
-          <span className="font-bold">Create</span> when you are done.
+          Enter your transaction details here.
         </DialogDescription>
       </DialogHeader>
 
@@ -51,37 +77,64 @@ function AddTransactionForm({ onSuccess }: AddTransactionFormProps) {
             name="merchant"
             label="merchant name"
             control={form.control}
+            placeholder="Type the merchant name"
           />
-          <CustomFormInputField
-            name="description"
-            label="description"
+
+          <CustomSelectField
+            name={"budgetId"}
+            placeholder="Select Budget"
+            options={[
+              { name: "All Budgets", value: "all" },
+              ...budgets.map(({ name, id }) => ({
+                name,
+                value: id.toString(),
+              })),
+            ]}
+            label="Budgets"
             control={form.control}
-            placeholder="Optional"
           />
-          <CustomFormInputField
-            name="amount"
+
+          <CustomSelectField
+            name="category"
+            label="category"
             control={form.control}
-            type="number"
-            label="amount"
+            placeholder="Select Category"
+            options={[
+              ...Object.entries(Categories).map(([key, value]) => ({
+                name: key,
+                value,
+              })),
+            ]}
           />
+          <CheckboxWithText
+            name="status"
+            control={form.control}
+            title="Transaction Status"
+            description="Uncheck the status if the transaction is not completed. Checked means completed"
+          />
+
           <div className="grid grid-cols-2 gap-4">
-            {/* <CustomSelectField
-              name="status"
+            <CustomFormInputField
+              name="amount"
               control={form.control}
-              placeholder="Select Status"
-              values={Object.values(statusValues)}
-            /> */}
-            {/* <CustomSelectField
-              name="type"
-              control={form.control}
-              placeholder="Select Type"
-              values={Object.values(typeValues)}
-            /> */}
+              type="number"
+              label="amount"
+              placeholder="Enter amount for the transaction"
+            />
+            <CustomDatePickerField
+              name="date"
+              title="Select Date :"
+              label="Date"
+            />
           </div>
 
           <div className="flex w-full justify-center">
-            <Button type="submit" disabled={isLoading} className="">
-              {isLoading ? "Creating Transaction..." : "Create Transaction"}
+            <Button
+              type="submit"
+              disabled={!form.formState.isValid}
+              className=""
+            >
+              {isPending ? "Adding Transaction..." : "Add Transaction"}
             </Button>
           </div>
         </form>

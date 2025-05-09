@@ -20,6 +20,9 @@ export type Transaction = {
   status: boolean;
   accountId?: string;
   merchant?: string;
+  budget?: {
+    name: string;
+  };
 };
 
 export type TransactionFilters = {

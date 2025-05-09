@@ -1,10 +1,24 @@
 "use server";
 import { cookies } from "next/headers";
 import axios from "axios";
-import { Status, TransactionResponse } from "../types/transactions";
-import { Category } from "../types/others";
-import { NextRequest } from "next/server";
-import { GET as getTransactions } from "@/app/api/transactions/route";
+import prisma from "../prisma";
+import { getUserId } from "@/app/api/budgets/route";
+
+export const fetchTransactionsBudgets = async () => {
+  const userId = await getUserId();
+  const budgets: Array<{ id: number; name: string }> =
+    await prisma.budget.findMany({
+      where: {
+        createdBy: userId,
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+  return budgets;
+};
 
 export const fetchPageData = async (route: string) => {
   try {

@@ -18,6 +18,7 @@ async function BudgetsPage() {
         pageTitle="My Budgets"
         btnTitle="Create Budget"
         Form={CreateBudgetForm}
+        formProps={{}}
       />
       <AllBudgets />
     </div>

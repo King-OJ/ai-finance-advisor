@@ -3,17 +3,21 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import React, { useState } from "react";
 
-interface PageHeaderProps {
+type PageHeaderProps<P> = {
   pageTitle: string;
   btnTitle: string;
-  Form: React.ComponentType<{
-    onSuccess?: () => void;
-    closeDialogue?: () => void;
-  }>;
-}
+  Form: React.ComponentType<P & { closeDialog: () => void }>;
+  formProps: P;
+};
 
-function PageHeader({ pageTitle, btnTitle, Form }: PageHeaderProps) {
+function PageHeader<P>({
+  pageTitle,
+  btnTitle,
+  Form,
+  formProps,
+}: PageHeaderProps<P>) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const closeDialog = () => setIsModalOpen(false);
 
   return (
     <div className="flex justify-between items-center">
@@ -23,7 +27,7 @@ function PageHeader({ pageTitle, btnTitle, Form }: PageHeaderProps) {
           <Button className="font-bold">{btnTitle}</Button>
         </DialogTrigger>
 
-        <Form closeDialogue={() => setIsModalOpen(false)} />
+        <Form {...formProps} closeDialog={closeDialog} />
       </Dialog>
     </div>
   );

@@ -42,11 +42,11 @@ import {
 import { useToast } from "@/hooks/use-toast";
 
 interface CreateBudgetFormProps {
-  closeDialogue?: () => void;
+  closeDialog?: () => void;
   budget?: Budget;
 }
 
-function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
+function CreateBudgetForm({ closeDialog, budget }: CreateBudgetFormProps) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
 
   const form = useForm<CreateBudgetType>({
@@ -95,7 +95,7 @@ function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
     createBudget(newBudget, {
       onSuccess: () => {
         form.reset();
-        closeDialogue?.();
+        closeDialog?.();
 
         toast({
           title: "New Budget Created!",
@@ -108,7 +108,6 @@ function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
           description: err.message,
           variant: "destructive",
         }),
-      onSettled: () => {},
     });
   };
 
@@ -126,7 +125,7 @@ function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
 
     editBudget(newBudget, {
       onSuccess: () => {
-        closeDialogue?.();
+        closeDialog?.();
 
         toast({
           title: "Budget updated!",
@@ -196,7 +195,12 @@ function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
                 label="budget category"
                 control={form.control}
                 placeholder="Select Category"
-                values={Object.values(Categories)}
+                options={[
+                  ...Object.entries(Categories).map(([key, value]) => ({
+                    name: key,
+                    value,
+                  })),
+                ]}
               />
             </div>
             <CategoryEmoji category={selectedCategory} />
@@ -271,7 +275,7 @@ function CreateBudgetForm({ closeDialogue, budget }: CreateBudgetFormProps) {
                   type="button"
                   variant="outline"
                   className="mr-2"
-                  onClick={closeDialogue}
+                  onClick={closeDialog}
                 >
                   Cancel
                 </Button>

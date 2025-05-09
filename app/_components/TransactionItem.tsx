@@ -15,7 +15,7 @@ function TransactionItem({ transaction }: { transaction: Transaction }) {
       <TableCell>
         <Badge variant="outline">{transaction.category}</Badge>
       </TableCell>
-      <TableCell>Budget Name</TableCell>
+      <TableCell>{transaction.budget?.name}</TableCell>
       <TableCell>${transaction.amount.toFixed(2)}</TableCell>
     </TableRow>
   );

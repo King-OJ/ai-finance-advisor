@@ -16,21 +16,30 @@ import { Categories } from "@/utils/types/budget";
 
 interface TransactionFiltersProps {
   resetFilters: () => void;
+  budgets: {
+    id: number;
+    name: string;
+  }[];
   handlCategoryChange: (category: string) => void;
-  defaultCategory: string | null;
+  handlBudgetChange: (budget: string) => void;
+  initialCategory: string | undefined;
+  initialBudgetId: string | undefined;
+  isDirty: boolean;
   form: UseFormReturn<
     {
-      category?: Categories | undefined;
       search?: string | undefined;
+      category?: Categories | undefined;
       startDate?: string | undefined;
       endDate?: string | undefined;
+      budgetId?: string | undefined;
     },
     any,
     {
-      category?: Categories | undefined;
       search?: string | undefined;
+      category?: Categories | undefined;
       startDate?: string | undefined;
       endDate?: string | undefined;
+      budgetId?: string | undefined;
     }
   >;
 }
@@ -38,9 +47,21 @@ interface TransactionFiltersProps {
 function TransactionFilters({
   resetFilters,
   form,
-  defaultCategory,
+  isDirty,
+  initialBudgetId,
   handlCategoryChange,
+  handlBudgetChange,
+  budgets,
 }: TransactionFiltersProps) {
+  const defaultBudget = () => {
+    const budget = budgets.find(
+      (budget) => budget.id.toString() == initialBudgetId
+    );
+    return budget
+      ? { name: budget.name, value: budget.id.toString() }
+      : { name: "All Budgets", value: "all" };
+  };
+
   return (
     <Card className="bg-accent-foreground">
       <CardHeader>
@@ -60,25 +81,40 @@ function TransactionFilters({
             />
 
             <CustomSelectField
-              name={"budget"}
-              placeholder={"All Budgets"}
-              values={["House", "Car", "Shop"]}
+              name={"budgetId"}
+              options={[
+                { name: "All Budgets", value: "all" },
+                ...budgets.map(({ name, id }) => ({
+                  name,
+                  value: id.toString(),
+                })),
+              ]}
               label="Budgets"
               control={form.control}
+              onChange={handlBudgetChange}
             />
 
             <CustomSelectField
-              name={"categories"}
-              defaultValue={defaultCategory}
-              placeholder={"All Categories"}
-              values={["All", ...Object.values(Categories)]}
+              name={"category"}
+              options={[
+                { name: "All category", value: "all" },
+                ...Object.entries(Categories).map(([key, value]) => ({
+                  name: key,
+                  value,
+                })),
+              ]}
               label="Categories"
               control={form.control}
               onChange={handlCategoryChange}
             />
           </div>
           <div className="mt-4 flex md:justify-end">
-            <Button type="button" variant="default" onClick={resetFilters}>
+            <Button
+              disabled={!isDirty}
+              type="button"
+              variant="default"
+              onClick={resetFilters}
+            >
               Reset Filters
             </Button>
           </div>

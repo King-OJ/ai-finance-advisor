@@ -57,7 +57,7 @@ model Transaction {
   createdBy Int
   date      DateTime
   amount    Float
-  status    Boolean? @default(false)
+  status    Boolean? @default(true)
   user      User     @relation(fields: [createdBy], references: [id], onDelete: Cascade)
   budget    Budget?  @relation(fields: [budgetId], references: [id], onDelete: Cascade)
 

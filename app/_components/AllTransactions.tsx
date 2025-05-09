@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/table";
 import TransactionFilters from "./TransactionFilters";
 import TransactionItem from "./TransactionItem";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { PageSkeleton } from "./PageSkeleton";
 import {
   FilterValues,
@@ -29,30 +29,34 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useDebounce } from "use-debounce";
 import { useTransactions } from "@/utils/hooks/transactions/useTransactions";
-import {
-  Select,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { SelectItem } from "@radix-ui/react-select";
 import TransactionSkeleton from "./TransactionSkeleton";
 import PerPageFilter from "./PerPageFilter";
+import { Categories } from "@/utils/types/budget";
 
-function AllTransactions() {
-  const searchParams = useSearchParams();
-
-  // const initialType =
-  //   (searchParams.get("type") as Transaction["type"]) || undefined;
-  const initialSearch = searchParams.get("search") || "";
-
-  // Track if this is the initial render
-  const isInitialMount = useRef(true);
+function AllTransactions({
+  budgets,
+}: {
+  budgets: {
+    id: number;
+    name: string;
+  }[];
+}) {
+  const {
+    data: pageData,
+    isLoading,
+    isError,
+    isFetching,
+    setFilters,
+    filters,
+    resetURL,
+  } = useTransactions();
 
   const form = useForm<FilterValues>({
     resolver: zodResolver(TransactionFiltersSchema),
     defaultValues: {
-      search: initialSearch,
+      search: "",
+      category: (filters.category as Categories) || "all",
+      budgetId: filters.budgetId || "all",
     },
     mode: "onChange",
   });
@@ -61,35 +65,41 @@ function AllTransactions() {
   // const typeValue = form.watch("type");
   const [debouncedSearch] = useDebounce(searchValue, 300);
 
-  const {
-    data: pageData,
-    isLoading,
-    isError,
-    isFetching,
-    setFilters,
-    filters,
-  } = useTransactions();
-
   const showTransactionsLoading = isFetching || !pageData;
 
-  const resetFilters = () => {
-    form.reset({
-      search: "",
-    });
-  };
-
-  // Handler for per page change
   const handlePerPageChange = async (perPage: string) => {
-    setFilters({ perPage: Number(perPage), page: 1 });
+    setFilters({ ...filters, perPage: Number(perPage), page: 1 });
   };
 
-  // Handler for page change
   const handlePageChange = (page: number) => {
-    setFilters({ page, perPage: filters.perPage });
+    setFilters({ ...filters, page });
   };
 
   const handleCategoryChange = (category: string) => {
-    setFilters({ category: category == "All" ? undefined : category, page: 1 });
+    setFilters({
+      ...filters,
+      category: category == "all" ? undefined : category,
+      page: 1,
+    });
+  };
+
+  const handleBudgetChange = (budget: string) => {
+    setFilters({
+      ...filters,
+      budgetId: budget == "all" ? undefined : budget,
+      page: 1,
+    });
+  };
+
+  const handleFiltersReset = () => {
+    resetURL();
+    form.reset({
+      search: "",
+      budgetId: undefined,
+      category: undefined,
+    });
+
+    console.log(form.getValues());
   };
 
   const filteredTransactions = pageData?.data || [];
@@ -114,10 +124,14 @@ function AllTransactions() {
         <CardTitle>Transaction History</CardTitle>
 
         <TransactionFilters
+          budgets={budgets}
           handlCategoryChange={handleCategoryChange}
-          defaultCategory={filters.category}
+          handlBudgetChange={handleBudgetChange}
+          initialCategory={filters.category}
+          initialBudgetId={filters.budgetId}
           form={form}
-          resetFilters={resetFilters}
+          isDirty={form.formState.isDirty}
+          resetFilters={handleFiltersReset}
         />
       </CardHeader>
       {pageData &&
@@ -175,7 +189,7 @@ function AllTransactions() {
           </>
         ) : (
           <CardContent>
-            <p>You currently have no transactions</p>
+            <p>You currently have no transactions for this budget!</p>
           </CardContent>
         ))}
     </Card>

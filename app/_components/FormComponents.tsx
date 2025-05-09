@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import DatePicker from "./DatePicker";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type CustomFormTextareaProps = {
   name: string;
@@ -125,23 +126,21 @@ export function CustomFormInputField({
 
 type CustomFormSelectFieldProps = {
   name: string;
-  placeholder: string;
+  placeholder?: string;
   label?: string;
-  values: string[];
+  options: Array<{ name: string; value: string }>;
   onChange?: (value: string) => void;
-  defaultValue?: string | null;
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   control?: Control<any>;
 };
 
 export function CustomSelectField({
   placeholder,
-  values,
+  options,
   control,
   name,
   label,
   onChange,
-  defaultValue,
 }: CustomFormSelectFieldProps) {
   return (
     <FormField
@@ -155,22 +154,24 @@ export function CustomSelectField({
             </FormLabel>
           )}
           <Select
-            defaultValue={defaultValue ?? undefined}
             onValueChange={(value) => {
               field.onChange(value);
               onChange?.(value);
             }}
             value={field.value ?? undefined}
-            key={field.value ?? `${name}-reset`}
           >
             <SelectTrigger>
               <SelectValue placeholder={placeholder} />
             </SelectTrigger>
             <SelectContent>
-              {values.map((value) => {
+              {options.map((option) => {
                 return (
-                  <SelectItem key={value} value={value} className="capitalize">
-                    {value.charAt(0).toUpperCase() + value.slice(1)}
+                  <SelectItem
+                    key={option.name}
+                    value={option.value}
+                    className="capitalize"
+                  >
+                    {option.name.charAt(0).toUpperCase() + option.name.slice(1)}
                   </SelectItem>
                 );
               })}
@@ -202,7 +203,7 @@ export function CustomDatePickerField({
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className="flex flex-col">
+        <FormItem>
           {label && <FormLabel className="capitalize">{label}</FormLabel>}
           <div className="space-y-1">
             <FormControl>
@@ -213,6 +214,49 @@ export function CustomDatePickerField({
               />
             </FormControl>
             <FormMessage />
+          </div>
+        </FormItem>
+      )}
+    />
+  );
+}
+
+type CheckboxWithTextProps = {
+  name: string;
+  description?: string;
+  title?: string;
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+  control?: Control<any>;
+};
+
+export function CheckboxWithText({
+  name,
+  title,
+  description,
+  control,
+}: CheckboxWithTextProps) {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <div className="items-top flex space-x-2">
+            <Checkbox
+              id={name}
+              checked={field.value}
+              onCheckedChange={field.onChange}
+              value={field.value}
+            />
+            <div className="grid gap-1.5 leading-none">
+              <label
+                htmlFor={name}
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                {title}
+              </label>
+              <p className="text-sm text-muted-foreground">{description}</p>
+            </div>
           </div>
         </FormItem>
       )}

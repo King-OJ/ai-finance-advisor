@@ -19,15 +19,17 @@ export const useTransactions = () => {
 
   const page = parseInt(searchParams.get("page") || "1");
   const perPage = parseInt(searchParams.get("perPage") || "10");
-  const budgetId = searchParams.get("budgetId");
-  const category = searchParams.get("category");
+  const budgetId = searchParams.get("budgetId") || undefined;
+  const category = searchParams.get("category") || undefined;
 
   const queryKey = ["transactions", { page, perPage, budgetId, category }];
   const queryFn = useCallback(async () => {
     const params = new URLSearchParams();
     params.set("page", page.toString());
     params.set("perPage", perPage.toString());
-    if (budgetId) params.set("budgetId", budgetId);
+    if (budgetId) {
+      params.set("budgetId", budgetId);
+    }
     if (category) params.set("category", category);
     // if (dateFrom) params.set("dateFrom", dateFrom);
     // if (dateTo) params.set("dateTo", dateTo);
@@ -49,6 +51,16 @@ export const useTransactions = () => {
     },
     [pathname, router, searchParams]
   );
+
+  const resetURL = () => {
+    setFilters({
+      perPage,
+      page,
+      budgetId: undefined,
+      category: undefined,
+    });
+    router.replace(pathname);
+  };
 
   const setFilters = useCallback(
     (filters: TransactionFilters) => {
@@ -75,6 +87,7 @@ export const useTransactions = () => {
   return {
     ...query,
     setFilters,
+    resetURL,
     filters: { page, perPage, budgetId, category },
   };
 };

@@ -1,7 +1,7 @@
 import prisma from "@/utils/prisma";
-import { Transaction } from "@/utils/types/transactions";
 import { NextRequest, NextResponse } from "next/server";
 import { getUserId } from "../budgets/route";
+import { Transaction } from "@prisma/client";
 
 export async function GET(req: NextRequest) {
   try {
@@ -11,22 +11,28 @@ export async function GET(req: NextRequest) {
     const page = parseInt(searchParams.get("page") || "1");
     const perPage = parseInt(searchParams.get("perPage") || "10");
     const category = searchParams.get("category");
+    const budgetId = searchParams.get("budgetId");
     const skip = (page - 1) * perPage;
 
     const where = {
       createdBy: userId,
+      ...(budgetId && { budgetId: Number(budgetId) }),
       ...(category && { category }),
     };
+
+    const budgets = await prisma.budget.findMany({
+      where: {
+        createdBy: userId, // adjust to your auth logic
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
 
     // const isDemoMode =
     //   req.headers.get("x-demo-mode") === "true" ||
     //   new URL(req.url).searchParams.get("demo") === "true";
-
-    // const search = searchParams.get("search");
-    // const type = searchParams.get("type");
-    // const category = searchParams.get("category");
-    // const pageSize = parseInt(searchParams.get("pageSize") || "10");
-    // const page = parseInt(searchParams.get("page") || "1");
 
     // if (search) {
     //   filteredTransactions = filteredTransactions.filter((t) =>
@@ -34,15 +40,16 @@ export async function GET(req: NextRequest) {
     //   );
     // }
 
-    // if (category) {
-    //   filteredTransactions = filteredTransactions.filter(
-    //     (t) => t.category == type
-    //   );
-    // }
-
     const [transactions, total] = await Promise.all([
       prisma.transaction.findMany({
         where,
+        include: {
+          budget: {
+            select: {
+              name: true,
+            },
+          },
+        },
         skip,
         take: perPage,
         orderBy: { date: "desc" },
@@ -52,6 +59,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       data: transactions,
+      budgets,
       pagination: {
         page,
         perPage,
@@ -73,5 +81,39 @@ export async function GET(req: NextRequest) {
       { success: false, error: "Failed to fetch transactions" },
       { status: 500 }
     );
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const userId = await getUserId();
+    const {
+      merchant,
+      category,
+      status,
+      amount,
+      date,
+      budgetId,
+    }: Omit<Transaction, "id" | "createdAt" | "createdBy"> = await req.json();
+
+    const transaction = await prisma.transaction.create({
+      data: {
+        merchant,
+        amount,
+        status,
+        category,
+        date,
+        budgetId,
+        createdBy: userId,
+      },
+    });
+    return NextResponse.json(transaction);
+  } catch (error) {
+    console.error("Error adding transaction", error);
+    return NextResponse.json({
+      status: 500,
+      message: "Failed to add transaction",
+      error,
+    });
   }
 }
