@@ -17,7 +17,9 @@ function PageHeader<P>({
   formProps,
 }: PageHeaderProps<P>) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const closeDialog = () => setIsModalOpen(false);
+  const closeDialog = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <div className="flex justify-between items-center">
@@ -27,7 +29,11 @@ function PageHeader<P>({
           <Button className="font-bold">{btnTitle}</Button>
         </DialogTrigger>
 
-        <Form {...formProps} closeDialog={closeDialog} />
+        <Form
+          {...formProps}
+          closeDialog={closeDialog}
+          dialogOpen={isModalOpen}
+        />
       </Dialog>
     </div>
   );

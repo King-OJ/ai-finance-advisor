@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import PaginationBtns from "./PaginationBtns";
 import {
   Card,
@@ -13,13 +13,13 @@ import {
   Table,
   TableBody,
   TableCaption,
+  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import TransactionFilters from "./TransactionFilters";
 import TransactionItem from "./TransactionItem";
-import { useSearchParams } from "next/navigation";
 import { PageSkeleton } from "./PageSkeleton";
 import {
   FilterValues,
@@ -50,6 +50,10 @@ function AllTransactions({
     filters,
     resetURL,
   } = useTransactions();
+
+  useEffect(() => {
+    console.log(pageData);
+  }, [filters.budgetId]);
 
   const form = useForm<FilterValues>({
     resolver: zodResolver(TransactionFiltersSchema),
@@ -98,8 +102,6 @@ function AllTransactions({
       budgetId: undefined,
       category: undefined,
     });
-
-    console.log(form.getValues());
   };
 
   const filteredTransactions = pageData?.data || [];
@@ -130,68 +132,67 @@ function AllTransactions({
           initialCategory={filters.category}
           initialBudgetId={filters.budgetId}
           form={form}
-          isDirty={form.formState.isDirty}
           resetFilters={handleFiltersReset}
         />
       </CardHeader>
-      {pageData &&
-        (filteredTransactions.length > 0 ? (
-          <>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Merchant</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Budget</TableHead>
-                    <TableHead>Amount</TableHead>
-                  </TableRow>
-                </TableHeader>
-
-                {filteredTransactions.length > 0 ? (
-                  <TableBody>
-                    {showTransactionsLoading ? (
-                      <TransactionSkeleton rows={filters.perPage} />
-                    ) : (
-                      filteredTransactions.map((transaction) => (
-                        <TransactionItem
-                          key={transaction.id}
-                          transaction={transaction}
-                        />
-                      ))
-                    )}
-                  </TableBody>
-                ) : (
-                  <TableCaption>
-                    There is no transaction for this filter. Adjust your search
-                    filter or reset
-                  </TableCaption>
-                )}
-              </Table>
-            </CardContent>
-            {/* Pagination Controls */}
-            <CardFooter className="flex items-center justify-between px-0 py-4 border-t">
-              <PerPageFilter
-                transactions={filteredTransactions}
-                page={filters.page}
-                totalResult={pageData.pagination.total}
-                perPage={filters.perPage}
-                handlePerPageChange={handlePerPageChange}
-              />
-
-              <PaginationBtns
-                page={pagination.page}
-                totalPages={pagination.totalPages}
-                handlePageChange={handlePageChange}
-              />
-            </CardFooter>
-          </>
-        ) : (
+      {filteredTransactions ? (
+        <>
           <CardContent>
-            <p>You currently have no transactions for this budget!</p>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Merchant</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Budget</TableHead>
+                  <TableHead>Amount</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredTransactions.length > 0 ? (
+                  showTransactionsLoading ? (
+                    <TransactionSkeleton rows={filters.perPage} />
+                  ) : (
+                    filteredTransactions.map((transaction) => (
+                      <TransactionItem
+                        key={transaction.id}
+                        transaction={transaction}
+                      />
+                    ))
+                  )
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center py-6">
+                      There is no transaction for this filter. Adjust your
+                      search filter or reset
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
           </CardContent>
-        ))}
+          {/* Pagination Controls */}
+          <CardFooter className="flex items-center justify-between px-0 py-4 border-t">
+            <PerPageFilter
+              transactions={filteredTransactions}
+              page={filters.page}
+              totalResult={pageData?.pagination.total || 0}
+              perPage={filters.perPage}
+              handlePerPageChange={handlePerPageChange}
+            />
+
+            <PaginationBtns
+              page={pagination.page}
+              totalPages={pagination.totalPages}
+              handlePageChange={handlePageChange}
+            />
+          </CardFooter>
+        </>
+      ) : (
+        <CardContent>
+          <p>You currently have no transactions to display!</p>
+        </CardContent>
+      )}
     </Card>
   );
 }

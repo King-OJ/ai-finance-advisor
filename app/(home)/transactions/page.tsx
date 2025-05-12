@@ -19,7 +19,7 @@ async function page() {
   const budgets = await fetchTransactionsBudgets();
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 container mx-auto">
       <PageHeader
         pageTitle="All Transactions"
         btnTitle="Add Transaction"

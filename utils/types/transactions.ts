@@ -25,6 +25,15 @@ export type Transaction = {
   };
 };
 
+export type TransactionsPageBudgets = Array<{
+  id: number;
+  name: string;
+  endDate: Date;
+  startDate: Date;
+  spent: number;
+  amount: number;
+}>;
+
 export type TransactionFilters = {
   page?: number;
   perPage?: number;

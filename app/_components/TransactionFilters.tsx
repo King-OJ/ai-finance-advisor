@@ -24,7 +24,6 @@ interface TransactionFiltersProps {
   handlBudgetChange: (budget: string) => void;
   initialCategory: string | undefined;
   initialBudgetId: string | undefined;
-  isDirty: boolean;
   form: UseFormReturn<
     {
       search?: string | undefined;
@@ -47,7 +46,6 @@ interface TransactionFiltersProps {
 function TransactionFilters({
   resetFilters,
   form,
-  isDirty,
   initialBudgetId,
   handlCategoryChange,
   handlBudgetChange,
@@ -109,12 +107,7 @@ function TransactionFilters({
             />
           </div>
           <div className="mt-4 flex md:justify-end">
-            <Button
-              disabled={!isDirty}
-              type="button"
-              variant="default"
-              onClick={resetFilters}
-            >
+            <Button type="button" variant="default" onClick={resetFilters}>
               Reset Filters
             </Button>
           </div>

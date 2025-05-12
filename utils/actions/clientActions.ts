@@ -1,15 +1,11 @@
 "use client";
 import { differenceInDays, format, startOfMonth } from "date-fns";
-import {
-  BudgetsResponse,
-  Categories,
-  CategoryEmojis,
-  GetBudgetsParams,
-} from "../types/budget";
+import { Categories, CategoryEmojis } from "../types/budget";
 import {
   GetTransactionsParams,
   TransactionResponse,
 } from "../types/transactions";
+import { parse } from "date-fns";
 
 export const formatDate = (date: Date) => {
   const dateFormatter = new Intl.DateTimeFormat("en-US", {
@@ -63,3 +59,21 @@ export const calculateProgress = (current: number, amount: number) =>
 
 export const calculateAvalBal = (spent: number, amount: number) =>
   amount - spent;
+
+export const parseDateStringToUTC = (dateStr: string): Date => {
+  const parsedLocalDate = parse(dateStr, "MMM dd, yyyy", new Date());
+  // Convert local date to UTC midnight
+  return new Date(
+    Date.UTC(
+      parsedLocalDate.getFullYear(),
+      parsedLocalDate.getMonth(),
+      parsedLocalDate.getDate()
+    )
+  );
+};
+
+export const normalizeToUTC = (date: Date) => {
+  return new Date(
+    Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
+  );
+};

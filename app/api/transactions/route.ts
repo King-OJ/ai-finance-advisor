@@ -20,15 +20,15 @@ export async function GET(req: NextRequest) {
       ...(category && { category }),
     };
 
-    const budgets = await prisma.budget.findMany({
-      where: {
-        createdBy: userId, // adjust to your auth logic
-      },
-      select: {
-        id: true,
-        name: true,
-      },
-    });
+    // const budgets = await prisma.budget.findMany({
+    //   where: {
+    //     createdBy: userId, // adjust to your auth logic
+    //   },
+    //   select: {
+    //     id: true,
+    //     name: true,
+    //   },
+    // });
 
     // const isDemoMode =
     //   req.headers.get("x-demo-mode") === "true" ||
@@ -59,7 +59,6 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       data: transactions,
-      budgets,
       pagination: {
         page,
         perPage,

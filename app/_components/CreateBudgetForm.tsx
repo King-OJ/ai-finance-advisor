@@ -63,15 +63,7 @@ function CreateBudgetForm({ closeDialog, budget }: CreateBudgetFormProps) {
   });
 
   React.useEffect(() => {
-    form.reset({
-      name: budget?.name || "",
-      description: budget?.description || "",
-      amount: budget?.amount || undefined,
-      spent: budget?.spent || undefined,
-      startDate: budget?.startDate || undefined,
-      endDate: budget?.endDate || undefined,
-      category: budget?.category || undefined,
-    });
+    form.reset();
   }, [budget?.id, form.reset]); // Reset when budget ID changes
 
   const { toast } = useToast();
@@ -91,24 +83,25 @@ function CreateBudgetForm({ closeDialog, budget }: CreateBudgetFormProps) {
       endDate: new Date(values.endDate),
       description: values.description ?? null,
     };
+    console.log(values);
 
-    createBudget(newBudget, {
-      onSuccess: () => {
-        form.reset();
-        closeDialog?.();
+    // createBudget(newBudget, {
+    //   onSuccess: () => {
+    //     form.reset();
+    //     closeDialog?.();
 
-        toast({
-          title: "New Budget Created!",
-          className: "text-green",
-        });
-      },
-      onError: (err) =>
-        toast({
-          title: "Error creating budget",
-          description: err.message,
-          variant: "destructive",
-        }),
-    });
+    //     toast({
+    //       title: "New Budget Created!",
+    //       className: "text-green",
+    //     });
+    //   },
+    //   onError: (err) =>
+    //     toast({
+    //       title: "Error creating budget",
+    //       description: err.message,
+    //       variant: "destructive",
+    //     }),
+    // });
   };
 
   const onSave = (values: CreateBudgetType) => {

@@ -1,7 +1,6 @@
 "use client";
 import { Form } from "@/components/ui/form";
-import * as z from "zod";
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -13,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   addTransactionFormSchema,
-  AddTransactionFormType,
+  AddTransactionFormSchemaType,
 } from "@/utils/formSchemas/transactions";
 import {
   DialogContent,
@@ -22,31 +21,38 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Categories } from "@/utils/types/budget";
-import { formatDate } from "@/utils/actions/clientActions";
 import { useAddTransactions } from "@/utils/hooks/transactions/useTransactionMutations";
+import { TransactionsPageBudgets } from "@/utils/types/transactions";
 
 interface AddTransactionFormProps {
   closeDialog: () => void;
-  budgets: {
-    id: number;
-    name: string;
-  }[];
+  budgets: TransactionsPageBudgets;
+  dialogOpen: boolean;
 }
 
-function AddTransactionForm({ closeDialog, budgets }: AddTransactionFormProps) {
-  const form = useForm<AddTransactionFormType>({
-    resolver: zodResolver(addTransactionFormSchema),
+function AddTransactionForm({
+  closeDialog,
+  budgets,
+  dialogOpen,
+}: AddTransactionFormProps) {
+  const form = useForm<AddTransactionFormSchemaType>({
+    resolver: zodResolver(addTransactionFormSchema(budgets)),
     defaultValues: {
       merchant: "",
       status: true,
       amount: 0,
-      date: formatDate(new Date()).toString(),
     },
   });
 
+  useEffect(() => {
+    if (!dialogOpen) {
+      form.reset(); // this resets to defaultValues
+    }
+  }, [dialogOpen, form.reset]);
+
   const { mutate: addTransaction, isPending } = useAddTransactions(closeDialog);
 
-  const onSubmit = async (values: AddTransactionFormType) => {
+  const onSubmit = async (values: AddTransactionFormSchemaType) => {
     const { merchant, status, amount, category, budgetId, date } = values;
     const newTransaction = {
       merchant,
@@ -56,6 +62,7 @@ function AddTransactionForm({ closeDialog, budgets }: AddTransactionFormProps) {
       date: new Date(date),
       budgetId: Number(budgetId),
     };
+
     addTransaction(newTransaction, {
       onSettled: () => {
         form.reset();
@@ -84,7 +91,6 @@ function AddTransactionForm({ closeDialog, budgets }: AddTransactionFormProps) {
             name={"budgetId"}
             placeholder="Select Budget"
             options={[
-              { name: "All Budgets", value: "all" },
               ...budgets.map(({ name, id }) => ({
                 name,
                 value: id.toString(),
@@ -92,6 +98,7 @@ function AddTransactionForm({ closeDialog, budgets }: AddTransactionFormProps) {
             ]}
             label="Budgets"
             control={form.control}
+            trigger={form.trigger}
           />
 
           <CustomSelectField
@@ -129,11 +136,7 @@ function AddTransactionForm({ closeDialog, budgets }: AddTransactionFormProps) {
           </div>
 
           <div className="flex w-full justify-center">
-            <Button
-              type="submit"
-              disabled={!form.formState.isValid}
-              className=""
-            >
+            <Button type="submit" className="">
               {isPending ? "Adding Transaction..." : "Add Transaction"}
             </Button>
           </div>

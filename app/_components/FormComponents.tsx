@@ -132,6 +132,7 @@ type CustomFormSelectFieldProps = {
   onChange?: (value: string) => void;
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   control?: Control<any>;
+  trigger?: any;
 };
 
 export function CustomSelectField({
@@ -140,6 +141,7 @@ export function CustomSelectField({
   control,
   name,
   label,
+  trigger,
   onChange,
 }: CustomFormSelectFieldProps) {
   return (
